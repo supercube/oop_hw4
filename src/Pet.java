@@ -6,18 +6,12 @@ import java.awt.image.FilteredImageSource;
 import java.awt.image.RGBImageFilter;
 
 public class Pet extends POOPet{
-	private Image[] _imgs;
-	private int _img_id;
-	private static final int _no_img = 10;
+	protected Image[] _imgs;
+	protected int _img_id;
+	protected int _no_img;
 	
 	public Pet(){
-		_imgs = new Image[_no_img];
-		Image img;
-		Color bgcolor;
-		img = (new ImageIcon("../Images/Slime.png")).getImage();
-		bgcolor = new Color(0, 0, 0);
-		_imgs[0] = Filter.filterOutBackground(img, bgcolor);
-		_img_id = 0;
+		
 	}
 	
 	public Image getImage(){

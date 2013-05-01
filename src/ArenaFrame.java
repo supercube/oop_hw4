@@ -26,22 +26,20 @@ public class ArenaFrame extends JFrame{
 				_map[i][j] = null;
 			}
 		}
-		setSize(_x + 100 , _y + 100);
 		
-		setResizable(false);
-		setLocationRelativeTo(null);
+		
 		
 		_c = getContentPane();
-		Dimension size = new Dimension(_x, _y);
-		_c.setPreferredSize(size);
-		pack();
-		setBackground(background);
+		_c.setPreferredSize(new Dimension(_x, _y));
 		_panel = new ArenaIOPanel(_no_cell_x, _no_cell_y);
 		_panel.setOpaque(false);
 		_c.add(_panel);
 		
-		
+		setBackground(background);
+		setResizable(false);
+		setLocationRelativeTo(null);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		pack();
 		setVisible(true);
 	}
 	

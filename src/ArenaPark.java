@@ -28,7 +28,7 @@ public class ArenaPark extends POOArena{
 					_map[i][j] = new Cell();
 				}
 			}
-			_window = new ArenaFrame("Park", "../Images/Park.png", _no_cell_x, _no_cell_y);
+			_window = new ArenaFrame("Park", "Images/Park.png", _no_cell_x, _no_cell_y);
 			_game_status = -1;
 			rnd = new Random();
 		}catch(Exception e){
