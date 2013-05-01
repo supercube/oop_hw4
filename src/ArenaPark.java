@@ -4,8 +4,9 @@ import java.awt.*;
 import javax.swing.*;
 import java.util.Random;
 import java.util.ArrayList;
+import java.awt.event.*;
 
-public class ArenaPark extends POOArena{
+public class ArenaPark extends POOArena implements ActionListener{
 
 	private Timer _timer;
 	private ArenaFrame _window;
@@ -15,12 +16,13 @@ public class ArenaPark extends POOArena{
 	private ArrayList<Coordinate> _pet_pos = new ArrayList<Coordinate>(0);
 	private Random rnd;
 	private int _game_status; /* -1: ?, 0: after init */
-	public static final int interval = 100;
+	public static final int interval = 300;
 	
 	private POOPet[] _parr;
 	
 	public ArenaPark(){
 		try{
+			_timer = new Timer(interval, this);
 			_map = new Cell[_no_cell_x][];
 			for(int i = 0; i < _no_cell_x; i++){
 				_map[i] = new Cell[_no_cell_y];
@@ -36,6 +38,15 @@ public class ArenaPark extends POOArena{
 			System.out.println(e);
 		}
 		
+	}
+	
+	public void actionPerformed(ActionEvent e){
+		POOCoordinate pos;
+		for(int id = 0; id < _parr.length; id++){
+			pos = ((Pet)_parr[id]).move(this);
+			_window.addToArenaIOPanel(((Pet)_parr[id]).getImage(), pos.x, pos.y, id);
+		}
+		_window.redraw();
 	}
 	
 	public void init(){
@@ -60,11 +71,19 @@ public class ArenaPark extends POOArena{
 	}
 	
 	public boolean fight(){
-		if(_game_status == -1){
-			init();
-			_game_status = 0;
+		while(true){
+			switch(_game_status){
+				case 0:
+					
+					break;
+				case -1:
+					init();
+					_game_status = 0;
+					_timer.start();
+					break;
+				default:;
+			}
 		}
-		return true;
 	}
 	
 	public void show(){
@@ -80,6 +99,8 @@ public class ArenaPark extends POOArena{
 		return null;
 	}
 	
-	
+	public POOCoordinate getSize(){
+		return (POOCoordinate) new Coordinate(_no_cell_x, _no_cell_y);
+	}
 }
 

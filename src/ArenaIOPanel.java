@@ -10,6 +10,8 @@ public class ArenaIOPanel extends JPanel{
 	
 	private int _no_cell_x;
 	private int _no_cell_y;
+	private int _x, _y;
+	
 	private ImageCell[] _imgcs;
 	private int _imgcs_len, _max_imgcs;
 	
@@ -21,6 +23,8 @@ public class ArenaIOPanel extends JPanel{
 		for(int i = 0; i < _max_imgcs; i++ )
 			_imgcs[i] = null;
 		_imgcs_len = 0;
+		_x = _no_cell_x * POOConstant.CELL_X_SIZE;
+		_y = _no_cell_y * POOConstant.CELL_Y_SIZE;
 	}
 	
 	public void addToCell(Image img, int x, int y, int id){
@@ -38,13 +42,12 @@ public class ArenaIOPanel extends JPanel{
 	}
 	
 	public void paint(Graphics g) {
-		super.paint(g);
+		
 		for(int i = 0; i < _imgcs_len; i++){
-			if(_imgcs[i] != null)
+			if(_imgcs[i] != null){
 				g.drawImage(_imgcs[i]._img, _imgcs[i]._x * POOConstant.CELL_X_SIZE, _imgcs[i]._y * POOConstant.CELL_Y_SIZE, this);
+			}
 		}
-		Toolkit.getDefaultToolkit().sync();
-		g.dispose();
 	}
 	
 	private class ImageCell{
@@ -57,4 +60,5 @@ public class ArenaIOPanel extends JPanel{
 			_y = y;
 		}
 	}
+	
 }
