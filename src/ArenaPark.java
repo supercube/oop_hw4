@@ -2,8 +2,6 @@ package ntu.csie.oop13spring;
 
 import java.awt.*;
 import javax.swing.*;
-import java.awt.event.*;
-import javax.swing.event.*;
 import java.util.Random;
 import java.util.ArrayList;
 
@@ -51,7 +49,7 @@ public class ArenaPark extends POOArena{
 				if(_map[x][y].add(1, id)){
 					_pet_pos.add(new Coordinate(x, y));
 					if(_parr[id] instanceof Slime){
-						_window.addToHolder("../Images/Slime.png", x, y);
+						_window.addToArenaIOPanel("../Images/Slime.png", x, y);
 					}else if(true){
 					
 					}
