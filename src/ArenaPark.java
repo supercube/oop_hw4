@@ -40,24 +40,19 @@ public class ArenaPark extends POOArena{
 	
 	public void init(){
 		try{
-		_parr = getAllPets();
-		int x, y;
-		for(int id = 0; id < _parr.length; id++){
-			while(true){
-				x = rnd.nextInt(_no_cell_x);
-				y = rnd.nextInt(_no_cell_y);
-				if(_map[x][y].add(1, id)){
-					_pet_pos.add(new Coordinate(x, y));
-					if(_parr[id] instanceof Slime){
-						_window.addToArenaIOPanel("../Images/Slime.png", x, y);
-					}else if(true){
-					
+			_parr = getAllPets();
+			int x, y;
+			for(int id = 0; id < _parr.length; id++){
+				while(true){
+					x = rnd.nextInt(_no_cell_x);
+					y = rnd.nextInt(_no_cell_y);
+					if(_map[x][y].add(1, id)){
+						_pet_pos.add(new Coordinate(x, y));
+						_window.addToArenaIOPanel(((Pet)_parr[id]).getImage(), x, y, id);
+						break;
 					}
-					
-					break;
 				}
 			}
-		}
 		}catch(Exception e){
 			System.out.print("init(): ");
 			System.out.println(e);

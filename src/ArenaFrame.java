@@ -26,11 +26,15 @@ public class ArenaFrame extends JFrame{
 				_map[i][j] = null;
 			}
 		}
-		setSize(_x,_y);
+		setSize(_x + 100 , _y + 100);
+		
 		setResizable(false);
 		setLocationRelativeTo(null);
 		
 		_c = getContentPane();
+		Dimension size = new Dimension(_x, _y);
+		_c.setPreferredSize(size);
+		pack();
 		setBackground(background);
 		_panel = new ArenaIOPanel(_no_cell_x, _no_cell_y);
 		_panel.setOpaque(false);
@@ -50,13 +54,17 @@ public class ArenaFrame extends JFrame{
 		img_label.setBounds(0, 0, _x, _y); 
 	}
 	
-	public void addToArenaIOPanel(String picture, int x, int y){
+	public void addToArenaIOPanel(Image img, int x, int y){
+		addToArenaIOPanel(img, x, y, -1);
+	}
+	
+	public void addToArenaIOPanel(Image img, int x, int y, int id){
 		System.out.println(x + "/" + _no_cell_x + " & " + y + "/" + _no_cell_y);
 		
 		if(x < 0 || x >= _no_cell_x || y < 0 || y >= _no_cell_y)
 			return;
 		
-		_panel.addToCell((new ImageIcon(picture)).getImage(), x, y);
+		_panel.addToCell(img, x, y, id);
 		
 	}
 	

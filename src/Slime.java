@@ -1,6 +1,7 @@
 package ntu.csie.oop13spring;
 
-public class Slime extends POOPet{
+public class Slime extends Pet{
+	
 	
 	public POOAction act(POOArena arena){
 		POOAction action = new POOAction();
