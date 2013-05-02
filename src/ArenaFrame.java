@@ -52,20 +52,27 @@ public class ArenaFrame extends JFrame{
 		img_label.setBounds(0, 0, _x, _y); 
 	}
 	
-	public void addToArenaIOPanel(Image img, int x, int y){
-		addToArenaIOPanel(img, x, y, -1);
+	public boolean addToArenaIOPanel(Image img, int x, int y){
+		return addToArenaIOPanel(img, x, y, -1, 0, 0);
 	}
 	
-	public void addToArenaIOPanel(Image img, int x, int y, int id){
-		System.out.println(x + "/" + _no_cell_x + " & " + y + "/" + _no_cell_y);
+	public boolean addToArenaIOPanel(Image img, int x, int y, int id){
 		
+		return addToArenaIOPanel(img, x, y, id, 0, 0);
+		
+	}
+	
+	public boolean addToArenaIOPanel(Image img, int x, int y, int id, int paddingx, int paddingy){
 		if(x < 0 || x >= _no_cell_x || y < 0 || y >= _no_cell_y)
-			return;
+			return false;
 		
-		_panel.addToCell(img, x, y, id);
+		return _panel.addToCell(img, x, y, id, paddingx, paddingy);
 		
 	}
 	
+	public boolean removeFromIOPanel(int id){
+		return _panel.removeFromCell(id);
+	}
 	public void redraw(){
 		_panel.repaint();
 	}

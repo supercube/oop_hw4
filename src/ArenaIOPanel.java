@@ -24,8 +24,11 @@ public class ArenaIOPanel extends JPanel{
 		_y = _no_cell_y * POOConstant.CELL_Y_SIZE;
 	}
 	
-	public void addToCell(Image img, int x, int y, int id){
-		ImageCell imgc = new ImageCell(img, x, y);
+	public boolean addToCell(Image img, int x, int y, int id, int paddingx, int paddingy){
+		if(id >= _max_imgcs)
+			return false;
+		
+		ImageCell imgc = new ImageCell(img, x, y, paddingx, paddingy);
 		if(id < 0){
 			_imgcs[_imgcs_len] = imgc;
 			id = _imgcs_len;
@@ -36,25 +39,39 @@ public class ArenaIOPanel extends JPanel{
 		if(id >= _imgcs_len){
 			_imgcs_len = id + 1;
 		}
+		return true;
+	}
+	
+	public boolean removeFromCell(int id){
+		if(id >= _imgcs_len || id < 0)
+			return false;
+		
+		_imgcs[id] = null;
+		if(id == _imgcs_len - 1)
+			_imgcs_len--;
+		
+		return true;
 	}
 	
 	public void paint(Graphics g) {
 		
 		for(int i = 0; i < _imgcs_len; i++){
 			if(_imgcs[i] != null){
-				g.drawImage(_imgcs[i]._img, _imgcs[i]._x * POOConstant.CELL_X_SIZE, _imgcs[i]._y * POOConstant.CELL_Y_SIZE, this);
+				g.drawImage(_imgcs[i]._img, _imgcs[i]._x * POOConstant.CELL_X_SIZE + _imgcs[i]._paddingx, _imgcs[i]._y * POOConstant.CELL_Y_SIZE + _imgcs[i]._paddingy, this);
 			}
 		}
 	}
 	
 	private class ImageCell{
 		public Image _img;
-		public int _x, _y;
+		public int _x, _y, _paddingx, _paddingy;
 		
-		public ImageCell(Image img, int x, int y){
+		public ImageCell(Image img, int x, int y, int paddingx, int paddingy){
 			_img = img;
 			_x = x;
 			_y = y;
+			_paddingx = paddingx;
+			_paddingy = paddingy;
 		}
 	}
 	

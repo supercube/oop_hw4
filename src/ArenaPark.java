@@ -12,13 +12,14 @@ public class ArenaPark extends Arena{
 	private int _no_cell_x = 40;
 	private int _no_cell_y = 20;
 	private Cell[][] _map; 
-	private ArrayList<Coordinate> _pet_pos = new ArrayList<Coordinate>(0);
+	
 	private Random rnd;
 	private int _game_status; /* -1: ?, 0: after init */
 	public static final int interval = 300;
 	
 	private POOPet[] _parr;
-	
+	private Coordinate _pet_pos[];
+	private ArrayList<Object> _oarr;
 	public ArenaPark(){
 		try{
 			_timer = new Timer(interval, this);
@@ -30,6 +31,7 @@ public class ArenaPark extends Arena{
 				}
 			}
 			_window = new ArenaFrame("Park", "Images/Park.png", _no_cell_x, _no_cell_y);
+			_oarr = new ArrayList<Object>(0);
 			_game_status = -1;
 			rnd = new Random();
 		}catch(Exception e){
@@ -40,18 +42,36 @@ public class ArenaPark extends Arena{
 	}
 	
 	public void actionPerformed(ActionEvent e){
-		POOCoordinate prev_pos = null, new_pos = null;
+		POOCoordinate prev_pos = null;
+		Object tmp;
 		for(int id = 0; id < _parr.length; id++){
 			prev_pos = getPosition(_parr[id]);
-			new_pos = ((Pet)_parr[id]).Strategy(this);
-			if((!prev_pos.equals(new_pos)) && _map[new_pos.x][new_pos.y].add(1, id, _parr[id])){
-				_map[prev_pos.x][prev_pos.y].setEmpty();
-				_pet_pos.set(id, (Coordinate)new_pos);
-			}else{
-				new_pos.x = prev_pos.x;
-				new_pos.y = prev_pos.y;
+			tmp = ((Pet)_parr[id]).Strategy(this);
+			if(tmp instanceof POOCoordinate){
+				POOCoordinate new_pos = (POOCoordinate)tmp;
+				if((!prev_pos.equals(new_pos)) && _map[new_pos.x][new_pos.y].add(1, id, _parr[id])){
+					_map[prev_pos.x][prev_pos.y].setEmpty();
+					_pet_pos[id] = (Coordinate)new_pos;
+				}else{
+					new_pos.x = prev_pos.x;
+					new_pos.y = prev_pos.y;
+				}
+				_window.addToArenaIOPanel(((Pet)_parr[id]).getImage(), new_pos.x, new_pos.y, id);
+			}else if(tmp instanceof Action){
+				Action act = (Action)tmp;
+				_window.addToArenaIOPanel(act._skill.getImage(), act._dest.x, act._dest.y);
+				_oarr.add(act._skill);
 			}
-			_window.addToArenaIOPanel(((Pet)_parr[id]).getImage(), new_pos.x, new_pos.y, id);
+		}
+		
+		for(int id = 0; id < _oarr.size(); id++){
+			if(_oarr.get(id) instanceof Skill){
+				if(((Skill)_oarr.get(id)).oneTimeStep(this)){ // should vanish
+					_window.removeFromIOPanel(id+_parr.length);
+					_oarr.remove(id);
+					id--;
+				}
+			}
 		}
 		_window.redraw();
 	}
@@ -59,18 +79,16 @@ public class ArenaPark extends Arena{
 	public void init(){
 		try{
 			_parr = getAllPets();
+			_pet_pos = new Coordinate[_parr.length];
 			int x, y;
 			for(int id = 0; id < _parr.length; id++){
 				while(true){
 					x = rnd.nextInt(_no_cell_x);
 					y = rnd.nextInt(_no_cell_y);
 					if(_map[x][y].add(1, id, _parr[id])){
-						_pet_pos.add(new Coordinate(x, y));
+						_pet_pos[id] = new Coordinate(x, y);
 						((Pet)_parr[id]).setId(id);
 						_window.addToArenaIOPanel(((Pet)_parr[id]).getImage(), x, y, id);
-						/*if(new TinyAttackSkill().getImage() == null)
-							System.out.println("null");
-						_window.addToArenaIOPanel(new TinyAttackSkill().getImage(), x, y, id);*/
 						break;
 					}
 				}
@@ -104,7 +122,7 @@ public class ArenaPark extends Arena{
 	public POOCoordinate getPosition(POOPet p){
 		for(int id = 0; id < _parr.length; id++){
 			if(p == _parr[id]){
-				return (POOCoordinate) new Coordinate(_pet_pos.get(id));
+				return (POOCoordinate) new Coordinate(_pet_pos[id]);
 			}
 		}
 		return null;
