@@ -1,21 +1,25 @@
 package ntu.csie.oop13spring;
 public class Cell{
-	private int _type; /* 0: empty, 1: pet, 2: obstacle */
+	private POOConstant.Type _type; /* 0: empty, 1: pet, 2: obstacle */
 	private int _id;
 	private Object _obj;
-	public Cell(){
-		_type = 0;
-		_id = -1;
-		_obj = null;
+	
+	
+	public Cell(POOConstant.Type type, int id, Object obj){
+		_type = type;
+		_id = id;
+		_obj = obj;
 	}
 	
 	public Cell(Cell cell){
-		_id = cell._id;
-		_type = cell._type;
-		_obj = cell._obj;
+		this(cell._type, cell._id, cell._obj);
 	}
 	
-	public int getType(){
+	public Cell(){
+		this(POOConstant.Type.EMPTY, -1, null);
+	}
+	
+	public POOConstant.Type getType(){
 		return _type;
 	}
 	
@@ -23,8 +27,12 @@ public class Cell{
 		return _id;
 	}
 	
-	public boolean add(int type, int id, Object obj){
-		if(_type != 0)
+	public Object getObject(){
+		return _obj;
+	}
+	
+	public boolean add(POOConstant.Type type, int id, Object obj){
+		if(_type != POOConstant.Type.EMPTY)
 			return false;
 		
 		_type = type;
@@ -34,7 +42,7 @@ public class Cell{
 	}
 	
 	public void setEmpty(){
-		_type = 0;
+		_type = POOConstant.Type.EMPTY;
 		_id = -1;
 		_obj = null;
 	}

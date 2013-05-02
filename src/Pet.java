@@ -20,7 +20,7 @@ public abstract class Pet extends POOPet{
 		return _sight_range;
 	}
 	
-	protected abstract Object Strategy(POOArena aren);
+	protected abstract Action Strategy(POOArena aren);
 	
 	public void setId(int id){
 		_id = id;

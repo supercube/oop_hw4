@@ -19,7 +19,7 @@ public class ArenaPark extends Arena{
 	
 	private POOPet[] _parr;
 	private Coordinate _pet_pos[];
-	private ArrayList<Object> _oarr;
+	private ArrayList<Cell> _carr;
 	public ArenaPark(){
 		try{
 			_timer = new Timer(interval, this);
@@ -31,7 +31,7 @@ public class ArenaPark extends Arena{
 				}
 			}
 			_window = new ArenaFrame("Park", "Images/Park.png", _no_cell_x, _no_cell_y);
-			_oarr = new ArrayList<Object>(0);
+			_carr = new ArrayList<Cell>(0);
 			_game_status = -1;
 			rnd = new Random();
 		}catch(Exception e){
@@ -42,14 +42,14 @@ public class ArenaPark extends Arena{
 	}
 	
 	public void actionPerformed(ActionEvent e){
-		POOCoordinate prev_pos = null;
-		Object tmp;
+		POOCoordinate prev_pos, new_pos;
+		Action act;
 		for(int id = 0; id < _parr.length; id++){
 			prev_pos = getPosition(_parr[id]);
-			tmp = ((Pet)_parr[id]).Strategy(this);
-			if(tmp instanceof POOCoordinate){
-				POOCoordinate new_pos = (POOCoordinate)tmp;
-				if((!prev_pos.equals(new_pos)) && _map[new_pos.x][new_pos.y].add(1, id, _parr[id])){
+			act = ((Pet)_parr[id]).Strategy(this);
+			if(act._type == POOConstant.Type.MOVE){
+				new_pos = act._pos;
+				if((!prev_pos.equals(new_pos)) && _map[new_pos.x][new_pos.y].add(POOConstant.Type.PET, id, _parr[id])){
 					_map[prev_pos.x][prev_pos.y].setEmpty();
 					_pet_pos[id] = (Coordinate)new_pos;
 				}else{
@@ -57,22 +57,24 @@ public class ArenaPark extends Arena{
 					new_pos.y = prev_pos.y;
 				}
 				_window.addToArenaIOPanel(((Pet)_parr[id]).getImage(), new_pos.x, new_pos.y, id);
-			}else if(tmp instanceof Action){
-				Action act = (Action)tmp;
-				_window.addToArenaIOPanel(act._skill.getImage(), act._dest.x, act._dest.y);
-				_oarr.add(act._skill);
+			}else if(act._type == POOConstant.Type.SKILL){
+				_window.addToArenaIOPanel(act._skill.getImage(), act._pos.x, act._pos.y);
+				_carr.add(new Cell(POOConstant.Type.SKILL, 2, (Object)(act._skill)));
+				System.out.println("add: " + _carr.size());
 			}
 		}
 		
-		for(int id = 0; id < _oarr.size(); id++){
-			if(_oarr.get(id) instanceof Skill){
-				if(((Skill)_oarr.get(id)).oneTimeStep(this)){ // should vanish
-					_window.removeFromIOPanel(id+_parr.length);
-					_oarr.remove(id);
+		System.out.println("in: " + _carr.size());
+		for(int id = 0; id < _carr.size(); id++){
+			if(_carr.get(id).getObject() instanceof Skill){
+				if(((Skill)_carr.get(id).getObject()).oneTimeStep(this)){ // should vanish
+					_window.removeFromIOPanel(_carr.get(id).getId());
+					_carr.remove(id);
 					id--;
 				}
 			}
 		}
+		System.out.println("out: " + _carr.size());
 		_window.redraw();
 	}
 	
@@ -85,7 +87,7 @@ public class ArenaPark extends Arena{
 				while(true){
 					x = rnd.nextInt(_no_cell_x);
 					y = rnd.nextInt(_no_cell_y);
-					if(_map[x][y].add(1, id, _parr[id])){
+					if(_map[x][y].add(POOConstant.Type.PET, id, _parr[id])){
 						_pet_pos[id] = new Coordinate(x, y);
 						((Pet)_parr[id]).setId(id);
 						_window.addToArenaIOPanel(((Pet)_parr[id]).getImage(), x, y, id);
@@ -132,11 +134,17 @@ public class ArenaPark extends Arena{
 		return (POOCoordinate) new Coordinate(_no_cell_x, _no_cell_y);
 	}
 	
+	public int getPetId(POOPet pet){
+		for(int id = 0; id < _parr.length; id++)
+			if(_parr[id] == pet)
+				return id;
+		return -1;
+	}
+	
 	public Cell[][] getSight(POOPet pet){
 		int sight_range = ((Pet)pet).getSightRange();
 		Cell[][] sight = new Cell[2*sight_range+1][2*sight_range+1];
 		for(int i = 0; i < 2*sight_range+1; i++){
-			sight[i] = new Cell[2*sight_range+1];
 			for(int j = 0; j < 2*sight_range+1; j++)
 				sight[i][j] = null;
 		}
@@ -156,7 +164,6 @@ public class ArenaPark extends Arena{
 				sight[i - pos.x + sight_range][j - pos.y + sight_range] = new Cell(_map[i][j]);
 			}
 		}
-		
 		return sight;
 	}
 }
