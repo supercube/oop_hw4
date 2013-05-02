@@ -16,6 +16,7 @@ public class Slime extends Pet{
 		_imgs[1] = Filter.filterOutBackground((new ImageIcon("Images/Red_Slime.png")).getImage(), new Color(0, 0, 0));
 		_img_id = 0;
 		
+		_sight_range = 6;
 		setHP(10);
 		setMP(10);
 		setAGI(10);
@@ -57,16 +58,16 @@ public class Slime extends Pet{
 		
 		_sight = ((Arena)arena).getSight((POOPet)this);
 		boolean found = false;
-		for(int i = 0; i < 5; i++){
-			for(int j = 0; j < 5; j++){
-				if(_sight[i][j] != null && _sight[i][j].getType() != 0 && (i!=2 || j!=2) ){// && _id != _sight[i][j].getId()){
-					if(i - 2 < 0){
+		for(int i = 0; i < 2*_sight_range+1; i++){
+			for(int j = 0; j < 2*_sight_range+1; j++){
+				if(_sight[i][j] != null && _sight[i][j].getType() != 0 && (i!=_sight_range || j!=_sight_range) ){// && _id != _sight[i][j].getId()){
+					if(i - _sight_range < 0){
 						_direction = 2;
-					}else if(i - 2 > 0){
+					}else if(i - _sight_range > 0){
 						_direction = 0;
-					}else if(j - 2 < 0){
+					}else if(j - _sight_range < 0){
 						_direction = 3;
-					}else if(j - 2 > 0){
+					}else if(j - _sight_range > 0){
 						_direction = 1;
 					}
 					found = true;

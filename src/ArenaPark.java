@@ -112,26 +112,27 @@ public class ArenaPark extends Arena{
 	}
 	
 	public Cell[][] getSight(POOPet pet){
-		Cell[][] sight = new Cell[5][5];
-		for(int i = 0; i < 5; i++){
-			sight[i] = new Cell[5];
-			for(int j = 0; j < 5; j++)
+		int sight_range = ((Pet)pet).getSightRange();
+		Cell[][] sight = new Cell[2*sight_range+1][2*sight_range+1];
+		for(int i = 0; i < 2*sight_range+1; i++){
+			sight[i] = new Cell[2*sight_range+1];
+			for(int j = 0; j < 2*sight_range+1; j++)
 				sight[i][j] = null;
 		}
 		POOCoordinate pos = getPosition(pet);
 		int x_lower = 0, y_lower = 0, x_upper = _no_cell_x - 1, y_upper = _no_cell_y - 1;
-		if(pos.x - 2 > x_lower)
-			x_lower = pos.x - 2;
-		if(pos.y - 2 > y_lower)
-			y_lower = pos.y - 2;
-		if(pos.x + 2 < x_upper)
-			x_upper = pos.x + 2;
-		if(pos.y + 2 < y_upper)
-			y_upper = pos.y + 2;
+		if(pos.x - sight_range > x_lower)
+			x_lower = pos.x - sight_range;
+		if(pos.y - sight_range > y_lower)
+			y_lower = pos.y - sight_range;
+		if(pos.x + sight_range < x_upper)
+			x_upper = pos.x + sight_range;
+		if(pos.y + sight_range < y_upper)
+			y_upper = pos.y + sight_range;
 		
 		for(int i = x_lower; i <= x_upper; i++){
 			for(int j = y_lower; j <= y_upper; j++){
-				sight[i - pos.x + 2][j - pos.y + 2] = new Cell(_map[i][j]);
+				sight[i - pos.x + sight_range][j - pos.y + sight_range] = new Cell(_map[i][j]);
 			}
 		}
 		
