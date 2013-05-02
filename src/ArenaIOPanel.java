@@ -2,9 +2,6 @@ package ntu.csie.oop13spring;
 
 import java.awt.*;
 import javax.swing.*;
-import java.awt.event.*;
-import javax.swing.event.*;
-import java.util.*;
 
 public class ArenaIOPanel extends JPanel{
 	

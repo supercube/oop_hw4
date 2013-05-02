@@ -1,6 +1,5 @@
 package ntu.csie.oop13spring;
 
-import java.awt.*;
 import javax.swing.*;
 import java.util.Random;
 import java.util.ArrayList;
@@ -16,7 +15,7 @@ public class ArenaPark extends Arena{
 	private ArrayList<Coordinate> _pet_pos = new ArrayList<Coordinate>(0);
 	private Random rnd;
 	private int _game_status; /* -1: ?, 0: after init */
-	public static final int interval = 1000;
+	public static final int interval = 300;
 	
 	private POOPet[] _parr;
 	
@@ -41,12 +40,16 @@ public class ArenaPark extends Arena{
 	}
 	
 	public void actionPerformed(ActionEvent e){
-		POOCoordinate prev_pos, new_pos;
+		POOCoordinate prev_pos = null, new_pos = null;
 		for(int id = 0; id < _parr.length; id++){
 			prev_pos = getPosition(_parr[id]);
 			new_pos = ((Pet)_parr[id]).Strategy(this);
-			if(!prev_pos.equals(new_pos) && _map[new_pos.x][new_pos.y].add(1, id, _parr[id])){
+			if((!prev_pos.equals(new_pos)) && _map[new_pos.x][new_pos.y].add(1, id, _parr[id])){
 				_map[prev_pos.x][prev_pos.y].setEmpty();
+				_pet_pos.set(id, (Coordinate)new_pos);
+			}else{
+				new_pos.x = prev_pos.x;
+				new_pos.y = prev_pos.y;
 			}
 			_window.addToArenaIOPanel(((Pet)_parr[id]).getImage(), new_pos.x, new_pos.y, id);
 		}
@@ -98,7 +101,7 @@ public class ArenaPark extends Arena{
 	public POOCoordinate getPosition(POOPet p){
 		for(int id = 0; id < _parr.length; id++){
 			if(p == _parr[id]){
-				return _pet_pos.get(id);
+				return (POOCoordinate) new Coordinate(_pet_pos.get(id));
 			}
 		}
 		return null;
@@ -125,20 +128,13 @@ public class ArenaPark extends Arena{
 			x_upper = pos.x + 2;
 		if(pos.y + 2 < y_upper)
 			y_upper = pos.y + 2;
-		System.out.println(pos.x + ", " + pos.y + ": " + x_lower + "-" + x_upper + " , "+ y_lower + "-" + y_upper);
+		
 		for(int i = x_lower; i <= x_upper; i++){
 			for(int j = y_lower; j <= y_upper; j++){
 				sight[i - pos.x + 2][j - pos.y + 2] = new Cell(_map[i][j]);
-				System.out.println((i-pos.x+2) + ", " + (j-pos.y+2) + " <- " + i + ", " + j);
-				if(i == pos.x && j == pos.y){
-					System.out.println(sight[i - pos.x + 2][j - pos.y + 2].getType());
-					System.out.println(_map[i][j].getType());
-				}
 			}
 		}
-		for(int id = 0; id < _parr.length; id++)
-			if(_parr[id] == pet)
-				System.out.print("*" + id);
+		
 		return sight;
 	}
 }

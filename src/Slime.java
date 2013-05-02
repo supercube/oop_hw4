@@ -59,7 +59,7 @@ public class Slime extends Pet{
 		boolean found = false;
 		for(int i = 0; i < 5; i++){
 			for(int j = 0; j < 5; j++){
-				if(_sight[i][j] != null && _sight[i][j].getType() != 0 && _id != _sight[i][j].getId()){
+				if(_sight[i][j] != null && _sight[i][j].getType() != 0 && (i!=2 || j!=2) ){// && _id != _sight[i][j].getId()){
 					if(i - 2 < 0){
 						_direction = 2;
 					}else if(i - 2 > 0){
@@ -71,8 +71,6 @@ public class Slime extends Pet{
 					}
 					found = true;
 					_img_id = 1;
-					POOCoordinate pos = arena.getPosition(this);
-					System.out.println(" found " + _sight[i][j].getId() + " at " + (pos.x+i-2) + ", " + (pos.y+j-2) + " toward " + _direction);
 					break;
 				}
 			}

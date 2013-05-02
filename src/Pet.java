@@ -1,7 +1,6 @@
 package ntu.csie.oop13spring;
 
 import java.awt.*;
-import javax.swing.*;
 import java.awt.image.FilteredImageSource;
 import java.awt.image.RGBImageFilter;
 
