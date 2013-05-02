@@ -25,7 +25,7 @@ public class Slime extends Pet{
 	
 	protected POOAction act(POOArena arena){
 		POOAction action = new POOAction();
-		action.skill = new POOTinyAttackSkill();
+		action.skill = new TinyAttackSkill();
 		return action;
 	}
 
@@ -61,6 +61,13 @@ public class Slime extends Pet{
 		for(int i = 0; i < 2*_sight_range+1; i++){
 			for(int j = 0; j < 2*_sight_range+1; j++){
 				if(_sight[i][j] != null && _sight[i][j].getType() != 0 && (i!=_sight_range || j!=_sight_range) ){// && _id != _sight[i][j].getId()){
+					
+					/*if(i == _sight_range){
+						if(j == _sight_range - 1 || j == _sight_range + 1 ){
+							
+						}
+						
+					}*/
 					if(i - _sight_range < 0){
 						_direction = 2;
 					}else if(i - _sight_range > 0){

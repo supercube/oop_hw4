@@ -68,6 +68,9 @@ public class ArenaPark extends Arena{
 						_pet_pos.add(new Coordinate(x, y));
 						((Pet)_parr[id]).setId(id);
 						_window.addToArenaIOPanel(((Pet)_parr[id]).getImage(), x, y, id);
+						/*if(new TinyAttackSkill().getImage() == null)
+							System.out.println("null");
+						_window.addToArenaIOPanel(new TinyAttackSkill().getImage(), x, y, id);*/
 						break;
 					}
 				}
