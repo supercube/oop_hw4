@@ -52,19 +52,19 @@ public class ArenaFrame extends JFrame{
 		img_label.setBounds(0, 0, _x, _y); 
 	}
 	
-	public boolean addToArenaIOPanel(Image img, int x, int y){
+	public int addToArenaIOPanel(Image img, int x, int y){
 		return addToArenaIOPanel(img, x, y, -1, 0, 0);
 	}
 	
-	public boolean addToArenaIOPanel(Image img, int x, int y, int id){
+	public int addToArenaIOPanel(Image img, int x, int y, int id){
 		
 		return addToArenaIOPanel(img, x, y, id, 0, 0);
 		
 	}
 	
-	public boolean addToArenaIOPanel(Image img, int x, int y, int id, int paddingx, int paddingy){
+	public int addToArenaIOPanel(Image img, int x, int y, int id, int paddingx, int paddingy){
 		if(x < 0 || x >= _no_cell_x || y < 0 || y >= _no_cell_y)
-			return false;
+			return -1;
 		
 		return _panel.addToCell(img, x, y, id, paddingx, paddingy);
 		

@@ -24,9 +24,9 @@ public class ArenaIOPanel extends JPanel{
 		_y = _no_cell_y * POOConstant.CELL_Y_SIZE;
 	}
 	
-	public boolean addToCell(Image img, int x, int y, int id, int paddingx, int paddingy){
+	public int addToCell(Image img, int x, int y, int id, int paddingx, int paddingy){
 		if(id >= _max_imgcs)
-			return false;
+			return -1;
 		
 		ImageCell imgc = new ImageCell(img, x, y, paddingx, paddingy);
 		if(id < 0){
@@ -39,7 +39,7 @@ public class ArenaIOPanel extends JPanel{
 		if(id >= _imgcs_len){
 			_imgcs_len = id + 1;
 		}
-		return true;
+		return id;
 	}
 	
 	public boolean removeFromCell(int id){

@@ -10,7 +10,7 @@ public class TinyAttackSkill extends Skill{
 		_imgs = new Image[10];
 		_imgs[0] = Filter.filterOutBackground((new ImageIcon("Images/TAS.png")).getImage(), new Color(0, 0, 0));
 		_img_id = 0;
-		_ttl = 3;
+		_ttl = 2;
 	}
 	
 	public void act(POOPet pet){
