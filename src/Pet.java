@@ -5,27 +5,20 @@ import javax.swing.*;
 import java.awt.image.FilteredImageSource;
 import java.awt.image.RGBImageFilter;
 
-public class Pet extends POOPet{
+public abstract class Pet extends POOPet{
 	protected Image[] _imgs;
 	protected int _img_id;
 	protected int _no_img;
-	
-	public Pet(){
-		
-	}
-	
+	protected Cell[][] _sight;
+	protected int _id;
 	public Image getImage(){
 		return _imgs[_img_id];
 	}
 	
-	public POOAction act(POOArena arena){
-		POOAction action = new POOAction();
-		action.skill = new POOTinyAttackSkill();
-		return action;
-	}
-
-	public POOCoordinate move(POOArena arena){
-		return arena.getPosition(this);
+	protected abstract POOCoordinate Strategy(POOArena aren);
+	
+	public void setId(int id){
+		_id = id;
 	}
 }
 
