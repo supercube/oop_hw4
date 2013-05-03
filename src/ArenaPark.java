@@ -15,7 +15,7 @@ public class ArenaPark extends Arena{
 	
 	private Random rnd;
 	private int _game_status; /* -1: ?, 0: after init */
-	public static final int interval = 100;
+	public static final int interval = 10;
 	
 	private POOPet[] _parr;
 	private Coordinate _pet_pos[];
@@ -58,7 +58,7 @@ public class ArenaPark extends Arena{
 		POOCoordinate prev_pos, new_pos;
 		Action act;
 		int tmp;
-		for(int id = 0; id < _parr.length; id++){
+		for(int id = _parr.length - 1; id >= 0; id--){
 			prev_pos = getPosition(_parr[id]);
 			act = ((Pet)_parr[id]).OneTimeStep(this);
 			new_pos = prev_pos;

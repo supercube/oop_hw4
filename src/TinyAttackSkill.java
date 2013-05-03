@@ -16,7 +16,7 @@ public class TinyAttackSkill extends Skill{
 	public TinyAttackSkill(){
 		
 		_img_id = 0;
-		_ttl = 4;
+		_ttl = 50;
 	}
 	
 	public void act(POOPet pet){
@@ -28,7 +28,7 @@ public class TinyAttackSkill extends Skill{
 	public boolean oneTimeStep(POOArena arena){
 		
 		_ttl -= 1;
-		if(_ttl <= 2){
+		if(_ttl <= 20){
 			_img_id = 1;
 		}
 		return vanish();

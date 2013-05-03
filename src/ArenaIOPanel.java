@@ -89,7 +89,7 @@ public class ArenaIOPanel extends JPanel{
 	private class Adapter extends KeyAdapter{
 		
 		public void keyPressed(KeyEvent e) {
-			if(_cmds.size() > 5)
+			if(_cmds.size() > 2)
 				return;
             int key = e.getKeyCode();
             switch(key){

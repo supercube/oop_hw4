@@ -12,26 +12,31 @@ public class Slime extends Pet{
 		_imgs = new Image[_no_img];
 		_imgs[0] = Filter.filterOutBackground((new ImageIcon("Images/Slime.png")).getImage(), new Color(0, 0, 0));
 		_imgs[1] = Filter.filterOutBackground((new ImageIcon("Images/Slime_2.png")).getImage(), new Color(0, 0, 0));
-		_imgs[2] = Filter.filterOutBackground((new ImageIcon("Images/Red_Slime.png")).getImage(), new Color(0, 0, 0));
-		_imgs[3] = Filter.filterOutBackground((new ImageIcon("Images/Red_Slime_2.png")).getImage(), new Color(0, 0, 0));
+		_imgs[2] = Filter.filterOutBackground((new ImageIcon("Images/Slime_3.png")).getImage(), new Color(0, 0, 0));
+		_imgs[3] = Filter.filterOutBackground((new ImageIcon("Images/Slime_4.png")).getImage(), new Color(0, 0, 0));
+		_imgs[4] = Filter.filterOutBackground((new ImageIcon("Images/Red_Slime.png")).getImage(), new Color(0, 0, 0));
+		_imgs[5] = Filter.filterOutBackground((new ImageIcon("Images/Red_Slime_2.png")).getImage(), new Color(0, 0, 0));
+		_imgs[6] = Filter.filterOutBackground((new ImageIcon("Images/Red_Slime_3.png")).getImage(), new Color(0, 0, 0));
+		_imgs[7] = Filter.filterOutBackground((new ImageIcon("Images/Red_Slime_4.png")).getImage(), new Color(0, 0, 0));
 		_rnd = new Random();
 	}
 	
+	private int _count;
 	protected POOConstant.Dir _direction;
 	protected static Random _rnd;
 
 	public Slime(){
 		
 		
-		_img_id = _rnd.nextInt(2);
+		_img_id = _rnd.nextInt(4);
 		_sight_range = 4;
-		_tta = 3;
+		_tta = 30;
 		_count_down = _tta;
-		
+		_count = 0;
 		
 		setHP(10);
 		setMP(1);
-		setAGI(10);
+		setAGI(5);
 		
 	}
 	
@@ -40,7 +45,7 @@ public class Slime extends Pet{
 			return false;
 		
 		setAngry();
-		_img_id = _rnd.nextInt(2) + 2;
+		_img_id = _rnd.nextInt(4) + 4;
 		return true;
 	}
 	
@@ -149,14 +154,15 @@ public class Slime extends Pet{
 			}
 			_cmds.remove(0);
 			return act;
-		}else if(_count_down % 2 == 0){
+		}else if(_count == 0){
 			if(!getAngry()){
-				_img_id = (_img_id+1)%2;
+				_img_id = (_img_id+1)%4;
 			}else{
-				_img_id = (_img_id+1)%2 + 2;
+				_img_id = (_img_id+1)%4 + 4;
 			}
 		}
-		_count_down -= 1;
+		_count = (_count + 1) % 20;
+		_count_down--;
 		return null;
 	}
 }
