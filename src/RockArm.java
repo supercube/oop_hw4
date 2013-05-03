@@ -41,7 +41,7 @@ public class RockArm extends Pet{
 		setAGI(20);
 		
 		_img_id = _rnd.nextInt(4);
-		_sight_range = 3;
+		_sight_range = 5;
 		_tta = POOConstant.SlowTTA - getAGI();
 		_count_down = _tta;
 		_count = 0;

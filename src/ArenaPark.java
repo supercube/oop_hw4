@@ -1,8 +1,10 @@
 package ntu.csie.oop13spring;
 
 import javax.swing.*;
+
 import java.util.Random;
 import java.util.ArrayList;
+import java.awt.Color;
 import java.awt.event.*;
 
 public class ArenaPark extends Arena{
@@ -11,7 +13,8 @@ public class ArenaPark extends Arena{
 	private ArenaFrame _window;
 	private int _no_cell_x = 40;
 	private int _no_cell_y = 20;
-	private Cell[][] _map; 
+	private Cell[][] _map;
+	private POOConstant.Fog[][] _fog_of_war;
 	
 	private Random rnd;
 	private int _game_status; /* -1: ?, 0: after init */
@@ -23,11 +26,18 @@ public class ArenaPark extends Arena{
 	public ArenaPark(){
 		try{
 			_timer = new Timer(interval, this);
-			_map = new Cell[_no_cell_x][];
+			
+			
+			_map = new Cell[_no_cell_x][_no_cell_y];
 			for(int i = 0; i < _no_cell_x; i++){
-				_map[i] = new Cell[_no_cell_y];
 				for(int j = 0; j < _no_cell_y; j++){
 					_map[i][j] = new Cell();
+				}
+			}
+			_fog_of_war = new POOConstant.Fog[_no_cell_x][_no_cell_y];
+			for(int i = 0; i < _no_cell_x; i++){
+				for(int j = 0; j < _no_cell_y; j++){
+					_fog_of_war[i][j] = POOConstant.Fog.UNSEEN;
 				}
 			}
 			_window = new ArenaFrame("Park", "Images/Park.png", _no_cell_x, _no_cell_y);
@@ -105,6 +115,12 @@ public class ArenaPark extends Arena{
 			}else{
 				_window.addToArenaIOPanel(((Pet)_parr[id]).getImage(), new_pos.x, new_pos.y, id);
 			}
+			
+			/* adjust fog of war */
+			if(id == 0 && prev_pos != new_pos){
+				setFog((Pet)_parr[0], prev_pos, POOConstant.Fog.SEEN);
+				setFog((Pet)_parr[0], new_pos, POOConstant.Fog.BRIGHT);
+			}
 		}
 		_window.redraw();
 	}
@@ -127,10 +143,15 @@ public class ArenaPark extends Arena{
 						_pet_pos[id] = new Coordinate(x, y);
 						((Pet)_parr[id]).setId(id);
 						_window.addToArenaIOPanel(((Pet)_parr[id]).getImage(), x, y, id);
+						if(id == 0){
+							setFog((Pet)_parr[0], new Coordinate(x, y), POOConstant.Fog.BRIGHT);
+						}
 						break;
 					}
 				}
 			}
+			_window.addFog(_fog_of_war);
+			_window.setFog((new ImageIcon("Images/black.png")).getImage(), Filter.filterOutBackground((new ImageIcon("Images/fog.png")).getImage(), new Color(255, 255, 255)));
 		}catch(Exception e){
 			System.out.print("init(): ");
 			System.out.println(e);
@@ -205,6 +226,24 @@ public class ArenaPark extends Arena{
 			}
 		}
 		return sight;
+	}
+	
+	private void setFog(Pet pet, POOCoordinate pos, POOConstant.Fog fog){
+		int sight_range = pet.getSightRange();
+		int x_lower = 0, y_lower = 0, x_upper = _no_cell_x - 1, y_upper = _no_cell_y - 1;
+		if(pos.x - sight_range > x_lower)
+			x_lower = pos.x - sight_range;
+		if(pos.y - sight_range > y_lower)
+			y_lower = pos.y - sight_range;
+		if(pos.x + sight_range < x_upper)
+			x_upper = pos.x + sight_range;
+		if(pos.y + sight_range < y_upper)
+			y_upper = pos.y + sight_range;
+		for(int i = x_lower; i <= x_upper; i++){
+			for(int j = y_lower; j <= y_upper; j++){
+				_fog_of_war[i][j] = fog;
+			}
+		}
 	}
 }
 

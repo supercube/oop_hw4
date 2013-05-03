@@ -14,6 +14,8 @@ public class ArenaIOPanel extends JPanel{
 	
 	private ImageCell[] _imgcs;
 	private ImageCell[] _backgroundcs;
+	private POOConstant.Fog[][] _fog;
+	private Image _unseen, _seen;
 	private int _imgcs_len, _bgcs_len, _max_imgcs;
 	
 	public ArenaIOPanel(int no_cell_x, int no_cell_y){
@@ -65,6 +67,15 @@ public class ArenaIOPanel extends JPanel{
 		return _bgcs_len-1;
 	}
 	
+	public void addFog(POOConstant.Fog[][] fog){
+		_fog = fog;
+	}
+	
+	public void setFog(Image unseen, Image seen){
+		_unseen = unseen;
+		_seen = seen;
+	}
+	
 	public boolean removeFromCell(int id){
 		if(id >= _imgcs_len || id < 0)
 			return false;
@@ -83,17 +94,35 @@ public class ArenaIOPanel extends JPanel{
 	
 	public void paint(Graphics g) {
 		
+		/* draw background units (dead body)*/
 		for(int i = 0; i < _bgcs_len; i++){
 			if(_backgroundcs[i] != null){
 				g.drawImage(_backgroundcs[i]._img, _backgroundcs[i]._x * POOConstant.CELL_X_SIZE + _backgroundcs[i]._paddingx, _backgroundcs[i]._y * POOConstant.CELL_Y_SIZE + _backgroundcs[i]._paddingy, this);
 			}
 		}
 		
+		/* draw units */
 		for(int i = 0; i < _imgcs_len; i++){
-			if(_imgcs[i] != null){
+			if(_imgcs[i] != null && _fog[_imgcs[i]._x][_imgcs[i]._y] == POOConstant.Fog.BRIGHT){
 				g.drawImage(_imgcs[i]._img, _imgcs[i]._x * POOConstant.CELL_X_SIZE + _imgcs[i]._paddingx, _imgcs[i]._y * POOConstant.CELL_Y_SIZE + _imgcs[i]._paddingy, this);
 			}
 		}
+		
+		/* draw fog of war */
+		for(int i = 0; i < _no_cell_x; i++){
+			for(int j = 0; j < _no_cell_y; j++){
+				switch(_fog[i][j]){
+					case UNSEEN:
+						g.drawImage(_unseen, i * POOConstant.CELL_X_SIZE, j * POOConstant.CELL_Y_SIZE, this);
+						break;
+					case SEEN:
+						g.drawImage(_seen, i * POOConstant.CELL_X_SIZE, j * POOConstant.CELL_Y_SIZE, this);
+						break;
+					default:;
+				}
+			}
+		}
+		
 	}
 	
 	private class ImageCell{

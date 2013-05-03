@@ -78,6 +78,14 @@ public class ArenaFrame extends JFrame{
 		
 	}
 	
+	public void addFog(POOConstant.Fog[][] fog){
+		_panel.addFog(fog);
+	}
+	
+	public void setFog(Image unseen, Image seen){
+		_panel.setFog(unseen, seen);
+	}
+	
 	public boolean removeFromIOPanel(int id){
 		return _panel.removeFromCell(id);
 	}
