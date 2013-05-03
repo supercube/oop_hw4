@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Image;
 import javax.swing.ImageIcon;
 import java.util.Random;
+import java.util.ArrayList;
 
 public class Slime extends Pet{
 	
@@ -26,16 +27,20 @@ public class Slime extends Pet{
 	private int _count;
 	protected POOConstant.Dir _direction;
 	protected static Random _rnd;
-
+	private ArrayList<Action> _actions;
+	private int[] _cds;
+	public static String[] _skills = {
+			"TinyAttackSkill"
+	};
+	
 	public Slime(){
-		
-		
 		_img_id = _rnd.nextInt(4);
 		_sight_range = 4;
 		_tta = 30;
 		_count_down = _tta;
 		_count = 0;
-		
+		_cds = new int[1];
+		_cds[0] = 0;
 		setHP(2);
 		setMP(2);
 		setAGI(5);
@@ -55,6 +60,21 @@ public class Slime extends Pet{
 		POOAction action = new POOAction();
 		action.skill = new TinyAttackSkill();
 		return action;
+	}
+	public Skill UseSkill(ntu.csie.oop13spring.POOConstant.Skill id) {
+		switch(id){
+			case TinyAttackSkill:
+				int mp = getMP();
+				int consume = TinyAttackSkill.getMPConsume();
+				if(_cds[0] == 0 && mp >= consume){
+					_cds[0] = TinyAttackSkill.getCD();
+					setMP(mp-consume);
+					return new TinyAttackSkill();
+				}
+				break;
+			default:;
+		}
+		return null;
 	}
 	
 	protected POOCoordinate move(POOArena arena){
@@ -82,7 +102,7 @@ public class Slime extends Pet{
 		return pos;
 	}
 	
-	public Action Strategy(POOArena arena){
+	public ArrayList<Action> Strategy(POOArena arena){
 		
 		_sight = ((Arena)arena).getSight((POOPet)this);
 		boolean found = false;
@@ -90,10 +110,14 @@ public class Slime extends Pet{
 			for(int j = 0; j < 2*_sight_range+1; j++){
 				if(_sight[i][j] != null && _sight[i][j].getType() != POOConstant.Type.EMPTY && (i!=_sight_range || j!=_sight_range) ){
 					beAngry();
-					if(getMP() > 0 && ((i==_sight_range && (j==_sight_range-1 || j==_sight_range+1)) || (j==_sight_range && (i==_sight_range-1 || i==_sight_range+1)))){
-						setMP(getMP()-1);
-						POOCoordinate pos = arena.getPosition(this);
-						return new Action (POOConstant.Type.SKILL, new TinyAttackSkill(), new Coordinate(i + pos.x - _sight_range, j + pos.y - _sight_range));
+					if(((i==_sight_range && (j==_sight_range-1 || j==_sight_range+1)) || (j==_sight_range && (i==_sight_range-1 || i==_sight_range+1)))){
+						Skill skill = UseSkill(POOConstant.Skill.TinyAttackSkill);
+						if(skill != null){
+							POOCoordinate pos = arena.getPosition(this);
+							_actions = new ArrayList<Action>(0);
+							_actions.add(new Action (POOConstant.Type.SKILL, skill, new Coordinate(i + pos.x - _sight_range, j + pos.y - _sight_range)));
+							return _actions;
+						}
 					}
 					if(i - _sight_range < 0){
 						_direction = POOConstant.Dir.LEFT;
@@ -112,18 +136,26 @@ public class Slime extends Pet{
 		}
 		if(!found)
 			_direction = POOConstant.Dir.getRandom();//_rnd.nextInt(4);
-		
-		return new Action(POOConstant.Type.MOVE, move(arena));
+		_actions = new ArrayList<Action>(0);
+		_actions.add(new Action(POOConstant.Type.MOVE, move(arena)));
+		return _actions;
 	}
 	
-	public Action OneTimeStep(POOArena arena){
+	public ArrayList<Action> OneTimeStep(POOArena arena){
+		
+		/* check whether is dead */
 		if(getHP() <= 0){
 			if(_img_id != 8 && _img_id != 9){
 				_img_id = 8 + (_img_id / 4);
 			}
 			return null;
 		}
-			
+		
+		/* cds count down */
+		if(_cds[0] > 0)
+			_cds[0]--;
+		
+		/* action count down */
 		if(_count_down <= 0){
 			_count_down = _tta + 1;
 			
@@ -161,7 +193,9 @@ public class Slime extends Pet{
 				default:;
 			}
 			_cmds.remove(0);
-			return act;
+			_actions = new ArrayList<Action>(0);
+			_actions.add(act);
+			return _actions;
 		}else if(_count == 0){
 			if(!getAngry()){
 				_img_id = (_img_id+1)%4;

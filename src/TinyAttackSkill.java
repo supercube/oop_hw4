@@ -16,7 +16,7 @@ public class TinyAttackSkill extends Skill{
 	public TinyAttackSkill(){
 		
 		_img_id = 0;
-		_ttl = 50;
+		_ttl = 30;
 	}
 	
 	public void act(POOPet pet){
@@ -28,14 +28,22 @@ public class TinyAttackSkill extends Skill{
 	public boolean oneTimeStep(Cell[][] map, POOCoordinate pos){
 		
 		_ttl -= 1;
-		if(_ttl == 25){
+		if(_ttl == 20){
 			if(map[pos.x][pos.y].getType() == POOConstant.Type.PET){
 				act((Pet)map[pos.x][pos.y].getObject());
 			}
 		}
-		if(_ttl <= 20){
+		if(_ttl <= 15){
 			_img_id = 1;
 		}
 		return vanish();
+	}
+	
+	public static int getCD(){
+		return 50;
+	}
+	
+	public static int getMPConsume(){
+		return 1;
 	}
 }

@@ -17,4 +17,5 @@ public abstract class Skill extends POOSkill{
 	public boolean vanish(){
 		return _ttl <= 0;
 	}
+	
 }

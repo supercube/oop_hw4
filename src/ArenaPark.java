@@ -56,27 +56,33 @@ public class ArenaPark extends Arena{
 		}
 		
 		POOCoordinate prev_pos, new_pos;
-		Action act;
+		ArrayList<Action> actions;
 		int tmp;
 		for(int id = _parr.length - 1; id >= 0; id--){
 			prev_pos = getPosition(_parr[id]);
-			act = ((Pet)_parr[id]).OneTimeStep(this);
+			actions = ((Pet)_parr[id]).OneTimeStep(this);
 			new_pos = prev_pos;
-			if(act == null){
-			}else if(act._type == POOConstant.Type.MOVE){
-				new_pos = act._pos;
-				if((!prev_pos.equals(new_pos)) && _map[new_pos.x][new_pos.y].add(POOConstant.Type.PET, id, new_pos, _parr[id])){
-					_map[prev_pos.x][prev_pos.y].setEmpty();
-					_pet_pos[id] = (Coordinate)new_pos;
-				}else{
-					new_pos = prev_pos;
+			if(actions == null){
+			}else{
+				Action act;
+				while(!actions.isEmpty()){
+					act = actions.get(0);
+					if(act._type == POOConstant.Type.MOVE){
+						new_pos = act._pos;
+						if((!prev_pos.equals(new_pos)) && _map[new_pos.x][new_pos.y].add(POOConstant.Type.PET, id, new_pos, _parr[id])){
+							_map[prev_pos.x][prev_pos.y].setEmpty();
+							_pet_pos[id] = (Coordinate)new_pos;
+						}else{
+							new_pos = prev_pos;
+						}
+						
+					}else if(act._type == POOConstant.Type.SKILL){
+						tmp = _window.addToArenaIOPanel(act._skill.getImage(), act._pos.x, act._pos.y);
+						_carr.add(new Cell(POOConstant.Type.SKILL, tmp , new Coordinate(act._pos.x, act._pos.y), (Object)(act._skill)));
+					}
+					actions.remove(0);
 				}
-				
-			}else if(act._type == POOConstant.Type.SKILL){
-				tmp = _window.addToArenaIOPanel(act._skill.getImage(), act._pos.x, act._pos.y);
-				_carr.add(new Cell(POOConstant.Type.SKILL, tmp , new Coordinate(act._pos.x, act._pos.y), (Object)(act._skill)));
 			}
-			
 			_window.addToArenaIOPanel(((Pet)_parr[id]).getImage(), new_pos.x, new_pos.y, id);
 		}
 		_window.redraw();

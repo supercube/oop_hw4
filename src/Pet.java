@@ -15,6 +15,7 @@ public abstract class Pet extends POOPet{
 	
 	private boolean _angry;
 	private boolean _player;
+	
 	protected ArrayList<Command> _cmds;
 	
 	protected final ArrayList<Command> getCmdListener(){
@@ -53,9 +54,11 @@ public abstract class Pet extends POOPet{
 		return _sight_range;
 	}
 	
-	public abstract Action Strategy(POOArena arena);
+	public abstract ArrayList<Action> Strategy(POOArena arena);
 	
-	public abstract Action OneTimeStep(POOArena arena);
+	public abstract ArrayList<Action> OneTimeStep(POOArena arena);
+	
+	public abstract Skill UseSkill(POOConstant.Skill id);
 	
 	public final void setId(int id){
 		_id = id;
