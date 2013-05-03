@@ -89,27 +89,25 @@ public class ArenaIOPanel extends JPanel{
 	private class Adapter extends KeyAdapter{
 		
 		public void keyPressed(KeyEvent e) {
-			if(_cmds.size() > 2)
+			if(_cmds.size() > 1)
 				return;
             int key = e.getKeyCode();
             switch(key){
             	case KeyEvent.VK_UP:
             		_cmds.add(new Command(POOConstant.Cmd.UP));
-            		System.out.println("*UP");
             		break;
             	case KeyEvent.VK_DOWN:
             		_cmds.add(new Command(POOConstant.Cmd.DOWN));
-            		System.out.println("*DOWN");
             		break;
             	case KeyEvent.VK_LEFT:
             		_cmds.add(new Command(POOConstant.Cmd.LEFT));
-            		System.out.println("*LEFT");
             		break;
             	case KeyEvent.VK_RIGHT:
             		_cmds.add(new Command(POOConstant.Cmd.RIGHT));
-            		System.out.println("*RIGHT");
             		break;
-            		
+            	case KeyEvent.VK_Z:
+            		_cmds.add(new Command(POOConstant.Cmd.Z));
+            		break;
             	default:;
             }
         }

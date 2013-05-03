@@ -9,7 +9,7 @@ public class POOConstant{
 	}
 	
 	public static enum Cmd{
-		UP, DOWN, LEFT, RIGHT
+		UP, DOWN, LEFT, RIGHT, Z
 	}
 	
 	public static enum Dir{

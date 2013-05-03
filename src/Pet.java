@@ -6,6 +6,7 @@ import java.util.ArrayList;
 public abstract class Pet extends POOPet{
 	protected static Image[] _imgs;
 	protected static int _no_img;
+	protected static POOConstant.Skill[] _skills;
 	protected int _img_id;
 	protected int _sight_range;
 	protected Cell[][] _sight;
@@ -58,7 +59,7 @@ public abstract class Pet extends POOPet{
 	
 	public abstract ArrayList<Action> OneTimeStep(POOArena arena);
 	
-	public abstract Skill UseSkill(POOConstant.Skill id);
+	public abstract ArrayList<Action> useSkill(POOConstant.Skill id, POOCoordinate pos);
 	
 	public final void setId(int id){
 		_id = id;
