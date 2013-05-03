@@ -4,9 +4,7 @@ import java.awt.*;
 import java.util.ArrayList;
 
 public abstract class Pet extends POOPet{
-	protected static Image[] _imgs;
-	protected static int _no_img;
-	protected static POOConstant.Skill[] _skills;
+	
 	protected int _img_id;
 	protected int _sight_range;
 	protected Cell[][] _sight;
@@ -18,6 +16,7 @@ public abstract class Pet extends POOPet{
 	private boolean _player;
 	
 	protected ArrayList<Command> _cmds;
+	
 	
 	protected final ArrayList<Command> getCmdListener(){
 		return _cmds;
@@ -47,9 +46,7 @@ public abstract class Pet extends POOPet{
 		return _angry;
 	}
 	
-	public final Image getImage(){
-		return _imgs[_img_id];
-	}
+	public abstract Image getImage();
 	
 	public final int getSightRange(){
 		return _sight_range;
@@ -63,5 +60,11 @@ public abstract class Pet extends POOPet{
 	
 	public final void setId(int id){
 		_id = id;
+	}
+	
+	protected POOAction act(POOArena arena){
+		POOAction action = new POOAction();
+		action.skill = new TinyAttackSkill();
+		return action;
 	}
 }

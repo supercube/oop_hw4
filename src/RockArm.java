@@ -2,11 +2,12 @@ package ntu.csie.oop13spring;
 
 import java.awt.Color;
 import java.awt.Image;
-import javax.swing.ImageIcon;
-import java.util.Random;
 import java.util.ArrayList;
+import java.util.Random;
 
-public class Slime extends Pet{
+import javax.swing.ImageIcon;
+
+public class RockArm extends Pet{
 	
 	protected static Image[] _imgs;
 	protected static int _no_img;
@@ -16,16 +17,17 @@ public class Slime extends Pet{
 	static {
 		_no_img = 10;
 		_imgs = new Image[_no_img];
-		_imgs[0] = Filter.filterOutBackground((new ImageIcon("Images/Slime.png")).getImage(), new Color(0, 0, 0));
-		_imgs[1] = Filter.filterOutBackground((new ImageIcon("Images/Slime_2.png")).getImage(), new Color(0, 0, 0));
-		_imgs[2] = Filter.filterOutBackground((new ImageIcon("Images/Slime_3.png")).getImage(), new Color(0, 0, 0));
-		_imgs[3] = Filter.filterOutBackground((new ImageIcon("Images/Slime_4.png")).getImage(), new Color(0, 0, 0));
-		_imgs[4] = Filter.filterOutBackground((new ImageIcon("Images/Red_Slime.png")).getImage(), new Color(0, 0, 0));
-		_imgs[5] = Filter.filterOutBackground((new ImageIcon("Images/Red_Slime_2.png")).getImage(), new Color(0, 0, 0));
-		_imgs[6] = Filter.filterOutBackground((new ImageIcon("Images/Red_Slime_3.png")).getImage(), new Color(0, 0, 0));
-		_imgs[7] = Filter.filterOutBackground((new ImageIcon("Images/Red_Slime_4.png")).getImage(), new Color(0, 0, 0));
-		_imgs[8] = Filter.filterOutBackground((new ImageIcon("Images/Slime_dead.png")).getImage(), new Color(0, 0, 0));
-		_imgs[9] = Filter.filterOutBackground((new ImageIcon("Images/Red_Slime_dead.png")).getImage(), new Color(0, 0, 0));
+		_imgs[0] = Filter.filterOutBackground((new ImageIcon("Images/RockArm.png")).getImage(), new Color(0, 0, 0));
+		_imgs[1] = Filter.filterOutBackground((new ImageIcon("Images/RockArm_2.png")).getImage(), new Color(0, 0, 0));
+		_imgs[2] = Filter.filterOutBackground((new ImageIcon("Images/RockArm_3.png")).getImage(), new Color(0, 0, 0));
+		_imgs[3] = Filter.filterOutBackground((new ImageIcon("Images/RockArm_4.png")).getImage(), new Color(0, 0, 0));
+		_imgs[4] = Filter.filterOutBackground((new ImageIcon("Images/Angry_RockArm.png")).getImage(), new Color(0, 0, 0));
+		_imgs[5] = Filter.filterOutBackground((new ImageIcon("Images/Angry_RockArm_2.png")).getImage(), new Color(0, 0, 0));
+		_imgs[6] = Filter.filterOutBackground((new ImageIcon("Images/Angry_RockArm_3.png")).getImage(), new Color(0, 0, 0));
+		_imgs[7] = Filter.filterOutBackground((new ImageIcon("Images/Angry_RockArm_4.png")).getImage(), new Color(0, 0, 0));
+		_imgs[8] = Filter.filterOutBackground((new ImageIcon("Images/RockArm_dead.png")).getImage(), new Color(0, 0, 0));
+		_imgs[9] = Filter.filterOutBackground((new ImageIcon("Images/Angry_RockArm_dead.png")).getImage(), new Color(0, 0, 0));
+		
 		_rnd = new Random();
 		_skills = new POOConstant.Skill[]{POOConstant.Skill.TinyAttackSkill};
 	}
@@ -35,10 +37,10 @@ public class Slime extends Pet{
 	private ArrayList<Action> _actions;
 	private int[] _cds;
 	
-	public Slime(){
-		setHP(2);
+	public RockArm(){
+		setHP(10);
 		setMP(10);
-		setAGI(10);
+		setAGI(20);
 		
 		_img_id = _rnd.nextInt(4);
 		_sight_range = 2;
@@ -47,6 +49,7 @@ public class Slime extends Pet{
 		_count = 0;
 		_cds = new int[1];
 		_cds[0] = 0;
+		
 	}
 	
 	public final Image getImage(){
