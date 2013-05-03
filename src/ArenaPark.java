@@ -45,8 +45,11 @@ public class ArenaPark extends Arena{
 		
 		for(int id = 0; id < _carr.size(); id++){
 			if(_carr.get(id).getObject() instanceof Skill){
-				if(((Skill)_carr.get(id).getObject()).oneTimeStep(_map, _carr.get(id).getPos())){ // should vanish
+				POOCoordinate pos = _carr.get(id).getPos();
+				Skill skill = (Skill)_carr.get(id).getObject();
+				if(((Skill)_carr.get(id).getObject()).oneTimeStep(_map, pos)){ // should vanish
 					_window.removeFromIOPanel(_carr.get(id).getId());
+					_map[pos.x][pos.y].removeSkill(skill);
 					_carr.remove(id);
 					id--;
 				}else{
@@ -83,14 +86,18 @@ public class ArenaPark extends Arena{
 						
 					}else if(act._type == POOConstant.Type.SKILL){
 						tmp = _window.addToArenaIOPanel(act._skill.getImage(), act._pos.x, act._pos.y);
-						_carr.add(new Cell(POOConstant.Type.SKILL, tmp , new Coordinate(act._pos.x, act._pos.y), (Object)(act._skill)));
-					}else if(act._type == POOConstant.Type.DEAD && _map[prev_pos.x][prev_pos.y].getType() != POOConstant.Type.DEAD){
+						if(tmp != -1){
+							_carr.add(new Cell(POOConstant.Type.SKILL, tmp , new Coordinate(act._pos.x, act._pos.y), (Object)(act._skill)));
+							_map[act._pos.x][act._pos.y].appendSkill(act._skill);
+						}
+					}else if(act._type == POOConstant.Type.DEAD){
 						_map[prev_pos.x][prev_pos.y].setDead();
 						dead = true;
 					}
 					actions.remove(0);
 				}
 			}
+			
 			if(dead){
 				_window.removeFromIOPanel(id);
 				_window.addToBackground(((Pet)_parr[id]).getImage(), new_pos.x, new_pos.y);

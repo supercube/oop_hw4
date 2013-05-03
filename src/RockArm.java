@@ -32,7 +32,6 @@ public class RockArm extends Pet{
 	}
 	
 	private int _count;
-	protected POOConstant.Dir _direction;
 	private ArrayList<Action> _actions;
 	private int[] _cds;
 	
@@ -74,38 +73,28 @@ public class RockArm extends Pet{
 					setMP(mp-consume);
 					_actions = new ArrayList<Action>(0);
 					_actions.add(new Action(POOConstant.Type.SKILL, new RockSting(), new Coordinate(pos.x, pos.y)));
-					//switch(_dir)
+					switch(_direction){
+						case UP:
+							pos.y--;
+							break;
+						case DOWN:
+							pos.y++;
+							break;
+						case LEFT:
+							pos.x--;
+							break;
+						case RIGHT:
+							pos.x++;
+							break;
+						default:;
+					}
+					_actions.add(new Action(POOConstant.Type.SKILL, new RockSting(), new Coordinate(pos.x, pos.y)));
 					return _actions;
 				}
 				break;
 			default:;
 		}
 		return null;
-	}
-	
-	protected POOCoordinate move(POOArena arena){
-		POOCoordinate pos = arena.getPosition(this);
-		POOCoordinate border = ((Arena)arena).getSize();
-		switch(_direction){
-			case RIGHT:
-				if(pos.x + 1 < border.x)
-					pos.x += 1;
-				break;
-			case DOWN:
-				if(pos.y + 1 < border.y)
-					pos.y += 1;
-				break;
-			case LEFT:
-				if(pos.x - 1 >= 0)
-					pos.x -= 1;
-				break;
-			case UP:
-				if(pos.y - 1 >= 0)
-					pos.y -= 1;
-				break;
-			default:;
-		}
-		return pos;
 	}
 	
 	public ArrayList<Action> Strategy(POOArena arena){
@@ -116,13 +105,31 @@ public class RockArm extends Pet{
 			for(int j = 0; j < 2*_sight_range+1; j++){
 				if(_sight[i][j] != null && _sight[i][j].getType() == POOConstant.Type.PET && (i!=_sight_range || j!=_sight_range) ){
 					beAngry();
-					if(((i==_sight_range && (j==_sight_range-1 || j==_sight_range+1)) || (j==_sight_range && (i==_sight_range-1 || i==_sight_range+1)))){
+					if(i==_sight_range && (j==_sight_range-1 || j==_sight_range-2)){
+						_direction = POOConstant.Dir.UP;
 						POOCoordinate pos = ((Arena)arena).getPosition(this);
-						_actions = useSkill(POOConstant.Skill.RockSting, new Coordinate(i + pos.x - _sight_range, j + pos.y - _sight_range));
+						_actions = useSkill(POOConstant.Skill.RockSting, new Coordinate(pos.x, pos.y - 1));
 						if(_actions != null)
 							return _actions;
-					}
-					if(i - _sight_range < 0){
+					}else if(i==_sight_range && (j==_sight_range+1 || j==_sight_range+2)){
+						_direction = POOConstant.Dir.DOWN;
+						POOCoordinate pos = ((Arena)arena).getPosition(this);
+						_actions = useSkill(POOConstant.Skill.RockSting, new Coordinate(pos.x, pos.y + 1));
+						if(_actions != null)
+							return _actions;
+					}else if(j==_sight_range && (i==_sight_range-1 || i==_sight_range-2)){
+						_direction = POOConstant.Dir.LEFT;
+						POOCoordinate pos = ((Arena)arena).getPosition(this);
+						_actions = useSkill(POOConstant.Skill.RockSting, new Coordinate(pos.x - 1, pos.y));
+						if(_actions != null)
+							return _actions;
+					}else if(j==_sight_range && (i==_sight_range+1 || i==_sight_range+2)){
+						_direction = POOConstant.Dir.RIGHT;
+						POOCoordinate pos = ((Arena)arena).getPosition(this);
+						_actions = useSkill(POOConstant.Skill.RockSting, new Coordinate(pos.x + 1, pos.y));
+						if(_actions != null)
+							return _actions;
+					}else if(i - _sight_range < 0){
 						_direction = POOConstant.Dir.LEFT;
 					}else if(i - _sight_range > 0){
 						_direction = POOConstant.Dir.RIGHT;

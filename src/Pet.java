@@ -12,6 +12,7 @@ public abstract class Pet extends POOPet{
 	protected int _tta; // time to act
 	protected int _count_down;
 	
+	protected POOConstant.Dir _direction;
 	private boolean _angry;
 	private boolean _player;
 	
@@ -67,4 +68,30 @@ public abstract class Pet extends POOPet{
 		action.skill = new TinyAttackSkill();
 		return action;
 	}
+	
+	protected POOCoordinate move(POOArena arena){
+		POOCoordinate pos = arena.getPosition(this);
+		POOCoordinate border = ((Arena)arena).getSize();
+		switch(_direction){
+			case RIGHT:
+				if(pos.x + 1 < border.x && ((Arena)arena).getMap()[pos.x+1][pos.y].getSkill().isEmpty())
+					pos.x += 1;
+				break;
+			case DOWN:
+				if(pos.y + 1 < border.y && ((Arena)arena).getMap()[pos.x][pos.y+1].getSkill().isEmpty())
+					pos.y += 1;
+				break;
+			case LEFT:
+				if(pos.x - 1 >= 0 && ((Arena)arena).getMap()[pos.x-1][pos.y].getSkill().isEmpty())
+					pos.x -= 1;
+				break;
+			case UP:
+				if(pos.y - 1 >= 0 && ((Arena)arena).getMap()[pos.x][pos.y-1].getSkill().isEmpty())
+					pos.y -= 1;
+				break;
+			default:;
+		}
+		return pos;
+	}
+	
 }
