@@ -7,20 +7,40 @@ import java.util.Random;
 
 public class Slime extends Pet{
 	
-	protected int _direction;
-	protected Random _rnd;
-	public Slime(){
+	static {
 		_no_img = 10;
 		_imgs = new Image[_no_img];
-		_imgs[0] = Filter.filterOutBackground((new ImageIcon("Images/Slime.png")).getImage(), new Color(0, 0, 0));	
-		_imgs[1] = Filter.filterOutBackground((new ImageIcon("Images/Red_Slime.png")).getImage(), new Color(0, 0, 0));
-		_img_id = 0;
+		_imgs[0] = Filter.filterOutBackground((new ImageIcon("Images/Slime.png")).getImage(), new Color(0, 0, 0));
+		_imgs[1] = Filter.filterOutBackground((new ImageIcon("Images/Slime_2.png")).getImage(), new Color(0, 0, 0));
+		_imgs[2] = Filter.filterOutBackground((new ImageIcon("Images/Red_Slime.png")).getImage(), new Color(0, 0, 0));
+		_imgs[3] = Filter.filterOutBackground((new ImageIcon("Images/Red_Slime_2.png")).getImage(), new Color(0, 0, 0));
 		
+	}
+	
+	protected int _direction;
+	protected Random _rnd;
+
+	public Slime(){
+		
+		_rnd = new Random();
+		_img_id = _rnd.nextInt(2);
 		_sight_range = 4;
+		_tta = 3;
+		_count_down = _tta;
+		
 		setHP(10);
 		setMP(1);
 		setAGI(10);
-		_rnd = new Random(); 
+		 
+	}
+	
+	protected boolean beAngry(){
+		if(getAngry())
+			return false;
+		
+		setAngry();
+		_img_id = _rnd.nextInt(2) + 2;
+		return true;
 	}
 	
 	protected POOAction act(POOArena arena){
@@ -54,14 +74,14 @@ public class Slime extends Pet{
 		return pos;
 	}
 	
-	protected Action Strategy(POOArena arena){
+	public Action Strategy(POOArena arena){
 		
 		_sight = ((Arena)arena).getSight((POOPet)this);
 		boolean found = false;
 		for(int i = 0; i < 2*_sight_range+1; i++){
 			for(int j = 0; j < 2*_sight_range+1; j++){
 				if(_sight[i][j] != null && _sight[i][j].getType() != POOConstant.Type.EMPTY && (i!=_sight_range || j!=_sight_range) ){
-					_img_id = 1;
+					beAngry();
 					if(getMP() > 0 && ((i==_sight_range && (j==_sight_range-1 || j==_sight_range+1)) || (j==_sight_range && (i==_sight_range-1 || i==_sight_range+1)))){
 						setMP(getMP()-1);
 						POOCoordinate pos = arena.getPosition(this);
@@ -87,5 +107,22 @@ public class Slime extends Pet{
 			_direction = _rnd.nextInt(4);
 		
 		return new Action(POOConstant.Type.MOVE, move(arena));
+	}
+	
+	public Action OneTimeStep(POOArena arena){
+		if(_img_id > 3 || _img_id < 0)
+			System.out.println("Err");
+		if(_count_down <= 0){
+			_count_down = _tta + 1;
+			return Strategy(arena);
+		}else if(_count_down % 2 == 0){
+			if(!getAngry()){
+				_img_id = (_img_id+1)%2;
+			}else{
+				_img_id = (_img_id+1)%2 + 2;
+			}
+		}
+		_count_down -= 1;
+		return null;
 	}
 }

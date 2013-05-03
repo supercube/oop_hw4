@@ -35,6 +35,7 @@ public class ArenaFrame extends JFrame{
 		_panel.setOpaque(false);
 		_c.add(_panel);
 		
+		setSize(new Dimension(_x+30, _y+10));
 		setBackground(background);
 		setResizable(false);
 		setLocationRelativeTo(null);

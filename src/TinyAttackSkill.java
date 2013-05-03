@@ -6,11 +6,17 @@ import javax.swing.ImageIcon;
 
 public class TinyAttackSkill extends Skill{
 	
-	public TinyAttackSkill(){
-		_imgs = new Image[10];
+	static {
+		_no_imgs = 10;
+		_imgs = new Image[_no_imgs];
 		_imgs[0] = Filter.filterOutBackground((new ImageIcon("Images/TAS.png")).getImage(), new Color(0, 0, 0));
+		_imgs[1] = Filter.filterOutBackground((new ImageIcon("Images/TAS_2.png")).getImage(), new Color(0, 0, 0));
+	}
+	
+	public TinyAttackSkill(){
+		
 		_img_id = 0;
-		_ttl = 2;
+		_ttl = 4;
 	}
 	
 	public void act(POOPet pet){
@@ -22,6 +28,9 @@ public class TinyAttackSkill extends Skill{
 	public boolean oneTimeStep(POOArena arena){
 		
 		_ttl -= 1;
+		if(_ttl <= 2){
+			_img_id = 1;
+		}
 		return vanish();
 	}
 }

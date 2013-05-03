@@ -15,7 +15,7 @@ public class ArenaPark extends Arena{
 	
 	private Random rnd;
 	private int _game_status; /* -1: ?, 0: after init */
-	public static final int interval = 500;
+	public static final int interval = 100;
 	
 	private POOPet[] _parr;
 	private Coordinate _pet_pos[];
@@ -49,6 +49,8 @@ public class ArenaPark extends Arena{
 					_window.removeFromIOPanel(_carr.get(id).getId());
 					_carr.remove(id);
 					id--;
+				}else{
+					_window.addToArenaIOPanel(((Skill)_carr.get(id).getObject()).getImage(), _carr.get(id).getPos().x, _carr.get(id).getPos().y, _carr.get(id).getId());
 				}
 			}
 		}
@@ -58,21 +60,24 @@ public class ArenaPark extends Arena{
 		int tmp;
 		for(int id = 0; id < _parr.length; id++){
 			prev_pos = getPosition(_parr[id]);
-			act = ((Pet)_parr[id]).Strategy(this);
-			if(act._type == POOConstant.Type.MOVE){
+			act = ((Pet)_parr[id]).OneTimeStep(this);
+			new_pos = prev_pos;
+			if(act == null){
+			}else if(act._type == POOConstant.Type.MOVE){
 				new_pos = act._pos;
-				if((!prev_pos.equals(new_pos)) && _map[new_pos.x][new_pos.y].add(POOConstant.Type.PET, id, _parr[id])){
+				if((!prev_pos.equals(new_pos)) && _map[new_pos.x][new_pos.y].add(POOConstant.Type.PET, id, new_pos, _parr[id])){
 					_map[prev_pos.x][prev_pos.y].setEmpty();
 					_pet_pos[id] = (Coordinate)new_pos;
 				}else{
-					new_pos.x = prev_pos.x;
-					new_pos.y = prev_pos.y;
+					new_pos = prev_pos;
 				}
-				_window.addToArenaIOPanel(((Pet)_parr[id]).getImage(), new_pos.x, new_pos.y, id);
+				
 			}else if(act._type == POOConstant.Type.SKILL){
 				tmp = _window.addToArenaIOPanel(act._skill.getImage(), act._pos.x, act._pos.y);
-				_carr.add(new Cell(POOConstant.Type.SKILL, tmp , (Object)(act._skill)));
+				_carr.add(new Cell(POOConstant.Type.SKILL, tmp , new Coordinate(act._pos.x, act._pos.y), (Object)(act._skill)));
 			}
+			
+			_window.addToArenaIOPanel(((Pet)_parr[id]).getImage(), new_pos.x, new_pos.y, id);
 		}
 		_window.redraw();
 	}
@@ -86,7 +91,7 @@ public class ArenaPark extends Arena{
 				while(true){
 					x = rnd.nextInt(_no_cell_x);
 					y = rnd.nextInt(_no_cell_y);
-					if(_map[x][y].add(POOConstant.Type.PET, id, _parr[id])){
+					if(_map[x][y].add(POOConstant.Type.PET, id, _pet_pos[id], _parr[id])){
 						_pet_pos[id] = new Coordinate(x, y);
 						((Pet)_parr[id]).setId(id);
 						_window.addToArenaIOPanel(((Pet)_parr[id]).getImage(), x, y, id);
