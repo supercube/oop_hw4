@@ -19,7 +19,7 @@ public class ArenaIOPanel extends JPanel{
 	public ArenaIOPanel(int no_cell_x, int no_cell_y){
 		_no_cell_x = no_cell_x;
 		_no_cell_y = no_cell_y;
-		_max_imgcs = 2 * _no_cell_x * _no_cell_y;
+		_max_imgcs = 3 * _no_cell_x * _no_cell_y;
 		_imgcs = new ImageCell[_max_imgcs];
 		for(int i = 0; i < _max_imgcs; i++ )
 			_imgcs[i] = null;

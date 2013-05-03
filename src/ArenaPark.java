@@ -60,6 +60,9 @@ public class ArenaPark extends Arena{
 		int tmp;
 		boolean dead;
 		for(int id = _parr.length - 1; id >= 0; id--){
+			if(_parr[id] == null)
+				continue;
+			
 			prev_pos = getPosition(_parr[id]);
 			actions = ((Pet)_parr[id]).OneTimeStep(this);
 			new_pos = prev_pos;
@@ -81,7 +84,7 @@ public class ArenaPark extends Arena{
 					}else if(act._type == POOConstant.Type.SKILL){
 						tmp = _window.addToArenaIOPanel(act._skill.getImage(), act._pos.x, act._pos.y);
 						_carr.add(new Cell(POOConstant.Type.SKILL, tmp , new Coordinate(act._pos.x, act._pos.y), (Object)(act._skill)));
-					}else if(act._type == POOConstant.Type.DEAD){
+					}else if(act._type == POOConstant.Type.DEAD && _map[prev_pos.x][prev_pos.y].getType() != POOConstant.Type.DEAD){
 						_map[prev_pos.x][prev_pos.y].setDead();
 						dead = true;
 					}
@@ -91,6 +94,7 @@ public class ArenaPark extends Arena{
 			if(dead){
 				_window.removeFromIOPanel(id);
 				_window.addToBackground(((Pet)_parr[id]).getImage(), new_pos.x, new_pos.y);
+				_parr[id] = null;
 			}else{
 				_window.addToArenaIOPanel(((Pet)_parr[id]).getImage(), new_pos.x, new_pos.y, id);
 			}
