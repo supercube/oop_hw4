@@ -31,4 +31,7 @@ public class Action {
 		this(type, null, item, null, pos);
 	}
 	
+	public Action(POOConstant.Type type){
+		this(type, null, null, null, null);
+	}
 }

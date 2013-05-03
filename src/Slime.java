@@ -70,7 +70,6 @@ public class Slime extends Pet{
 				if(_cds[0] == 0 && mp >= consume){
 					_cds[0] = TinyAttackSkill.getCD();
 					setMP(mp-consume);
-
 					_actions = new ArrayList<Action>(0);
 					_actions.add(new Action(POOConstant.Type.SKILL, new TinyAttackSkill(), new Coordinate(pos.x, pos.y)));
 					return _actions;
@@ -112,7 +111,7 @@ public class Slime extends Pet{
 		boolean found = false;
 		for(int i = 0; i < 2*_sight_range+1; i++){
 			for(int j = 0; j < 2*_sight_range+1; j++){
-				if(_sight[i][j] != null && _sight[i][j].getType() != POOConstant.Type.EMPTY && (i!=_sight_range || j!=_sight_range) ){
+				if(_sight[i][j] != null && _sight[i][j].getType() == POOConstant.Type.PET && (i!=_sight_range || j!=_sight_range) ){
 					beAngry();
 					if(((i==_sight_range && (j==_sight_range-1 || j==_sight_range+1)) || (j==_sight_range && (i==_sight_range-1 || i==_sight_range+1)))){
 						POOCoordinate pos = ((Arena)arena).getPosition(this);
@@ -137,6 +136,7 @@ public class Slime extends Pet{
 		}
 		if(!found)
 			_direction = POOConstant.Dir.getRandom();//_rnd.nextInt(4);
+		
 		_actions = new ArrayList<Action>(0);
 		_actions.add(new Action(POOConstant.Type.MOVE, move(arena)));
 		return _actions;
@@ -149,7 +149,9 @@ public class Slime extends Pet{
 			if(_img_id != 8 && _img_id != 9){
 				_img_id = 8 + (_img_id / 4);
 			}
-			return null;
+			_actions = new ArrayList<Action>(0);
+			_actions.add(new Action(POOConstant.Type.DEAD));
+			return _actions;
 		}
 		
 		/* cds count down */

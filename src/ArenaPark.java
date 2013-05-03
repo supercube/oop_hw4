@@ -79,6 +79,8 @@ public class ArenaPark extends Arena{
 					}else if(act._type == POOConstant.Type.SKILL){
 						tmp = _window.addToArenaIOPanel(act._skill.getImage(), act._pos.x, act._pos.y);
 						_carr.add(new Cell(POOConstant.Type.SKILL, tmp , new Coordinate(act._pos.x, act._pos.y), (Object)(act._skill)));
+					}else if(act._type == POOConstant.Type.DEAD){
+						_map[prev_pos.x][prev_pos.y].setDead();
 					}
 					actions.remove(0);
 				}
