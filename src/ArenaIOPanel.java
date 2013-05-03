@@ -13,7 +13,8 @@ public class ArenaIOPanel extends JPanel{
 	private ArrayList<Command> _cmds;
 	
 	private ImageCell[] _imgcs;
-	private int _imgcs_len, _max_imgcs;
+	private ImageCell[] _backgroundcs;
+	private int _imgcs_len, _bgcs_len, _max_imgcs;
 	
 	public ArenaIOPanel(int no_cell_x, int no_cell_y){
 		_no_cell_x = no_cell_x;
@@ -23,6 +24,12 @@ public class ArenaIOPanel extends JPanel{
 		for(int i = 0; i < _max_imgcs; i++ )
 			_imgcs[i] = null;
 		_imgcs_len = 0;
+		
+		_backgroundcs = new ImageCell[_max_imgcs];
+		for(int i = 0; i < _max_imgcs; i++ )
+			_backgroundcs[i] = null;
+		_bgcs_len = 0;
+		
 		_x = _no_cell_x * POOConstant.CELL_X_SIZE;
 		_y = _no_cell_y * POOConstant.CELL_Y_SIZE;
 		
@@ -48,6 +55,16 @@ public class ArenaIOPanel extends JPanel{
 		return id;
 	}
 	
+	public int addToBackground(Image img, int x, int y){
+		
+		ImageCell imgc = new ImageCell(img, x, y, 0, 0);
+		if(_bgcs_len + 1 < _max_imgcs){
+			_backgroundcs[_bgcs_len] = imgc;
+			_bgcs_len++;
+		}
+		return _bgcs_len-1;
+	}
+	
 	public boolean removeFromCell(int id){
 		if(id >= _imgcs_len || id < 0)
 			return false;
@@ -65,6 +82,12 @@ public class ArenaIOPanel extends JPanel{
 	}
 	
 	public void paint(Graphics g) {
+		
+		for(int i = 0; i < _bgcs_len; i++){
+			if(_backgroundcs[i] != null){
+				g.drawImage(_backgroundcs[i]._img, _backgroundcs[i]._x * POOConstant.CELL_X_SIZE + _backgroundcs[i]._paddingx, _backgroundcs[i]._y * POOConstant.CELL_Y_SIZE + _backgroundcs[i]._paddingy, this);
+			}
+		}
 		
 		for(int i = 0; i < _imgcs_len; i++){
 			if(_imgcs[i] != null){

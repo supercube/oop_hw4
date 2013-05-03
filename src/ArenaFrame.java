@@ -59,9 +59,7 @@ public class ArenaFrame extends JFrame{
 	}
 	
 	public int addToArenaIOPanel(Image img, int x, int y, int id){
-		
 		return addToArenaIOPanel(img, x, y, id, 0, 0);
-		
 	}
 	
 	public int addToArenaIOPanel(Image img, int x, int y, int id, int paddingx, int paddingy){
@@ -69,6 +67,14 @@ public class ArenaFrame extends JFrame{
 			return -1;
 		
 		return _panel.addToCell(img, x, y, id, paddingx, paddingy);
+		
+	}
+	
+	public int addToBackground(Image img, int x, int y){
+		if(x < 0 || x >= _no_cell_x || y < 0 || y >= _no_cell_y)
+			return -1;
+		
+		return _panel.addToBackground(img, x, y);
 		
 	}
 	
