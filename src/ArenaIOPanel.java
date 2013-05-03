@@ -17,6 +17,7 @@ public class ArenaIOPanel extends JPanel{
 	private POOConstant.Fog[][] _fog;
 	private Image _unseen, _seen;
 	private int _imgcs_len, _bgcs_len, _max_imgcs;
+	private Pet _player;
 	
 	public ArenaIOPanel(int no_cell_x, int no_cell_y){
 		_no_cell_x = no_cell_x;
@@ -92,6 +93,10 @@ public class ArenaIOPanel extends JPanel{
 		return true;
 	}
 	
+	public void addPlayer(Pet pet){
+		_player = pet;
+	}
+	
 	public void paint(Graphics g) {
 		
 		/* draw background units (dead body)*/
@@ -123,6 +128,10 @@ public class ArenaIOPanel extends JPanel{
 			}
 		}
 		
+		/* draw player info */
+		String msg = "HP: " + _player.getHP() + "  MP: " + _player.getMP() + "  Anger: " + _player.getAnger() + "/" + _player.getMaxAnger();
+        g.setColor(Color.red);
+        g.drawString(msg, 0, 10);
 	}
 	
 	private class ImageCell{
@@ -141,26 +150,46 @@ public class ArenaIOPanel extends JPanel{
 	private class Adapter extends KeyAdapter{
 		
 		public void keyPressed(KeyEvent e) {
-			if(_cmds.size() > 1)
-				return;
+			
+				
             int key = e.getKeyCode();
+            /* functional key */
+            switch(key){
+            	case KeyEvent.VK_F1:
+            		ArenaPark.FOG = !(ArenaPark.FOG);
+            		break;
+            }
+            
+            /* player key */
             switch(key){
             	case KeyEvent.VK_UP:
+            		if(_cmds.size() > 1)
+        				_cmds.remove(_cmds.size());
             		_cmds.add(new Command(POOConstant.Cmd.UP));
             		break;
             	case KeyEvent.VK_DOWN:
+            		if(_cmds.size() > 1)
+        				_cmds.remove(_cmds.size());
             		_cmds.add(new Command(POOConstant.Cmd.DOWN));
             		break;
             	case KeyEvent.VK_LEFT:
+            		if(_cmds.size() > 1)
+        				_cmds.remove(_cmds.size());
             		_cmds.add(new Command(POOConstant.Cmd.LEFT));
             		break;
             	case KeyEvent.VK_RIGHT:
+            		if(_cmds.size() > 1)
+        				_cmds.remove(_cmds.size());
             		_cmds.add(new Command(POOConstant.Cmd.RIGHT));
             		break;
             	case KeyEvent.VK_Z:
+            		if(_cmds.size() > 1)
+        				_cmds.remove(_cmds.size());
             		_cmds.add(new Command(POOConstant.Cmd.Z));
             		break;
             	case KeyEvent.VK_SPACE:
+            		if(_cmds.size() > 1)
+        				_cmds.remove(_cmds.size());
             		_cmds.add(new Command(POOConstant.Cmd.SPACE));
             		break;
             	default:;

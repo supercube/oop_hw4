@@ -11,8 +11,9 @@ public abstract class Pet extends POOPet{
 	protected int _id;
 	protected int _tta; // time to act
 	protected int _count_down;
-	
 	protected POOConstant.Dir _direction;
+	protected int _angry_count;
+	
 	private boolean _angry;
 	private boolean _player;
 	
@@ -46,6 +47,12 @@ public abstract class Pet extends POOPet{
 	public final boolean isAngry(){
 		return _angry;
 	}
+	
+	public int getAnger(){
+		return _angry_count;
+	}
+	
+	public abstract int getMaxAnger();
 	
 	public abstract Image getImage();
 	

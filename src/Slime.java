@@ -29,13 +29,13 @@ public class Slime extends Pet{
 		_imgs[9] = Filter.filterOutBackground((new ImageIcon("Images/Red_Slime_dead.png")).getImage(), new Color(0, 0, 0));
 		_rnd = new Random();
 		_skills = new POOConstant.Skill[]{POOConstant.Skill.TinyAttackSkill};
-		_max_angry_time = 7;
+		_max_angry_time = 15;
 	}
 	
 	private int _count;
 	private ArrayList<Action> _actions;
 	private int[] _cds;
-	private int _angry_count = _max_angry_time;
+	
 	
 	public Slime(){
 		setHP(2);
@@ -49,10 +49,15 @@ public class Slime extends Pet{
 		_count = 0;
 		_cds = new int[1];
 		_cds[0] = 0;
+		_angry_count = _rnd.nextInt(_max_angry_time);
 	}
 	
 	public final Image getImage(){
 		return _imgs[_img_id];
+	}
+	
+	public int getMaxAnger(){
+		return _max_angry_time;
 	}
 	
 	protected boolean beAngry(){
@@ -86,12 +91,14 @@ public class Slime extends Pet{
 	
 	public ArrayList<Action> Strategy(POOArena arena){
 		
+		beAngry(); // always try to be angry
+		
 		_sight = ((Arena)arena).getSight((POOPet)this);
 		boolean found = false;
 		for(int i = 0; i < 2*_sight_range+1; i++){
 			for(int j = 0; j < 2*_sight_range+1; j++){
-				if(_sight[i][j] != null && _sight[i][j].getType() == POOConstant.Type.PET && (i!=_sight_range || j!=_sight_range) ){
-					beAngry();
+				if(_sight[i][j] != null && _sight[i][j].getType() == POOConstant.Type.PET && !(_sight[i][j].getObject() instanceof Slime) && (i!=_sight_range || j!=_sight_range) ){
+					
 					if(i==_sight_range && j==_sight_range-1){
 						_direction = POOConstant.Dir.UP;
 						POOCoordinate pos = ((Arena)arena).getPosition(this);

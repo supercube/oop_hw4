@@ -36,11 +36,10 @@ public class RockArm extends Pet{
 	private int _count;
 	private ArrayList<Action> _actions;
 	private int[] _cds;
-	private int _angry_count = _max_angry_time;
 	
 	public RockArm(){
 		setHP(6);
-		setMP(5);
+		setMP(10);
 		setAGI(20);
 		
 		_img_id = _rnd.nextInt(4);
@@ -50,11 +49,15 @@ public class RockArm extends Pet{
 		_count = 0;
 		_cds = new int[1];
 		_cds[0] = 0;
-		
+		_angry_count = _rnd.nextInt(_max_angry_time);
 	}
 	
 	public final Image getImage(){
 		return _imgs[_img_id];
+	}
+	
+	public int getMaxAnger(){
+		return _max_angry_time;
 	}
 	
 	protected boolean beAngry(){

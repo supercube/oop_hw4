@@ -9,7 +9,7 @@ import java.awt.event.*;
 
 public class ArenaPark extends Arena{
 
-	public static final boolean FOG = true;
+	protected static boolean FOG = true;
 	
 	
 	private Timer _timer;
@@ -19,6 +19,7 @@ public class ArenaPark extends Arena{
 	private Cell[][] _map;
 	private POOConstant.Fog[][] _fog_of_war;
 	
+	private boolean _prev_fog = FOG;
 	private Random rnd;
 	private int _game_status; /* -1: ?, 0: after init */
 	public static final int interval = 10;
@@ -58,6 +59,19 @@ public class ArenaPark extends Arena{
 	}
 	
 	public void actionPerformed(ActionEvent e){
+		
+		/* reset fog of war*/
+		if(_prev_fog != FOG){
+			for(int i = 0; i < _no_cell_x; i++){
+				for(int j = 0; j < _no_cell_y; j++){
+					if(FOG)
+						_fog_of_war[i][j] = POOConstant.Fog.UNSEEN;
+					else
+						_fog_of_war[i][j] = POOConstant.Fog.BRIGHT;
+				}
+			}
+			_prev_fog = FOG;
+		}
 		
 		for(int id = 0; id < _carr.size(); id++){
 			if(_carr.get(id).getObject() instanceof Skill){
@@ -140,6 +154,7 @@ public class ArenaPark extends Arena{
 				if(id == 0){
 					((Pet)_parr[id]).setPlayer();
 					_window.addCommandListener(((Pet)_parr[id]).getCmdListener());
+					_window.addPlayer((Pet)_parr[id]);
 				}
 				
 				while(true){

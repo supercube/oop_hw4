@@ -94,6 +94,10 @@ public class ArenaFrame extends JFrame{
 		return _panel.addCommandListener(cmds);
 	}
 	
+	public void addPlayer(Pet pet){
+		_panel.addPlayer(pet);
+	}
+	
 	public void redraw(){
 		_panel.repaint();
 	}
