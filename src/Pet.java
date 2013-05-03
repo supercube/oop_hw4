@@ -1,6 +1,7 @@
 package ntu.csie.oop13spring;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 public abstract class Pet extends POOPet{
 	protected static Image[] _imgs;
@@ -11,24 +12,44 @@ public abstract class Pet extends POOPet{
 	protected int _id;
 	protected int _tta; // time to act
 	protected int _count_down;
-	private boolean _Angry;
 	
-	protected void setAngry(){
-		_Angry = true;
-	}
-	protected void resetAngry(){
-		_Angry = false;
-	}
+	private boolean _angry;
+	private boolean _player;
+	protected ArrayList<Command> _cmds;
 	
-	public boolean getAngry(){
-		return _Angry;
+	protected final ArrayList<Command> getCmdListener(){
+		return _cmds;
 	}
 	
-	public Image getImage(){
+	protected final void setAngry(){
+		_angry = true;
+	}
+	protected final void resetAngry(){
+		_angry = false;
+	}
+	
+	protected final void setPlayer(){
+		_player = true;
+		_cmds = new ArrayList<Command>(0);
+	}
+	
+	protected final void resetPlayer(){
+		_player = false;
+	}
+	
+	public final boolean isPlayer(){
+		return _player;
+	}
+	
+	public final boolean getAngry(){
+		return _angry;
+	}
+	
+	public final Image getImage(){
 		return _imgs[_img_id];
 	}
 	
-	public int getSightRange(){
+	public final int getSightRange(){
 		return _sight_range;
 	}
 	
@@ -36,7 +57,7 @@ public abstract class Pet extends POOPet{
 	
 	public abstract Action OneTimeStep(POOArena arena);
 	
-	public void setId(int id){
+	public final void setId(int id){
 		_id = id;
 	}
 }

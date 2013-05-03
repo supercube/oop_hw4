@@ -14,24 +14,25 @@ public class Slime extends Pet{
 		_imgs[1] = Filter.filterOutBackground((new ImageIcon("Images/Slime_2.png")).getImage(), new Color(0, 0, 0));
 		_imgs[2] = Filter.filterOutBackground((new ImageIcon("Images/Red_Slime.png")).getImage(), new Color(0, 0, 0));
 		_imgs[3] = Filter.filterOutBackground((new ImageIcon("Images/Red_Slime_2.png")).getImage(), new Color(0, 0, 0));
-		
+		_rnd = new Random();
 	}
 	
-	protected int _direction;
-	protected Random _rnd;
+	protected POOConstant.Dir _direction;
+	protected static Random _rnd;
 
 	public Slime(){
 		
-		_rnd = new Random();
+		
 		_img_id = _rnd.nextInt(2);
 		_sight_range = 4;
 		_tta = 3;
 		_count_down = _tta;
 		
+		
 		setHP(10);
 		setMP(1);
 		setAGI(10);
-		 
+		
 	}
 	
 	protected boolean beAngry(){
@@ -53,19 +54,19 @@ public class Slime extends Pet{
 		POOCoordinate pos = arena.getPosition(this);
 		POOCoordinate border = ((Arena)arena).getSize();
 		switch(_direction){
-			case 0:
+			case RIGHT:
 				if(pos.x + 1 < border.x)
 					pos.x += 1;
 				break;
-			case 1:
+			case DOWN:
 				if(pos.y + 1 < border.y)
 					pos.y += 1;
 				break;
-			case 2:
+			case LEFT:
 				if(pos.x - 1 >= 0)
 					pos.x -= 1;
 				break;
-			case 3:
+			case UP:
 				if(pos.y - 1 >= 0)
 					pos.y -= 1;
 				break;
@@ -88,13 +89,13 @@ public class Slime extends Pet{
 						return new Action (POOConstant.Type.SKILL, new TinyAttackSkill(), new Coordinate(i + pos.x - _sight_range, j + pos.y - _sight_range));
 					}
 					if(i - _sight_range < 0){
-						_direction = 2;
+						_direction = POOConstant.Dir.LEFT;
 					}else if(i - _sight_range > 0){
-						_direction = 0;
+						_direction = POOConstant.Dir.RIGHT;
 					}else if(j - _sight_range < 0){
-						_direction = 3;
+						_direction = POOConstant.Dir.UP;
 					}else if(j - _sight_range > 0){
-						_direction = 1;
+						_direction = POOConstant.Dir.DOWN;
 					}
 					//POOCoordinate pos = arena.getPosition(this);
 					//System.out.println("found " + ((Arena)arena).getPetId((Pet)_sight[i][j].getObject()) + " at " + (i+pos.x-_sight_range) + ", " + (j+pos.y-_sight_range));
@@ -104,17 +105,43 @@ public class Slime extends Pet{
 			}
 		}
 		if(!found)
-			_direction = _rnd.nextInt(4);
+			_direction = POOConstant.Dir.getRandom();//_rnd.nextInt(4);
 		
 		return new Action(POOConstant.Type.MOVE, move(arena));
 	}
 	
 	public Action OneTimeStep(POOArena arena){
-		if(_img_id > 3 || _img_id < 0)
-			System.out.println("Err");
 		if(_count_down <= 0){
 			_count_down = _tta + 1;
-			return Strategy(arena);
+			
+			if(!isPlayer())
+				return Strategy(arena);
+			
+			/* for player control */
+			if(_cmds.isEmpty()){
+				System.out.println("Empty");
+				return null;
+			}
+			switch(_cmds.get(0).get()){
+				case UP:
+					_direction = POOConstant.Dir.UP;
+					System.out.println("UP");
+					return new Action(POOConstant.Type.MOVE, move(arena));
+				case DOWN:
+					_direction = POOConstant.Dir.DOWN;
+					System.out.println("DOWN");
+					return new Action(POOConstant.Type.MOVE, move(arena));
+				case LEFT:
+					_direction = POOConstant.Dir.LEFT;
+					System.out.println("LEFT");
+					return new Action(POOConstant.Type.MOVE, move(arena));
+				case RIGHT:
+					_direction = POOConstant.Dir.RIGHT;
+					System.out.println("RIGHT");
+					return new Action(POOConstant.Type.MOVE, move(arena));
+				default:;
+			}
+			
 		}else if(_count_down % 2 == 0){
 			if(!getAngry()){
 				_img_id = (_img_id+1)%2;

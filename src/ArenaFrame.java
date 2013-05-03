@@ -2,6 +2,7 @@ package ntu.csie.oop13spring;
 
 import java.awt.*;
 import javax.swing.*;
+import java.util.ArrayList;
 
 public class ArenaFrame extends JFrame{
 		
@@ -74,6 +75,11 @@ public class ArenaFrame extends JFrame{
 	public boolean removeFromIOPanel(int id){
 		return _panel.removeFromCell(id);
 	}
+	
+	public boolean addCommandListener(ArrayList<Command> cmds){
+		return _panel.addCommandListener(cmds);
+	}
+	
 	public void redraw(){
 		_panel.repaint();
 	}

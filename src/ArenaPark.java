@@ -88,6 +88,11 @@ public class ArenaPark extends Arena{
 			_pet_pos = new Coordinate[_parr.length];
 			int x, y;
 			for(int id = 0; id < _parr.length; id++){
+				if(id == 0){
+					((Pet)_parr[id]).setPlayer();
+					_window.addCommandListener(((Pet)_parr[id]).getCmdListener());
+				}
+				
 				while(true){
 					x = rnd.nextInt(_no_cell_x);
 					y = rnd.nextInt(_no_cell_y);

@@ -6,5 +6,16 @@ public class POOConstant{
 	public static enum Type{
 		EMPTY, PET, OBSTACLE, MOVE, SKILL
 	}
-
+	
+	public static enum Cmd{
+		UP, DOWN, LEFT, RIGHT
+	}
+	
+	public static enum Dir{
+		UP, DOWN, LEFT, RIGHT;
+		
+		public static Dir getRandom() {
+	        return values()[(int) (Math.random() * values().length)];
+	    }
+	}
 }
