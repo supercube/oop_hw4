@@ -29,8 +29,8 @@ public class RockSting extends Skill{
 	
 	public void act(POOPet pet){
         int hp = pet.getHP();
-        if (hp > 4){
-            pet.setHP(hp - 4);
+        if (hp > 3){
+            pet.setHP(hp - 3);
         }else{
         	pet.setHP(0);
         }

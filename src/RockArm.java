@@ -13,6 +13,7 @@ public class RockArm extends Pet{
 	protected static int _no_img;
 	protected static Random _rnd;
 	protected static POOConstant.Skill[] _skills;
+	protected static final int _max_angry_time;
 	
 	static {
 		_no_img = 10;
@@ -29,15 +30,17 @@ public class RockArm extends Pet{
 		_imgs[9] = Filter.filterOutBackground((new ImageIcon("Images/Angry_RockArm_dead.png")).getImage(), new Color(0, 0, 0));
 		_rnd = new Random();
 		_skills = new POOConstant.Skill[]{POOConstant.Skill.RockSting};
+		_max_angry_time = 30;
 	}
 	
 	private int _count;
 	private ArrayList<Action> _actions;
 	private int[] _cds;
+	private int _angry_count = _max_angry_time;
 	
 	public RockArm(){
-		setHP(10);
-		setMP(20);
+		setHP(6);
+		setMP(5);
 		setAGI(20);
 		
 		_img_id = _rnd.nextInt(4);
@@ -55,11 +58,14 @@ public class RockArm extends Pet{
 	}
 	
 	protected boolean beAngry(){
-		if(getAngry())
+		if(isAngry() || _angry_count != _max_angry_time)
 			return false;
 		
 		setAngry();
-		_img_id = _rnd.nextInt(4) + 4;
+		
+		setHP(getHP()*2);
+		setMP((getMP()+1)*2);
+		_img_id += 4;
 		return true;
 	}
 	
@@ -152,7 +158,7 @@ public class RockArm extends Pet{
 		return _actions;
 	}
 	
-	public ArrayList<Action> OneTimeStep(POOArena arena){
+public ArrayList<Action> OneTimeStep(POOArena arena){
 		
 		/* check whether is dead */
 		if(getHP() <= 0){
@@ -168,75 +174,83 @@ public class RockArm extends Pet{
 		if(_cds[0] > 0)
 			_cds[0]--;
 		
+		
 		/* action count down */
 		if(_count_down <= 0){
 			_count_down = _tta + 1;
 			
+			
+			if(isAngry()){
+				_angry_count--;
+				if(_angry_count <= 0){
+					resetAngry();
+					_img_id -= 4;
+					setHP(getHP()/2 + 1);
+					setMP(getMP()/2 + 1);
+				}
+			}else if(_angry_count < _max_angry_time){
+				_angry_count++;
+			}
 			if(!isPlayer())
 				return Strategy(arena);
 			
 			/* for player control */
-			if(_cmds.isEmpty()){
-				System.out.println("Empty");
-				return null;
+			if(!_cmds.isEmpty()){
+				Action act = null;
+				switch(_cmds.get(0).get()){
+					case UP:
+						_direction = POOConstant.Dir.UP;
+						act = new Action(POOConstant.Type.MOVE, move(arena));
+						break;
+					case DOWN:
+						_direction = POOConstant.Dir.DOWN;
+						act = new Action(POOConstant.Type.MOVE, move(arena));
+						break;
+					case LEFT:
+						_direction = POOConstant.Dir.LEFT;
+						act = new Action(POOConstant.Type.MOVE, move(arena));
+						break;
+					case RIGHT:
+						_direction = POOConstant.Dir.RIGHT;
+						act = new Action(POOConstant.Type.MOVE, move(arena));
+						break;
+					case Z:
+						POOCoordinate pos = arena.getPosition(this);
+						switch(_direction){
+							case UP:
+								pos.y--;
+								break;
+							case DOWN:
+								pos.y++;
+								break;
+							case LEFT:
+								pos.x--;
+								break;
+							case RIGHT:
+								pos.x++;
+								break;
+							default:;
+						}
+						_actions = useSkill(_skills[0], pos);
+						if(_actions != null){
+							return _actions;
+						}
+						break;
+					case SPACE:
+						if(beAngry())
+							System.out.println("Angry! HP " + getHP() + ", MP " + getMP());
+						break;
+					default:;
+				}
+				_cmds.remove(0);
+				if(act != null){
+					_actions = new ArrayList<Action>(0);
+					_actions.add(act);
+					return _actions;
+				}
 			}
-			
-			Action act = null;
-			switch(_cmds.get(0).get()){
-				case UP:
-					_direction = POOConstant.Dir.UP;
-					System.out.println("UP");
-					act = new Action(POOConstant.Type.MOVE, move(arena));
-					break;
-				case DOWN:
-					_direction = POOConstant.Dir.DOWN;
-					System.out.println("DOWN");
-					act = new Action(POOConstant.Type.MOVE, move(arena));
-					break;
-				case LEFT:
-					_direction = POOConstant.Dir.LEFT;
-					System.out.println("LEFT");
-					act = new Action(POOConstant.Type.MOVE, move(arena));
-					break;
-				case RIGHT:
-					_direction = POOConstant.Dir.RIGHT;
-					System.out.println("RIGHT");
-					act = new Action(POOConstant.Type.MOVE, move(arena));
-					break;
-				case Z:
-					POOCoordinate pos = arena.getPosition(this);
-					switch(_direction){
-						case UP:
-							pos.y--;
-							break;
-						case DOWN:
-							pos.y++;
-							break;
-						case LEFT:
-							pos.x--;
-							break;
-						case RIGHT:
-							pos.x++;
-							break;
-						default:;
-					}
-					_actions = useSkill(_skills[0], pos);
-					if(_actions != null){
-						return _actions;
-					}
-				default:;
-			}
-			_cmds.remove(0);
-			
-			if(act == null)
-				return null;
-			
-			_actions = new ArrayList<Action>(0);
-			_actions.add(act);
-			return _actions;
-			
 		}else if(_count == 0){
-			if(!getAngry()){
+			if(!isAngry()){
 				_img_id = (_img_id+1)%4;
 			}else{
 				_img_id = (_img_id+1)%4 + 4;
@@ -246,4 +260,5 @@ public class RockArm extends Pet{
 		_count_down--;
 		return null;
 	}
+	
 }

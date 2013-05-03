@@ -43,7 +43,7 @@ public abstract class Pet extends POOPet{
 		return _player;
 	}
 	
-	public final boolean getAngry(){
+	public final boolean isAngry(){
 		return _angry;
 	}
 	

@@ -9,6 +9,9 @@ import java.awt.event.*;
 
 public class ArenaPark extends Arena{
 
+	public static final boolean FOG = true;
+	
+	
 	private Timer _timer;
 	private ArenaFrame _window;
 	private int _no_cell_x = 40;
@@ -37,7 +40,10 @@ public class ArenaPark extends Arena{
 			_fog_of_war = new POOConstant.Fog[_no_cell_x][_no_cell_y];
 			for(int i = 0; i < _no_cell_x; i++){
 				for(int j = 0; j < _no_cell_y; j++){
-					_fog_of_war[i][j] = POOConstant.Fog.UNSEEN;
+					if(FOG)
+						_fog_of_war[i][j] = POOConstant.Fog.UNSEEN;
+					else
+						_fog_of_war[i][j] = POOConstant.Fog.BRIGHT;
 				}
 			}
 			_window = new ArenaFrame("Park", "Images/Park.png", _no_cell_x, _no_cell_y);
@@ -117,7 +123,7 @@ public class ArenaPark extends Arena{
 			}
 			
 			/* adjust fog of war */
-			if(id == 0 && prev_pos != new_pos){
+			if(FOG && id == 0 && prev_pos != new_pos){
 				setFog((Pet)_parr[0], prev_pos, POOConstant.Fog.SEEN);
 				setFog((Pet)_parr[0], new_pos, POOConstant.Fog.BRIGHT);
 			}

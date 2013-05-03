@@ -160,6 +160,9 @@ public class ArenaIOPanel extends JPanel{
             	case KeyEvent.VK_Z:
             		_cmds.add(new Command(POOConstant.Cmd.Z));
             		break;
+            	case KeyEvent.VK_SPACE:
+            		_cmds.add(new Command(POOConstant.Cmd.SPACE));
+            		break;
             	default:;
             }
         }
