@@ -18,6 +18,8 @@ public class Slime extends Pet{
 		_imgs[5] = Filter.filterOutBackground((new ImageIcon("Images/Red_Slime_2.png")).getImage(), new Color(0, 0, 0));
 		_imgs[6] = Filter.filterOutBackground((new ImageIcon("Images/Red_Slime_3.png")).getImage(), new Color(0, 0, 0));
 		_imgs[7] = Filter.filterOutBackground((new ImageIcon("Images/Red_Slime_4.png")).getImage(), new Color(0, 0, 0));
+		_imgs[8] = Filter.filterOutBackground((new ImageIcon("Images/Slime_dead.png")).getImage(), new Color(0, 0, 0));
+		_imgs[9] = Filter.filterOutBackground((new ImageIcon("Images/Red_Slime_dead.png")).getImage(), new Color(0, 0, 0));
 		_rnd = new Random();
 	}
 	
@@ -34,8 +36,8 @@ public class Slime extends Pet{
 		_count_down = _tta;
 		_count = 0;
 		
-		setHP(10);
-		setMP(1);
+		setHP(2);
+		setMP(2);
 		setAGI(5);
 		
 	}
@@ -105,7 +107,6 @@ public class Slime extends Pet{
 					//POOCoordinate pos = arena.getPosition(this);
 					//System.out.println("found " + ((Arena)arena).getPetId((Pet)_sight[i][j].getObject()) + " at " + (i+pos.x-_sight_range) + ", " + (j+pos.y-_sight_range));
 					found = true;
-					break;
 				}
 			}
 		}
@@ -116,6 +117,13 @@ public class Slime extends Pet{
 	}
 	
 	public Action OneTimeStep(POOArena arena){
+		if(getHP() <= 0){
+			if(_img_id != 8 && _img_id != 9){
+				_img_id = 8 + (_img_id / 4);
+			}
+			return null;
+		}
+			
 		if(_count_down <= 0){
 			_count_down = _tta + 1;
 			

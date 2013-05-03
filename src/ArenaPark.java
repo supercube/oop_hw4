@@ -45,7 +45,7 @@ public class ArenaPark extends Arena{
 		
 		for(int id = 0; id < _carr.size(); id++){
 			if(_carr.get(id).getObject() instanceof Skill){
-				if(((Skill)_carr.get(id).getObject()).oneTimeStep(this)){ // should vanish
+				if(((Skill)_carr.get(id).getObject()).oneTimeStep(_map, _carr.get(id).getPos())){ // should vanish
 					_window.removeFromIOPanel(_carr.get(id).getId());
 					_carr.remove(id);
 					id--;
@@ -148,6 +148,10 @@ public class ArenaPark extends Arena{
 			if(_parr[id] == pet)
 				return id;
 		return -1;
+	}
+	
+	public Cell[][] getMap(){
+		return _map;
 	}
 	
 	public Cell[][] getSight(POOPet pet){

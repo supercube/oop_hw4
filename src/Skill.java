@@ -12,7 +12,7 @@ public abstract class Skill extends POOSkill{
 		return _imgs[_img_id];
 	}
 	
-	public abstract boolean oneTimeStep(POOArena arena);
+	public abstract boolean oneTimeStep(Cell[][] map, POOCoordinate pos);
 	
 	public boolean vanish(){
 		return _ttl <= 0;

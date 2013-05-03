@@ -25,9 +25,14 @@ public class TinyAttackSkill extends Skill{
             pet.setHP(hp - 1);
     }
 	
-	public boolean oneTimeStep(POOArena arena){
+	public boolean oneTimeStep(Cell[][] map, POOCoordinate pos){
 		
 		_ttl -= 1;
+		if(_ttl == 25){
+			if(map[pos.x][pos.y].getType() == POOConstant.Type.PET){
+				act((Pet)map[pos.x][pos.y].getObject());
+			}
+		}
 		if(_ttl <= 20){
 			_img_id = 1;
 		}
