@@ -89,9 +89,9 @@ public class ArenaIOPanel extends JPanel{
 	private class Adapter extends KeyAdapter{
 		
 		public void keyPressed(KeyEvent e) {
-
+			if(_cmds.size() > 5)
+				return;
             int key = e.getKeyCode();
-            System.out.println("*IN");
             switch(key){
             	case KeyEvent.VK_UP:
             		_cmds.add(new Command(POOConstant.Cmd.UP));

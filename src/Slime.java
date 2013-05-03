@@ -122,26 +122,33 @@ public class Slime extends Pet{
 				System.out.println("Empty");
 				return null;
 			}
+			
+			Action act = null;
 			switch(_cmds.get(0).get()){
 				case UP:
 					_direction = POOConstant.Dir.UP;
 					System.out.println("UP");
-					return new Action(POOConstant.Type.MOVE, move(arena));
+					act = new Action(POOConstant.Type.MOVE, move(arena));
+					break;
 				case DOWN:
 					_direction = POOConstant.Dir.DOWN;
 					System.out.println("DOWN");
-					return new Action(POOConstant.Type.MOVE, move(arena));
+					act = new Action(POOConstant.Type.MOVE, move(arena));
+					break;
 				case LEFT:
 					_direction = POOConstant.Dir.LEFT;
 					System.out.println("LEFT");
-					return new Action(POOConstant.Type.MOVE, move(arena));
+					act = new Action(POOConstant.Type.MOVE, move(arena));
+					break;
 				case RIGHT:
 					_direction = POOConstant.Dir.RIGHT;
 					System.out.println("RIGHT");
-					return new Action(POOConstant.Type.MOVE, move(arena));
+					act = new Action(POOConstant.Type.MOVE, move(arena));
+					break;
 				default:;
 			}
-			
+			_cmds.remove(0);
+			return act;
 		}else if(_count_down % 2 == 0){
 			if(!getAngry()){
 				_img_id = (_img_id+1)%2;
