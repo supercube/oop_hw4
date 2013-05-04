@@ -77,7 +77,7 @@ public class ArenaPark extends Arena{
 			if(_carr.get(id).getObject() instanceof Skill){
 				POOCoordinate pos = _carr.get(id).getPos();
 				Skill skill = (Skill)_carr.get(id).getObject();
-				if(((Skill)_carr.get(id).getObject()).oneTimeStep(_map, pos)){ // should vanish
+				if(((Skill)_carr.get(id).getObject()).oneTimeStep(this, pos)){ // should vanish
 					_window.removeFromIOPanel(_carr.get(id).getId());
 					_map[pos.x][pos.y].removeSkill(skill);
 					_carr.remove(id);

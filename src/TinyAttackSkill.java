@@ -33,9 +33,11 @@ public class TinyAttackSkill extends Skill{
             pet.setHP(hp - 1);
     }
 	
-	public boolean oneTimeStep(Cell[][] map, POOCoordinate pos){
-		
+	public boolean oneTimeStep(Arena arena, POOCoordinate pos){
 		_ttl -= 1;
+		
+		Cell[][] map = arena.getMap();
+		
 		if(_ttl == 20){
 			if(map[pos.x][pos.y].getType() == POOConstant.Type.PET || map[pos.x][pos.y].getType() == POOConstant.Type.PLAYER){
 				act((Pet)map[pos.x][pos.y].getObject());

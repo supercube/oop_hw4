@@ -2,12 +2,12 @@ package ntu.csie.oop13spring;
 
 import java.awt.Color;
 import java.awt.Image;
-import javax.swing.ImageIcon;
-import java.util.Random;
 import java.util.ArrayList;
+import java.util.Random;
 
-public class Slime extends Pet{
-	
+import javax.swing.ImageIcon;
+
+public class TorLion extends Pet{
 	protected static Image[] _imgs;
 	protected static final int _no_img;
 	protected static Random _rnd;
@@ -19,44 +19,42 @@ public class Slime extends Pet{
 	static {
 		_no_img = 10;
 		_imgs = new Image[_no_img];
-		_imgs[0] = Filter.filterOutBackground((new ImageIcon("Images/Slime.png")).getImage(), new Color(0, 0, 0));
-		_imgs[1] = Filter.filterOutBackground((new ImageIcon("Images/Slime_2.png")).getImage(), new Color(0, 0, 0));
-		_imgs[2] = Filter.filterOutBackground((new ImageIcon("Images/Slime_3.png")).getImage(), new Color(0, 0, 0));
-		_imgs[3] = Filter.filterOutBackground((new ImageIcon("Images/Slime_4.png")).getImage(), new Color(0, 0, 0));
-		_imgs[4] = Filter.filterOutBackground((new ImageIcon("Images/Red_Slime.png")).getImage(), new Color(0, 0, 0));
-		_imgs[5] = Filter.filterOutBackground((new ImageIcon("Images/Red_Slime_2.png")).getImage(), new Color(0, 0, 0));
-		_imgs[6] = Filter.filterOutBackground((new ImageIcon("Images/Red_Slime_3.png")).getImage(), new Color(0, 0, 0));
-		_imgs[7] = Filter.filterOutBackground((new ImageIcon("Images/Red_Slime_4.png")).getImage(), new Color(0, 0, 0));
-		_imgs[8] = Filter.filterOutBackground((new ImageIcon("Images/Slime_dead.png")).getImage(), new Color(0, 0, 0));
-		_imgs[9] = Filter.filterOutBackground((new ImageIcon("Images/Red_Slime_dead.png")).getImage(), new Color(0, 0, 0));
+		_imgs[0] = Filter.filterOutBackground((new ImageIcon("Images/TorLion.png")).getImage(), new Color(0, 0, 0));
+		_imgs[1] = Filter.filterOutBackground((new ImageIcon("Images/TorLion_2.png")).getImage(), new Color(0, 0, 0));
+		_imgs[2] = Filter.filterOutBackground((new ImageIcon("Images/TorLion_3.png")).getImage(), new Color(0, 0, 0));
+		_imgs[3] = Filter.filterOutBackground((new ImageIcon("Images/TorLion_4.png")).getImage(), new Color(0, 0, 0));
+		_imgs[4] = Filter.filterOutBackground((new ImageIcon("Images/Angry_TorLion.png")).getImage(), new Color(0, 0, 0));
+		_imgs[5] = Filter.filterOutBackground((new ImageIcon("Images/Angry_TorLion_2.png")).getImage(), new Color(0, 0, 0));
+		_imgs[6] = Filter.filterOutBackground((new ImageIcon("Images/Angry_TorLion_3.png")).getImage(), new Color(0, 0, 0));
+		_imgs[7] = Filter.filterOutBackground((new ImageIcon("Images/Angry_TorLion_4.png")).getImage(), new Color(0, 0, 0));
+		_imgs[8] = Filter.filterOutBackground((new ImageIcon("Images/TorLion_dead.png")).getImage(), new Color(0, 0, 0));
+		_imgs[9] = Filter.filterOutBackground((new ImageIcon("Images/Angry_TorLion_dead.png")).getImage(), new Color(0, 0, 0));
 		_rnd = new Random();
-		_skills = new POOConstant.Skill[]{POOConstant.Skill.TinyAttackSkill};
-		_max_angry_time = 12;
-		_normal_agi = 10;
-		_angry_agi = 10;
+		_skills = new POOConstant.Skill[]{POOConstant.Skill.TinyAttackSkill, POOConstant.Skill.Tornado};
+		_max_angry_time = 35;
+		_normal_agi = 23;
+		_angry_agi = 27;
 	}
 	
-	private int _count;
 	private ArrayList<Action> _actions;
 	private int[] _cds;
+	private POOConstant.Dir _pre_direction;
 	
-	
-	public Slime(){
-		setHP(2);
-		setMP(3);
+	public TorLion(){
+		setHP(20);
+		setMP(10);
 		adjustAGIandTTA(_normal_agi);
 		
 		_direction = POOConstant.Dir.getRandom();
 		_img_id = _rnd.nextInt(4);
-		_sight_range = 2;
+		_sight_range = 7;
 		_count_down = _tta;
-		_count = 0;
-		_cds = new int[1];
-		_cds[0] = 0;
-		_angry_count = _rnd.nextInt(_max_angry_time);
+		_cds = new int[]{0,0};
+		_angry_count = _rnd.nextInt(_max_angry_time - _max_angry_time/2) + _max_angry_time/2;
 	}
 	
 	public final Image getImage(){
+		System.out.println(_img_id);
 		return _imgs[_img_id];
 	}
 	
@@ -70,17 +68,18 @@ public class Slime extends Pet{
 		
 		setAngry();
 		_img_id += 4;
-		setHP(getHP()*2);
-		setMP((getMP()+1)*2);
+		setHP(getHP()*2 + 2);
+		setMP(getMP()*2 + 10);
 		adjustAGIandTTA(_angry_agi);
 		return true;
 	}
 	
 	public ArrayList<Action> useSkill(POOConstant.Skill id, POOCoordinate pos, POOConstant.Dir direction) {
+		int mp, consume;
 		switch(id){
 			case TinyAttackSkill:
-				int mp = getMP();
-				int consume = TinyAttackSkill.getMPConsume();
+				mp = getMP();
+				consume = TinyAttackSkill.getMPConsume();
 				if(_cds[0] == 0 && mp >= consume){
 					_cds[0] = TinyAttackSkill.getCD();
 					setMP(mp-consume);
@@ -104,20 +103,84 @@ public class Slime extends Pet{
 					return _actions;
 				}
 				break;
+			case Tornado:
+				mp = getMP();
+				consume = Tornado.getMPConsume();
+				if(_cds[1] == 0 && mp >= consume){
+					_cds[1] = Tornado.getCD();
+					setMP(mp-consume);
+					_actions = new ArrayList<Action>(0);
+					switch(direction){
+						case UP:
+							pos.y--;
+							break;
+						case DOWN:
+							pos.y++;
+							break;
+						case LEFT:
+							pos.x--;
+							break;
+						case RIGHT:
+							pos.x++;
+							break;
+						default:;
+					}
+					_actions.add(new Action(POOConstant.Type.SKILL, new Tornado(direction), new Coordinate(pos.x, pos.y)));
+					return _actions;
+				}
+				break;
 			default:;
 		}
 		return null;
 	}
 	
-	public ArrayList<Action> Strategy(POOArena arena){
+	protected POOCoordinate move(POOArena arena){
+		POOCoordinate pos = arena.getPosition(this);
+		POOCoordinate border = ((Arena)arena).getSize();
+		switch(_direction){
+			case RIGHT:
+				if(pos.x + 1 < border.x)
+					pos.x += 1;
+				break;
+			case DOWN:
+				if(pos.y + 1 < border.y)
+					pos.y += 1;
+				break;
+			case LEFT:
+				if(pos.x - 1 >= 0)
+					pos.x -= 1;
+				break;
+			case UP:
+				if(pos.y - 1 >= 0)
+					pos.y -= 1;
+				break;
+			default:;
+		}
 		
-		beAngry(); // always try to be angry
+		
+		if(_direction == POOConstant.Dir.LEFT){
+			_img_id = (_img_id + 1)%2;
+		}else if(_direction == POOConstant.Dir.RIGHT){
+			_img_id = (_img_id + 1)%2 + 2;
+		}else if(_pre_direction == POOConstant.Dir.LEFT){
+			_img_id = (_img_id + 1)%2;
+		}else if(_pre_direction == POOConstant.Dir.RIGHT){
+			_img_id = (_img_id + 1)%2 + 2;
+		}
+		if(isAngry()){
+			_img_id+=4;
+		}
+		return pos;
+	}
+	
+	public ArrayList<Action> Strategy(POOArena arena){
 		
 		_sight = ((Arena)arena).getSight((POOPet)this);
 		boolean found = false;
 		for(int i = 0; i < 2*_sight_range+1; i++){
 			for(int j = 0; j < 2*_sight_range+1; j++){
 				if(_sight[i][j] != null && (_sight[i][j].getType() == POOConstant.Type.PET || _sight[i][j].getType() == POOConstant.Type.PLAYER) && !(_sight[i][j].getObject() instanceof Slime) && (i!=_sight_range || j!=_sight_range) ){
+					beAngry();
 					
 					if(i==_sight_range && j==_sight_range-1){
 						POOCoordinate pos = ((Arena)arena).getPosition(this);
@@ -161,8 +224,6 @@ public class Slime extends Pet{
 						_direction = POOConstant.Dir.DOWN;
 						found = true;
 					}
-					//POOCoordinate pos = arena.getPosition(this);
-					//System.out.println("found " + ((Arena)arena).getPetId((Pet)_sight[i][j].getObject()) + " at " + (i+pos.x-_sight_range) + ", " + (j+pos.y-_sight_range));
 					
 				}
 			}
@@ -172,10 +233,12 @@ public class Slime extends Pet{
 		
 		_actions = new ArrayList<Action>(0);
 		_actions.add(new Action(POOConstant.Type.MOVE, move(arena)));
+		
 		return _actions;
 	}
 	
 	public ArrayList<Action> OneTimeStep(POOArena arena){
+		
 		
 		/* check whether is dead */
 		if(getHP() <= 0){
@@ -188,14 +251,17 @@ public class Slime extends Pet{
 		}
 		
 		/* cds count down */
-		if(_cds[0] > 0)
-			_cds[0]--;
+		for(int i = 0; i < _cds.length; i++)
+			if(_cds[i] > 0)
+				_cds[i]--;
 		
 		
 		/* action count down */
 		if(_count_down <= 0){
 			_count_down = _tta + 1;
 			
+			if(_direction == POOConstant.Dir.LEFT || _direction == POOConstant.Dir.RIGHT)
+				_pre_direction = _direction;
 			
 			if(isAngry()){
 				_angry_count--;
@@ -215,6 +281,7 @@ public class Slime extends Pet{
 			/* for player control */
 			if(!_cmds.isEmpty()){
 				Action act = null;
+				POOCoordinate pos = arena.getPosition(this);
 				switch(_cmds.get(0).get()){
 					case UP:
 						_direction = POOConstant.Dir.UP;
@@ -233,23 +300,13 @@ public class Slime extends Pet{
 						act = new Action(POOConstant.Type.MOVE, move(arena));
 						break;
 					case Z:
-						POOCoordinate pos = arena.getPosition(this);
-						switch(_direction){
-							case UP:
-								pos.y--;
-								break;
-							case DOWN:
-								pos.y++;
-								break;
-							case LEFT:
-								pos.x--;
-								break;
-							case RIGHT:
-								pos.x++;
-								break;
-							default:;
-						}
 						_actions = useSkill(_skills[0], pos, _direction);
+						if(_actions != null){
+							return _actions;
+						}
+						break;
+					case X:
+						_actions = useSkill(_skills[1], pos, _direction);
 						if(_actions != null){
 							return _actions;
 						}
@@ -267,14 +324,7 @@ public class Slime extends Pet{
 					return _actions;
 				}
 			}
-		}else if(_count == 0){
-			if(!isAngry()){
-				_img_id = (_img_id+1)%4;
-			}else{
-				_img_id = (_img_id+1)%4 + 4;
-			}
 		}
-		_count = (_count + 1) % 20;
 		_count_down--;
 		return null;
 	}

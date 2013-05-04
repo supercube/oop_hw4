@@ -46,6 +46,7 @@ public class RockArm extends Pet{
 		setMP(10);
 		adjustAGIandTTA(_normal_agi);
 		
+		_direction = POOConstant.Dir.getRandom();
 		_img_id = _rnd.nextInt(4);
 		_sight_range = 5;
 		_count_down = _tta;
@@ -70,7 +71,7 @@ public class RockArm extends Pet{
 		setAngry();
 		
 		setHP(getHP()*2);
-		setMP(getMP()*2 + 6);
+		setMP(getMP()*2 + 4);
 		adjustAGIandTTA(_angry_agi);
 		_img_id += 4;
 		return true;
@@ -164,13 +165,11 @@ public class RockArm extends Pet{
 						_direction = POOConstant.Dir.DOWN;
 						found = true;
 					}
-					//POOCoordinate pos = arena.getPosition(this);
-					//System.out.println("found " + ((Arena)arena).getPetId((Pet)_sight[i][j].getObject()) + " at " + (i+pos.x-_sight_range) + ", " + (j+pos.y-_sight_range));
 				}
 			}
 		}
 		if(!found)
-			_direction = POOConstant.Dir.getRandom();//_rnd.nextInt(4);
+			_direction = POOConstant.Dir.getRandom();
 		
 		_actions = new ArrayList<Action>(0);
 		_actions.add(new Action(POOConstant.Type.MOVE, move(arena)));

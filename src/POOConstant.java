@@ -10,7 +10,7 @@ public class POOConstant{
 	}
 	
 	public static enum Cmd{
-		UP, DOWN, LEFT, RIGHT, Z, SPACE, F1
+		UP, DOWN, LEFT, RIGHT, Z, X, SPACE, F1
 	}
 	
 	public static enum Dir{
@@ -22,7 +22,7 @@ public class POOConstant{
 	}
 	
 	public static enum Skill{
-		TinyAttackSkill, RockSting
+		TinyAttackSkill, RockSting, Tornado
 	}
 	
 	public static enum Fog{

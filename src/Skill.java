@@ -6,8 +6,8 @@ public abstract class Skill extends POOSkill{
 	
 	protected int _img_id;
 	protected int _ttl;
-	//protected int _id;
-	public abstract boolean oneTimeStep(Cell[][] map, POOCoordinate pos);
+	
+	public abstract boolean oneTimeStep(Arena arena, POOCoordinate pos);
 	public abstract Image getImage();
 	
 	public boolean vanish(){

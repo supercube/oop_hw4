@@ -187,6 +187,11 @@ public class ArenaIOPanel extends JPanel{
         				_cmds.remove(_cmds.size() - 1);
             		_cmds.add(new Command(POOConstant.Cmd.Z));
             		break;
+            	case KeyEvent.VK_X:
+            		if(_cmds.size() > 1)
+        				_cmds.remove(_cmds.size() - 1);
+            		_cmds.add(new Command(POOConstant.Cmd.X));
+            		break;
             	case KeyEvent.VK_SPACE:
             		if(_cmds.size() > 1)
         				_cmds.remove(_cmds.size() - 1);

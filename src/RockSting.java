@@ -36,12 +36,13 @@ public class RockSting extends Skill{
         }
     }
 	
-	public boolean oneTimeStep(Cell[][] map, POOCoordinate pos){
-		
+	public boolean oneTimeStep(Arena arena, POOCoordinate pos){
 		_ttl -= 1;
+
+		Cell[][] map = arena.getMap();
+		
 		if(_ttl == 20){
 			_img_id++;
-			
 		}
 		if(_ttl == 50){
 			_img_id++;
