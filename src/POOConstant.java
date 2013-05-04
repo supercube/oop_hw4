@@ -22,7 +22,7 @@ public class POOConstant{
 	}
 	
 	public static enum Skill{
-		TinyAttackSkill, RockSting, Tornado
+		None, TinyAttackSkill, RockSting, Tornado
 	}
 	
 	public static enum Fog{

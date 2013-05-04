@@ -31,7 +31,7 @@ public class RockArm extends Pet{
 		_imgs[8] = Filter.filterOutBackground((new ImageIcon("Images/RockArm_dead.png")).getImage(), new Color(0, 0, 0));
 		_imgs[9] = Filter.filterOutBackground((new ImageIcon("Images/Angry_RockArm_dead.png")).getImage(), new Color(0, 0, 0));
 		_rnd = new Random();
-		_skills = new POOConstant.Skill[]{POOConstant.Skill.RockSting};
+		_skills = new POOConstant.Skill[]{POOConstant.Skill.RockSting, POOConstant.Skill.None, POOConstant.Skill.None, POOConstant.Skill.None};
 		_max_angry_time = 30;
 		_normal_agi = 20;
 		_angry_agi = 23;
@@ -58,6 +58,10 @@ public class RockArm extends Pet{
 	
 	public final Image getImage(){
 		return _imgs[_img_id];
+	}
+	
+	public POOConstant.Skill[] getSkills(){
+		return _skills;
 	}
 	
 	public int getMaxAnger(){
@@ -210,49 +214,13 @@ public ArrayList<Action> OneTimeStep(POOArena arena){
 			}else if(_angry_count < _max_angry_time){
 				_angry_count++;
 			}
-			if(!isPlayer())
-				return Strategy(arena);
 			
-			/* for player control */
-			if(!_cmds.isEmpty()){
-				Action act = null;
-				switch(_cmds.get(0).get()){
-					case UP:
-						_direction = POOConstant.Dir.UP;
-						act = new Action(POOConstant.Type.MOVE, move(arena));
-						break;
-					case DOWN:
-						_direction = POOConstant.Dir.DOWN;
-						act = new Action(POOConstant.Type.MOVE, move(arena));
-						break;
-					case LEFT:
-						_direction = POOConstant.Dir.LEFT;
-						act = new Action(POOConstant.Type.MOVE, move(arena));
-						break;
-					case RIGHT:
-						_direction = POOConstant.Dir.RIGHT;
-						act = new Action(POOConstant.Type.MOVE, move(arena));
-						break;
-					case Z:
-						POOCoordinate pos = arena.getPosition(this);
-						_actions = useSkill(_skills[0], pos, _direction);
-						if(_actions != null){
-							return _actions;
-						}
-						break;
-					case SPACE:
-						if(beAngry())
-							System.out.println("Angry! HP " + getHP() + ", MP " + getMP());
-						break;
-					default:;
-				}
-				_cmds.remove(0);
-				if(act != null){
-					_actions = new ArrayList<Action>(0);
-					_actions.add(act);
-					return _actions;
-				}
+			if(!isPlayer()){
+				return Strategy(arena);
+			}else{
+				return Player((Arena)arena);
 			}
+			
 		}else if(_count == 0){
 			if(!isAngry()){
 				_img_id = (_img_id+1)%4;

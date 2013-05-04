@@ -16,6 +16,7 @@ public class TorLion extends Pet{
 	protected static final int _normal_agi;
 	protected static final int _angry_agi;
 	
+	
 	static {
 		_no_img = 10;
 		_imgs = new Image[_no_img];
@@ -30,7 +31,7 @@ public class TorLion extends Pet{
 		_imgs[8] = Filter.filterOutBackground((new ImageIcon("Images/TorLion_dead.png")).getImage(), new Color(0, 0, 0));
 		_imgs[9] = Filter.filterOutBackground((new ImageIcon("Images/Angry_TorLion_dead.png")).getImage(), new Color(0, 0, 0));
 		_rnd = new Random();
-		_skills = new POOConstant.Skill[]{POOConstant.Skill.TinyAttackSkill, POOConstant.Skill.Tornado};
+		_skills = new POOConstant.Skill[]{POOConstant.Skill.TinyAttackSkill, POOConstant.Skill.Tornado, POOConstant.Skill.None, POOConstant.Skill.None};
 		_max_angry_time = 35;
 		_normal_agi = 23;
 		_angry_agi = 27;
@@ -54,12 +55,15 @@ public class TorLion extends Pet{
 	}
 	
 	public final Image getImage(){
-		System.out.println(_img_id);
 		return _imgs[_img_id];
 	}
 	
 	public int getMaxAnger(){
 		return _max_angry_time;
+	}
+	
+	public POOConstant.Skill[] getSkills(){
+		return _skills;
 	}
 	
 	protected boolean beAngry(){
@@ -277,52 +281,8 @@ public class TorLion extends Pet{
 			}
 			if(!isPlayer())
 				return Strategy(arena);
-			
-			/* for player control */
-			if(!_cmds.isEmpty()){
-				Action act = null;
-				POOCoordinate pos = arena.getPosition(this);
-				switch(_cmds.get(0).get()){
-					case UP:
-						_direction = POOConstant.Dir.UP;
-						act = new Action(POOConstant.Type.MOVE, move(arena));
-						break;
-					case DOWN:
-						_direction = POOConstant.Dir.DOWN;
-						act = new Action(POOConstant.Type.MOVE, move(arena));
-						break;
-					case LEFT:
-						_direction = POOConstant.Dir.LEFT;
-						act = new Action(POOConstant.Type.MOVE, move(arena));
-						break;
-					case RIGHT:
-						_direction = POOConstant.Dir.RIGHT;
-						act = new Action(POOConstant.Type.MOVE, move(arena));
-						break;
-					case Z:
-						_actions = useSkill(_skills[0], pos, _direction);
-						if(_actions != null){
-							return _actions;
-						}
-						break;
-					case X:
-						_actions = useSkill(_skills[1], pos, _direction);
-						if(_actions != null){
-							return _actions;
-						}
-						break;
-					case SPACE:
-						if(beAngry())
-							System.out.println("Angry! HP " + getHP() + ", MP " + getMP());
-						break;
-					default:;
-				}
-				_cmds.remove(0);
-				if(act != null){
-					_actions = new ArrayList<Action>(0);
-					_actions.add(act);
-					return _actions;
-				}
+			else{
+				return Player((Arena)arena);
 			}
 		}
 		_count_down--;

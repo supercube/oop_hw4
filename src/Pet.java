@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 public abstract class Pet extends POOPet{
 	
+	
 	protected int _img_id;
 	protected int _sight_range;
 	protected Cell[][] _sight;
@@ -27,6 +28,59 @@ public abstract class Pet extends POOPet{
 		return true;
 	}
 	
+	public ArrayList<Action> Player(Arena arena){
+		/* for player control */
+		if(_cmds.isEmpty())
+			return null;
+		ArrayList<Action> actions;
+		Action act = null;
+		POOCoordinate pos = arena.getPosition(this);
+		POOConstant.Skill[] skills = getSkills();
+		switch(_cmds.get(0).get()){
+			case UP:
+				_direction = POOConstant.Dir.UP;
+				act = new Action(POOConstant.Type.MOVE, move(arena));
+				break;
+			case DOWN:
+				_direction = POOConstant.Dir.DOWN;
+				act = new Action(POOConstant.Type.MOVE, move(arena));
+				break;
+			case LEFT:
+				_direction = POOConstant.Dir.LEFT;
+				act = new Action(POOConstant.Type.MOVE, move(arena));
+				break;
+			case RIGHT:
+				_direction = POOConstant.Dir.RIGHT;
+				act = new Action(POOConstant.Type.MOVE, move(arena));
+				break;
+			case Z:
+				actions = useSkill(skills[0], pos, _direction);
+				if(actions != null){
+					return actions;
+				}
+				break;
+			case X:
+				actions = useSkill(skills[1], pos, _direction);
+				if(actions != null){
+					return actions;
+				}
+				break;
+			case SPACE:
+				if(beAngry())
+					System.out.println("Angry! HP " + getHP() + ", MP " + getMP());
+				break;
+			default:;
+		}
+		
+		_cmds.remove(0);
+		if(act == null)
+			return null;
+		
+		actions = new ArrayList<Action>(0);
+		actions.add(act);
+		return actions;
+	}
+	
 	protected final ArrayList<Command> getCmdListener(){
 		return _cmds;
 	}
@@ -34,9 +88,12 @@ public abstract class Pet extends POOPet{
 	protected final void setAngry(){
 		_angry = true;
 	}
+	
 	protected final void resetAngry(){
 		_angry = false;
 	}
+	
+	protected abstract boolean beAngry();
 	
 	protected final void setPlayer(){
 		_player = true;
@@ -62,6 +119,8 @@ public abstract class Pet extends POOPet{
 	public abstract int getMaxAnger();
 	
 	public abstract Image getImage();
+	
+	public abstract POOConstant.Skill[] getSkills();
 	
 	public final int getSightRange(){
 		return _sight_range;
