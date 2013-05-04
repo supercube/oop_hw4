@@ -37,7 +37,7 @@ public class TinyAttackSkill extends Skill{
 		
 		_ttl -= 1;
 		if(_ttl == 20){
-			if(map[pos.x][pos.y].getType() == POOConstant.Type.PET){
+			if(map[pos.x][pos.y].getType() == POOConstant.Type.PET || map[pos.x][pos.y].getType() == POOConstant.Type.PLAYER){
 				act((Pet)map[pos.x][pos.y].getObject());
 			}
 		}
@@ -48,7 +48,7 @@ public class TinyAttackSkill extends Skill{
 	}
 	
 	public static int getCD(){
-		return 50;
+		return 35;
 	}
 	
 	public static int getMPConsume(){

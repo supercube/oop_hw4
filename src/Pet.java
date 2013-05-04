@@ -19,6 +19,13 @@ public abstract class Pet extends POOPet{
 	
 	protected ArrayList<Command> _cmds;
 	
+	protected boolean adjustAGIandTTA(int agi){
+		if(agi <= 0 || agi >= 40)
+			return false;
+		setAGI(agi);
+		_tta = POOConstant.SlowTTA - getAGI();
+		return true;
+	}
 	
 	protected final ArrayList<Command> getCmdListener(){
 		return _cmds;
@@ -64,7 +71,7 @@ public abstract class Pet extends POOPet{
 	
 	public abstract ArrayList<Action> OneTimeStep(POOArena arena);
 	
-	public abstract ArrayList<Action> useSkill(POOConstant.Skill id, POOCoordinate pos);
+	public abstract ArrayList<Action> useSkill(POOConstant.Skill id, POOCoordinate pos, POOConstant.Dir direction);
 	
 	public final void setId(int id){
 		_id = id;
@@ -81,19 +88,19 @@ public abstract class Pet extends POOPet{
 		POOCoordinate border = ((Arena)arena).getSize();
 		switch(_direction){
 			case RIGHT:
-				if(pos.x + 1 < border.x && ((Arena)arena).getMap()[pos.x+1][pos.y].getSkill().isEmpty())
+				if(pos.x + 1 < border.x) // && (isplayer || map[pos.x+1][pos.y].getSkill().isEmpty()))
 					pos.x += 1;
 				break;
 			case DOWN:
-				if(pos.y + 1 < border.y && ((Arena)arena).getMap()[pos.x][pos.y+1].getSkill().isEmpty())
+				if(pos.y + 1 < border.y) // && (isplayer || map[pos.x][pos.y+1].getSkill().isEmpty()))
 					pos.y += 1;
 				break;
 			case LEFT:
-				if(pos.x - 1 >= 0 && ((Arena)arena).getMap()[pos.x-1][pos.y].getSkill().isEmpty())
+				if(pos.x - 1 >= 0) // && (isplayer || map[pos.x-1][pos.y].getSkill().isEmpty()))
 					pos.x -= 1;
 				break;
 			case UP:
-				if(pos.y - 1 >= 0 && ((Arena)arena).getMap()[pos.x][pos.y-1].getSkill().isEmpty())
+				if(pos.y - 1 >= 0) // && (isplayer || map[pos.x][pos.y-1].getSkill().isEmpty()))
 					pos.y -= 1;
 				break;
 			default:;

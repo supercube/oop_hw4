@@ -164,32 +164,32 @@ public class ArenaIOPanel extends JPanel{
             switch(key){
             	case KeyEvent.VK_UP:
             		if(_cmds.size() > 1)
-        				_cmds.remove(_cmds.size());
+        				_cmds.remove(_cmds.size() - 1);
             		_cmds.add(new Command(POOConstant.Cmd.UP));
             		break;
             	case KeyEvent.VK_DOWN:
             		if(_cmds.size() > 1)
-        				_cmds.remove(_cmds.size());
+        				_cmds.remove(_cmds.size() - 1);
             		_cmds.add(new Command(POOConstant.Cmd.DOWN));
             		break;
             	case KeyEvent.VK_LEFT:
             		if(_cmds.size() > 1)
-        				_cmds.remove(_cmds.size());
+        				_cmds.remove(_cmds.size() - 1);
             		_cmds.add(new Command(POOConstant.Cmd.LEFT));
             		break;
             	case KeyEvent.VK_RIGHT:
             		if(_cmds.size() > 1)
-        				_cmds.remove(_cmds.size());
+        				_cmds.remove(_cmds.size() - 1);
             		_cmds.add(new Command(POOConstant.Cmd.RIGHT));
             		break;
             	case KeyEvent.VK_Z:
             		if(_cmds.size() > 1)
-        				_cmds.remove(_cmds.size());
+        				_cmds.remove(_cmds.size() - 1);
             		_cmds.add(new Command(POOConstant.Cmd.Z));
             		break;
             	case KeyEvent.VK_SPACE:
             		if(_cmds.size() > 1)
-        				_cmds.remove(_cmds.size());
+        				_cmds.remove(_cmds.size() - 1);
             		_cmds.add(new Command(POOConstant.Cmd.SPACE));
             		break;
             	default:;

@@ -39,20 +39,21 @@ public class RockSting extends Skill{
 	public boolean oneTimeStep(Cell[][] map, POOCoordinate pos){
 		
 		_ttl -= 1;
-		if(_ttl == 30){
+		if(_ttl == 20){
 			_img_id++;
-			if(map[pos.x][pos.y].getType() == POOConstant.Type.PET){
-				act((Pet)map[pos.x][pos.y].getObject());
-			}
+			
 		}
 		if(_ttl == 50){
 			_img_id++;
+			if(map[pos.x][pos.y].getType() == POOConstant.Type.PET || map[pos.x][pos.y].getType() == POOConstant.Type.PLAYER){
+				act((Pet)map[pos.x][pos.y].getObject());
+			}
 		}
 		return vanish();
 	}
 	
 	public static int getCD(){
-		return 100;
+		return 85;
 	}
 	
 	public static int getMPConsume(){

@@ -3,7 +3,7 @@ package ntu.csie.oop13spring;
 import java.util.ArrayList;
 
 public class Cell{
-	private POOConstant.Type _type; /* 0: empty, 1: pet, 2: obstacle */
+	private POOConstant.Type _type;
 	private int _id;
 	private POOCoordinate _pos;
 	private Object _obj;
@@ -18,7 +18,11 @@ public class Cell{
 	}
 	
 	public Cell(Cell cell){
-		this(cell._type, cell._id, cell._pos, cell._obj);
+		_type = cell._type;
+		_id = cell._id;
+		_pos = cell._pos;
+		_obj = cell._obj;
+		_skills = cell._skills;
 	}
 	
 	public Cell(){
@@ -50,6 +54,10 @@ public class Cell{
 		_pos = pos;
 		_obj = obj;
 		return true;
+	}
+	
+	public boolean add(Cell cell){
+		return add(cell._type, cell._id, cell._pos, cell._obj);
 	}
 	
 	public boolean appendSkill(Skill skill){

@@ -107,7 +107,7 @@ public class ArenaPark extends Arena{
 					act = actions.get(0);
 					if(act._type == POOConstant.Type.MOVE){
 						new_pos = act._pos;
-						if((!prev_pos.equals(new_pos)) && _map[new_pos.x][new_pos.y].add(POOConstant.Type.PET, id, new_pos, _parr[id])){
+						if((!prev_pos.equals(new_pos)) && _map[new_pos.x][new_pos.y].add(_map[prev_pos.x][prev_pos.y])){
 							_map[prev_pos.x][prev_pos.y].setEmpty();
 							_pet_pos[id] = (Coordinate)new_pos;
 						}else{
@@ -166,6 +166,8 @@ public class ArenaPark extends Arena{
 						_window.addToArenaIOPanel(((Pet)_parr[id]).getImage(), x, y, id);
 						if(id == 0){
 							setFog((Pet)_parr[0], new Coordinate(x, y), POOConstant.Fog.BRIGHT);
+							_map[x][y].setEmpty();
+							_map[x][y].add(POOConstant.Type.PLAYER, id, _pet_pos[0], _parr[0]);
 						}
 						break;
 					}
