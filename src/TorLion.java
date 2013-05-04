@@ -181,54 +181,78 @@ public class TorLion extends Pet{
 		
 		_sight = ((Arena)arena).getSight((POOPet)this);
 		boolean found = false;
+		_actions = null;
+		boolean powerskill = (_rnd.nextInt(10) == 9);
 		for(int i = 0; i < 2*_sight_range+1; i++){
 			for(int j = 0; j < 2*_sight_range+1; j++){
 				if(_sight[i][j] != null && (_sight[i][j].getType() == POOConstant.Type.PET || _sight[i][j].getType() == POOConstant.Type.PLAYER) && !(_sight[i][j].getObject() instanceof Slime) && (i!=_sight_range || j!=_sight_range) ){
 					beAngry();
 					
-					if(i==_sight_range && j==_sight_range-1){
+					if(i==_sight_range && _sight_range - j <= 4 && _sight_range - j > 0){
 						POOCoordinate pos = ((Arena)arena).getPosition(this);
-						_actions = useSkill(POOConstant.Skill.TinyAttackSkill, new Coordinate(pos.x, pos.y), POOConstant.Dir.UP);
+						if(getMP() >= 5 && powerskill){
+							_actions = useSkill(POOConstant.Skill.Tornado, new Coordinate(pos.x, pos.y), POOConstant.Dir.UP);
+						}
+						if(_actions == null && _sight_range - j == 1){
+							_actions = useSkill(POOConstant.Skill.TinyAttackSkill, new Coordinate(pos.x, pos.y), POOConstant.Dir.UP);
+						}
 						if(_actions != null){
 							found = true;
 							return _actions;
 						}
-					}else if(i==_sight_range && j==_sight_range+1){
+					}else if(i==_sight_range && j - _sight_range <= 4 && j - _sight_range > 0){
 						POOCoordinate pos = ((Arena)arena).getPosition(this);
-						_actions = useSkill(POOConstant.Skill.TinyAttackSkill, new Coordinate(pos.x, pos.y), POOConstant.Dir.DOWN);
+						if(getMP() >= 5 && powerskill){
+							System.out.println("tornado");
+							_actions = useSkill(POOConstant.Skill.Tornado, new Coordinate(pos.x, pos.y), POOConstant.Dir.DOWN);
+						}
+						if(_actions == null && j - _sight_range  == 1){
+							_actions = useSkill(POOConstant.Skill.TinyAttackSkill, new Coordinate(pos.x, pos.y), POOConstant.Dir.DOWN);
+						}
 						if(_actions != null){
 							found = true;
 							return _actions;
 						}
-							
-					}else if(j==_sight_range && i==_sight_range-1){
+					}else if(j==_sight_range && _sight_range - i <= 4 && _sight_range - i > 0){
+						System.out.println("left");
 						POOCoordinate pos = ((Arena)arena).getPosition(this);
-						_actions = useSkill(POOConstant.Skill.TinyAttackSkill, new Coordinate(pos.x, pos.y), POOConstant.Dir.LEFT);
+						if(getMP() >= 5 && powerskill){
+							_actions = useSkill(POOConstant.Skill.Tornado, new Coordinate(pos.x, pos.y), POOConstant.Dir.LEFT);
+						}
+						if(_actions == null && _sight_range - i == 1){
+							_actions = useSkill(POOConstant.Skill.TinyAttackSkill, new Coordinate(pos.x, pos.y), POOConstant.Dir.LEFT);
+						
+						}
 						if(_actions != null){
 							found = true;
 							return _actions;
 						}
-					}else if(j==_sight_range && i==_sight_range+1){
+					}else if(j==_sight_range && i==_sight_range+1 && i - _sight_range <= 4 && i - _sight_range > 0){
+						System.out.println("right");
 						POOCoordinate pos = ((Arena)arena).getPosition(this);
-						_actions = useSkill(POOConstant.Skill.TinyAttackSkill, new Coordinate(pos.x, pos.y),POOConstant.Dir.RIGHT);
+						if(getMP() >= 5 && powerskill){
+							_actions = useSkill(POOConstant.Skill.Tornado, new Coordinate(pos.x, pos.y), POOConstant.Dir.RIGHT);
+						}
+						if(_actions == null && i - _sight_range == 1){
+							_actions = useSkill(POOConstant.Skill.TinyAttackSkill, new Coordinate(pos.x, pos.y), POOConstant.Dir.RIGHT);
+						}
 						if(_actions != null){
 							found = true;
 							return _actions;
 						}
-					}else if(i - _sight_range < 0){
+					}else if(i - _sight_range < 0 && (_sight[_sight_range-1][_sight_range].getType() == POOConstant.Type.EMPTY || _sight[_sight_range-1][_sight_range].getType() == POOConstant.Type.DEAD)){
 						_direction = POOConstant.Dir.LEFT;
 						found = true;
-					}else if(i - _sight_range > 0){
+					}else if(i - _sight_range > 0 && (_sight[_sight_range+1][_sight_range].getType() == POOConstant.Type.EMPTY || _sight[_sight_range+1][_sight_range].getType() == POOConstant.Type.DEAD)){
 						_direction = POOConstant.Dir.RIGHT;
 						found = true;
-					}else if(j - _sight_range < 0){
+					}else if(j - _sight_range < 0 && (_sight[_sight_range][_sight_range-1].getType() == POOConstant.Type.EMPTY || _sight[_sight_range][_sight_range-1].getType() == POOConstant.Type.DEAD)){
 						_direction = POOConstant.Dir.UP;
 						found = true;
-					}else if(j - _sight_range > 0){
+					}else if(j - _sight_range > 0 && (_sight[_sight_range][_sight_range+1].getType() == POOConstant.Type.EMPTY || _sight[_sight_range][_sight_range+1].getType() == POOConstant.Type.DEAD)){
 						_direction = POOConstant.Dir.DOWN;
 						found = true;
 					}
-					
 				}
 			}
 		}

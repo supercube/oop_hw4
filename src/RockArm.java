@@ -156,16 +156,16 @@ public class RockArm extends Pet{
 							found = true;
 							return _actions;
 						}
-					}else if(i - _sight_range < 0  && _sight[_sight_range - 1][_sight_range].getSkill().isEmpty()){
+					}else if(i - _sight_range < 0  && _sight[_sight_range - 1][_sight_range].getSkill().isEmpty() && (_sight[_sight_range-1][_sight_range].getType() == POOConstant.Type.EMPTY || _sight[_sight_range-1][_sight_range].getType() == POOConstant.Type.DEAD)){
 						_direction = POOConstant.Dir.LEFT;
 						found = true;
-					}else if(i - _sight_range > 0  && _sight[_sight_range + 1][_sight_range].getSkill().isEmpty()){
+					}else if(i - _sight_range > 0  && _sight[_sight_range + 1][_sight_range].getSkill().isEmpty() && (_sight[_sight_range+1][_sight_range].getType() == POOConstant.Type.EMPTY || _sight[_sight_range+1][_sight_range].getType() == POOConstant.Type.DEAD)){
 						_direction = POOConstant.Dir.RIGHT;
 						found = true;
-					}else if(j - _sight_range < 0 && _sight[_sight_range][_sight_range - 1].getSkill().isEmpty()){
+					}else if(j - _sight_range < 0 && _sight[_sight_range][_sight_range - 1].getSkill().isEmpty() && (_sight[_sight_range][_sight_range-1].getType() == POOConstant.Type.EMPTY || _sight[_sight_range][_sight_range-1].getType() == POOConstant.Type.DEAD)){
 						_direction = POOConstant.Dir.UP;
 						found = true;
-					}else if(j - _sight_range > 0   && _sight[_sight_range][_sight_range + 1].getSkill().isEmpty()){
+					}else if(j - _sight_range > 0   && _sight[_sight_range][_sight_range + 1].getSkill().isEmpty() && (_sight[_sight_range][_sight_range+1].getType() == POOConstant.Type.EMPTY || _sight[_sight_range][_sight_range+1].getType() == POOConstant.Type.DEAD)){
 						_direction = POOConstant.Dir.DOWN;
 						found = true;
 					}
@@ -193,8 +193,9 @@ public ArrayList<Action> OneTimeStep(POOArena arena){
 		}
 		
 		/* cds count down */
-		if(_cds[0] > 0)
-			_cds[0]--;
+		for(int i = 0; i < _cds.length; i++)
+			if(_cds[i] > 0)
+				_cds[i]--;
 		
 		
 		/* action count down */

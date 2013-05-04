@@ -152,27 +152,25 @@ public class Slime extends Pet{
 							found = true;
 							return _actions;
 						}
-					}else if(i - _sight_range < 0){
+					}else if(i - _sight_range < 0 && (_sight[_sight_range-1][_sight_range].getType() == POOConstant.Type.EMPTY || _sight[_sight_range-1][_sight_range].getType() == POOConstant.Type.DEAD)){
 						_direction = POOConstant.Dir.LEFT;
 						found = true;
-					}else if(i - _sight_range > 0){
+					}else if(i - _sight_range > 0 && (_sight[_sight_range+1][_sight_range].getType() == POOConstant.Type.EMPTY || _sight[_sight_range+1][_sight_range].getType() == POOConstant.Type.DEAD)){
 						_direction = POOConstant.Dir.RIGHT;
 						found = true;
-					}else if(j - _sight_range < 0){
+					}else if(j - _sight_range < 0 && (_sight[_sight_range][_sight_range-1].getType() == POOConstant.Type.EMPTY || _sight[_sight_range][_sight_range-1].getType() == POOConstant.Type.DEAD)){
 						_direction = POOConstant.Dir.UP;
 						found = true;
-					}else if(j - _sight_range > 0){
+					}else if(j - _sight_range > 0 && (_sight[_sight_range][_sight_range+1].getType() == POOConstant.Type.EMPTY || _sight[_sight_range][_sight_range+1].getType() == POOConstant.Type.DEAD)){
 						_direction = POOConstant.Dir.DOWN;
 						found = true;
 					}
-					//POOCoordinate pos = arena.getPosition(this);
-					//System.out.println("found " + ((Arena)arena).getPetId((Pet)_sight[i][j].getObject()) + " at " + (i+pos.x-_sight_range) + ", " + (j+pos.y-_sight_range));
 					
 				}
 			}
 		}
 		if(!found)
-			_direction = POOConstant.Dir.getRandom();//_rnd.nextInt(4);
+			_direction = POOConstant.Dir.getRandom();
 		
 		_actions = new ArrayList<Action>(0);
 		_actions.add(new Action(POOConstant.Type.MOVE, move(arena)));
@@ -192,8 +190,9 @@ public class Slime extends Pet{
 		}
 		
 		/* cds count down */
-		if(_cds[0] > 0)
-			_cds[0]--;
+		for(int i = 0; i < _cds.length; i++)
+			if(_cds[i] > 0)
+				_cds[i]--;
 		
 		
 		/* action count down */
