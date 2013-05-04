@@ -33,8 +33,8 @@ public class RockArm extends Pet{
 		_rnd = new Random();
 		_skills = new POOConstant.Skill[]{POOConstant.Skill.RockSting, POOConstant.Skill.None, POOConstant.Skill.None, POOConstant.Skill.None};
 		_max_angry_time = 30;
-		_normal_agi = 20;
-		_angry_agi = 23;
+		_normal_agi = 15;
+		_angry_agi = 20;
 	}
 	
 	private int _count;
@@ -42,7 +42,7 @@ public class RockArm extends Pet{
 	private int[] _cds;
 	
 	public RockArm(){
-		setHP(6);
+		setHP(8);
 		setMP(10);
 		adjustAGIandTTA(_normal_agi);
 		
@@ -110,8 +110,8 @@ public class RockArm extends Pet{
 							break;
 						default:;
 					}
-					_actions.add(new Action(POOConstant.Type.SKILL, new RockSting(), new Coordinate(pos.x, pos.y)));
-					_actions.add(new Action(POOConstant.Type.SKILL, new RockSting(), new_pos));
+					_actions.add(new Action(POOConstant.Type.SKILL, new RockSting(this), new Coordinate(pos.x, pos.y)));
+					_actions.add(new Action(POOConstant.Type.SKILL, new RockSting(this), new_pos));
 					return _actions;
 				}
 				break;
@@ -156,18 +156,22 @@ public class RockArm extends Pet{
 							found = true;
 							return _actions;
 						}
-					}else if(i - _sight_range < 0  && _sight[_sight_range - 1][_sight_range].getSkill().isEmpty() && (_sight[_sight_range-1][_sight_range].getType() == POOConstant.Type.EMPTY || _sight[_sight_range-1][_sight_range].getType() == POOConstant.Type.DEAD)){
-						_direction = POOConstant.Dir.LEFT;
-						found = true;
-					}else if(i - _sight_range > 0  && _sight[_sight_range + 1][_sight_range].getSkill().isEmpty() && (_sight[_sight_range+1][_sight_range].getType() == POOConstant.Type.EMPTY || _sight[_sight_range+1][_sight_range].getType() == POOConstant.Type.DEAD)){
-						_direction = POOConstant.Dir.RIGHT;
-						found = true;
-					}else if(j - _sight_range < 0 && _sight[_sight_range][_sight_range - 1].getSkill().isEmpty() && (_sight[_sight_range][_sight_range-1].getType() == POOConstant.Type.EMPTY || _sight[_sight_range][_sight_range-1].getType() == POOConstant.Type.DEAD)){
-						_direction = POOConstant.Dir.UP;
-						found = true;
-					}else if(j - _sight_range > 0   && _sight[_sight_range][_sight_range + 1].getSkill().isEmpty() && (_sight[_sight_range][_sight_range+1].getType() == POOConstant.Type.EMPTY || _sight[_sight_range][_sight_range+1].getType() == POOConstant.Type.DEAD)){
-						_direction = POOConstant.Dir.DOWN;
-						found = true;
+					}
+					
+					if(getHP() >= 3 && getMP() >= 4){
+						if(i - _sight_range < 0  && _sight[_sight_range - 1][_sight_range].getSkill().isEmpty() && (_sight[_sight_range-1][_sight_range].getType() == POOConstant.Type.EMPTY || _sight[_sight_range-1][_sight_range].getType() == POOConstant.Type.DEAD)){
+							_direction = POOConstant.Dir.LEFT;
+							found = true;
+						}else if(i - _sight_range > 0  && _sight[_sight_range + 1][_sight_range].getSkill().isEmpty() && (_sight[_sight_range+1][_sight_range].getType() == POOConstant.Type.EMPTY || _sight[_sight_range+1][_sight_range].getType() == POOConstant.Type.DEAD)){
+							_direction = POOConstant.Dir.RIGHT;
+							found = true;
+						}else if(j - _sight_range < 0 && _sight[_sight_range][_sight_range - 1].getSkill().isEmpty() && (_sight[_sight_range][_sight_range-1].getType() == POOConstant.Type.EMPTY || _sight[_sight_range][_sight_range-1].getType() == POOConstant.Type.DEAD)){
+							_direction = POOConstant.Dir.UP;
+							found = true;
+						}else if(j - _sight_range > 0   && _sight[_sight_range][_sight_range + 1].getSkill().isEmpty() && (_sight[_sight_range][_sight_range+1].getType() == POOConstant.Type.EMPTY || _sight[_sight_range][_sight_range+1].getType() == POOConstant.Type.DEAD)){
+							_direction = POOConstant.Dir.DOWN;
+							found = true;
+						}
 					}
 				}
 			}

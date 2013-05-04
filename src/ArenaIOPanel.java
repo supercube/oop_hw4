@@ -129,7 +129,7 @@ public class ArenaIOPanel extends JPanel{
 		}
 		
 		/* draw player info */
-		String msg = "HP: " + _player.getHP() + "  MP: " + _player.getMP() + "  Anger: " + _player.getAnger() + "/" + _player.getMaxAnger();
+		String msg = "HP: " + _player.getHP() + "  MP: " + _player.getMP() + "  Anger: " + _player.getAnger() + "/" + _player.getMaxAnger() + "  kills: " + _player._kill_count;
         g.setColor(Color.red);
         g.drawString(msg, 0, 10);
 	}

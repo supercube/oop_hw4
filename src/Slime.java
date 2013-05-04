@@ -33,7 +33,7 @@ public class Slime extends Pet{
 		_skills = new POOConstant.Skill[]{POOConstant.Skill.TinyAttackSkill, POOConstant.Skill.None, POOConstant.Skill.None, POOConstant.Skill.None};
 		_max_angry_time = 12;
 		_normal_agi = 10;
-		_angry_agi = 10;
+		_angry_agi = 15;
 	}
 	
 	private int _count;
@@ -104,7 +104,7 @@ public class Slime extends Pet{
 							break;
 						default:;
 					}
-					_actions.add(new Action(POOConstant.Type.SKILL, new TinyAttackSkill(), new Coordinate(pos.x, pos.y)));
+					_actions.add(new Action(POOConstant.Type.SKILL, new TinyAttackSkill(this), new Coordinate(pos.x, pos.y)));
 					return _actions;
 				}
 				break;

@@ -33,8 +33,8 @@ public class TorLion extends Pet{
 		_rnd = new Random();
 		_skills = new POOConstant.Skill[]{POOConstant.Skill.TinyAttackSkill, POOConstant.Skill.Tornado, POOConstant.Skill.None, POOConstant.Skill.None};
 		_max_angry_time = 35;
-		_normal_agi = 23;
-		_angry_agi = 27;
+		_normal_agi = 20;
+		_angry_agi = 23;
 	}
 	
 	private ArrayList<Action> _actions;
@@ -42,7 +42,7 @@ public class TorLion extends Pet{
 	private POOConstant.Dir _pre_direction;
 	
 	public TorLion(){
-		setHP(20);
+		setHP(15);
 		setMP(10);
 		adjustAGIandTTA(_normal_agi);
 		
@@ -103,7 +103,7 @@ public class TorLion extends Pet{
 							break;
 						default:;
 					}
-					_actions.add(new Action(POOConstant.Type.SKILL, new TinyAttackSkill(), new Coordinate(pos.x, pos.y)));
+					_actions.add(new Action(POOConstant.Type.SKILL, new TinyAttackSkill(this), new Coordinate(pos.x, pos.y)));
 					return _actions;
 				}
 				break;
@@ -129,7 +129,7 @@ public class TorLion extends Pet{
 							break;
 						default:;
 					}
-					_actions.add(new Action(POOConstant.Type.SKILL, new Tornado(direction), new Coordinate(pos.x, pos.y)));
+					_actions.add(new Action(POOConstant.Type.SKILL, new Tornado(this, direction), new Coordinate(pos.x, pos.y)));
 					return _actions;
 				}
 				break;
@@ -182,12 +182,13 @@ public class TorLion extends Pet{
 		_sight = ((Arena)arena).getSight((POOPet)this);
 		boolean found = false;
 		_actions = null;
-		boolean powerskill = (_rnd.nextInt(10) == 9);
+		boolean powerskill = (_rnd.nextInt(16) == 15);
 		for(int i = 0; i < 2*_sight_range+1; i++){
 			for(int j = 0; j < 2*_sight_range+1; j++){
-				if(_sight[i][j] != null && (_sight[i][j].getType() == POOConstant.Type.PET || _sight[i][j].getType() == POOConstant.Type.PLAYER) && !(_sight[i][j].getObject() instanceof Slime) && (i!=_sight_range || j!=_sight_range) ){
+				if(_sight[i][j] != null && (_sight[i][j].getType() == POOConstant.Type.PET || _sight[i][j].getType() == POOConstant.Type.PLAYER) && (i!=_sight_range || j!=_sight_range) ){
 					beAngry();
 					
+					/* use skill */
 					if(i==_sight_range && _sight_range - j <= 4 && _sight_range - j > 0){
 						POOCoordinate pos = ((Arena)arena).getPosition(this);
 						if(getMP() >= 5 && powerskill){
@@ -240,18 +241,23 @@ public class TorLion extends Pet{
 							found = true;
 							return _actions;
 						}
-					}else if(i - _sight_range < 0 && (_sight[_sight_range-1][_sight_range].getType() == POOConstant.Type.EMPTY || _sight[_sight_range-1][_sight_range].getType() == POOConstant.Type.DEAD)){
-						_direction = POOConstant.Dir.LEFT;
-						found = true;
-					}else if(i - _sight_range > 0 && (_sight[_sight_range+1][_sight_range].getType() == POOConstant.Type.EMPTY || _sight[_sight_range+1][_sight_range].getType() == POOConstant.Type.DEAD)){
-						_direction = POOConstant.Dir.RIGHT;
-						found = true;
-					}else if(j - _sight_range < 0 && (_sight[_sight_range][_sight_range-1].getType() == POOConstant.Type.EMPTY || _sight[_sight_range][_sight_range-1].getType() == POOConstant.Type.DEAD)){
-						_direction = POOConstant.Dir.UP;
-						found = true;
-					}else if(j - _sight_range > 0 && (_sight[_sight_range][_sight_range+1].getType() == POOConstant.Type.EMPTY || _sight[_sight_range][_sight_range+1].getType() == POOConstant.Type.DEAD)){
-						_direction = POOConstant.Dir.DOWN;
-						found = true;
+					}
+					
+					/* move toward other pet */
+					if(getMP() >= 5 && getHP() >= 10){
+						if(i - _sight_range < 0 && (_sight[_sight_range-1][_sight_range].getType() == POOConstant.Type.EMPTY || _sight[_sight_range-1][_sight_range].getType() == POOConstant.Type.DEAD)){
+							_direction = POOConstant.Dir.LEFT;
+							found = true;
+						}else if(i - _sight_range > 0 && (_sight[_sight_range+1][_sight_range].getType() == POOConstant.Type.EMPTY || _sight[_sight_range+1][_sight_range].getType() == POOConstant.Type.DEAD)){
+							_direction = POOConstant.Dir.RIGHT;
+							found = true;
+						}else if(j - _sight_range < 0 && (_sight[_sight_range][_sight_range-1].getType() == POOConstant.Type.EMPTY || _sight[_sight_range][_sight_range-1].getType() == POOConstant.Type.DEAD)){
+							_direction = POOConstant.Dir.UP;
+							found = true;
+						}else if(j - _sight_range > 0 && (_sight[_sight_range][_sight_range+1].getType() == POOConstant.Type.EMPTY || _sight[_sight_range][_sight_range+1].getType() == POOConstant.Type.DEAD)){
+							_direction = POOConstant.Dir.DOWN;
+							found = true;
+						}
 					}
 				}
 			}

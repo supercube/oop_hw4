@@ -18,7 +18,8 @@ public class RockSting extends Skill{
 	}
 	
 	
-	public RockSting(){
+	public RockSting(Pet pet){
+		super(pet);
 		_img_id = 0;
 		_ttl = 70;
 	}
@@ -33,6 +34,7 @@ public class RockSting extends Skill{
             pet.setHP(hp - 3);
         }else{
         	pet.setHP(0);
+        	getPet()._kill_count++;
         }
     }
 	

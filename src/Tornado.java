@@ -16,7 +16,8 @@ public class Tornado extends Skill{
 	}
 	
 	
-	public Tornado(POOConstant.Dir direction){
+	public Tornado(Pet pet, POOConstant.Dir direction){
+		super(pet);
 		_img_id = 0;
 		_ttl = 100;
 		_direction = direction;
@@ -32,6 +33,7 @@ public class Tornado extends Skill{
             pet.setHP(hp - 2);
         }else{
         	pet.setHP(0);
+        	getPet()._kill_count++;
         }
     }
 	

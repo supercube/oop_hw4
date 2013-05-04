@@ -17,8 +17,8 @@ public class TinyAttackSkill extends Skill{
 	}
 	
 	
-	public TinyAttackSkill(){
-		
+	public TinyAttackSkill(Pet pet){
+		super(pet);
 		_img_id = 0;
 		_ttl = 30;
 	}
@@ -29,8 +29,12 @@ public class TinyAttackSkill extends Skill{
 	
 	public void act(POOPet pet){
         int hp = pet.getHP();
-        if (hp > 0)
+        if (hp > 1){
             pet.setHP(hp - 1);
+        }else{
+        	pet.setHP(0);
+        	getPet()._kill_count++;
+        }
     }
 	
 	public boolean oneTimeStep(Arena arena, POOCoordinate pos){

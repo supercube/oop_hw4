@@ -14,7 +14,7 @@ public abstract class Pet extends POOPet{
 	protected int _count_down;
 	protected POOConstant.Dir _direction;
 	protected int _angry_count;
-	
+	protected int _kill_count = 0;
 	private boolean _angry;
 	private boolean _player;
 	
@@ -137,8 +137,7 @@ public abstract class Pet extends POOPet{
 	}
 	
 	protected POOAction act(POOArena arena){
-		POOAction action = new POOAction();
-		action.skill = new TinyAttackSkill();
+		POOAction action = null;
 		return action;
 	}
 	
