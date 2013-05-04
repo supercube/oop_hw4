@@ -84,6 +84,21 @@ public class Slime extends Pet{
 					_cds[0] = TinyAttackSkill.getCD();
 					setMP(mp-consume);
 					_actions = new ArrayList<Action>(0);
+					switch(direction){
+						case UP:
+							pos.y--;
+							break;
+						case DOWN:
+							pos.y++;
+							break;
+						case LEFT:
+							pos.x--;
+							break;
+						case RIGHT:
+							pos.x++;
+							break;
+						default:;
+					}
 					_actions.add(new Action(POOConstant.Type.SKILL, new TinyAttackSkill(), new Coordinate(pos.x, pos.y)));
 					return _actions;
 				}
@@ -105,14 +120,14 @@ public class Slime extends Pet{
 					
 					if(i==_sight_range && j==_sight_range-1){
 						POOCoordinate pos = ((Arena)arena).getPosition(this);
-						_actions = useSkill(POOConstant.Skill.TinyAttackSkill, new Coordinate(pos.x, pos.y - 1), POOConstant.Dir.UP);
+						_actions = useSkill(POOConstant.Skill.TinyAttackSkill, new Coordinate(pos.x, pos.y), POOConstant.Dir.UP);
 						if(_actions != null){
 							found = true;
 							return _actions;
 						}
 					}else if(i==_sight_range && j==_sight_range+1){
 						POOCoordinate pos = ((Arena)arena).getPosition(this);
-						_actions = useSkill(POOConstant.Skill.TinyAttackSkill, new Coordinate(pos.x, pos.y + 1), POOConstant.Dir.DOWN);
+						_actions = useSkill(POOConstant.Skill.TinyAttackSkill, new Coordinate(pos.x, pos.y), POOConstant.Dir.DOWN);
 						if(_actions != null){
 							found = true;
 							return _actions;
@@ -120,14 +135,14 @@ public class Slime extends Pet{
 							
 					}else if(j==_sight_range && i==_sight_range-1){
 						POOCoordinate pos = ((Arena)arena).getPosition(this);
-						_actions = useSkill(POOConstant.Skill.TinyAttackSkill, new Coordinate(pos.x - 1, pos.y), POOConstant.Dir.LEFT);
+						_actions = useSkill(POOConstant.Skill.TinyAttackSkill, new Coordinate(pos.x, pos.y), POOConstant.Dir.LEFT);
 						if(_actions != null){
 							found = true;
 							return _actions;
 						}
 					}else if(j==_sight_range && i==_sight_range+1){
 						POOCoordinate pos = ((Arena)arena).getPosition(this);
-						_actions = useSkill(POOConstant.Skill.TinyAttackSkill, new Coordinate(pos.x + 1, pos.y),POOConstant.Dir.RIGHT);
+						_actions = useSkill(POOConstant.Skill.TinyAttackSkill, new Coordinate(pos.x, pos.y),POOConstant.Dir.RIGHT);
 						if(_actions != null){
 							found = true;
 							return _actions;

@@ -43,7 +43,7 @@ public class RockArm extends Pet{
 	
 	public RockArm(){
 		setHP(6);
-		setMP(15);
+		setMP(10);
 		adjustAGIandTTA(_normal_agi);
 		
 		_img_id = _rnd.nextInt(4);
@@ -70,7 +70,7 @@ public class RockArm extends Pet{
 		setAngry();
 		
 		setHP(getHP()*2);
-		setMP(getMP()*2 + 2);
+		setMP(getMP()*2 + 6);
 		adjustAGIandTTA(_angry_agi);
 		_img_id += 4;
 		return true;
@@ -85,23 +85,28 @@ public class RockArm extends Pet{
 					_cds[0] = RockSting.getCD();
 					setMP(mp-consume);
 					_actions = new ArrayList<Action>(0);
-					_actions.add(new Action(POOConstant.Type.SKILL, new RockSting(), new Coordinate(pos.x, pos.y)));
+					Coordinate new_pos = new Coordinate(pos.x, pos.y);
 					switch(direction){
 						case UP:
 							pos.y--;
+							new_pos.y -= 2;
 							break;
 						case DOWN:
 							pos.y++;
+							new_pos.y += 2;
 							break;
 						case LEFT:
 							pos.x--;
+							new_pos.x -= 2;
 							break;
 						case RIGHT:
 							pos.x++;
+							new_pos.x += 2;
 							break;
 						default:;
 					}
 					_actions.add(new Action(POOConstant.Type.SKILL, new RockSting(), new Coordinate(pos.x, pos.y)));
+					_actions.add(new Action(POOConstant.Type.SKILL, new RockSting(), new_pos));
 					return _actions;
 				}
 				break;
@@ -120,28 +125,28 @@ public class RockArm extends Pet{
 					beAngry();
 					if(i==_sight_range && (j==_sight_range-1 || j==_sight_range-2)){
 						POOCoordinate pos = ((Arena)arena).getPosition(this);
-						_actions = useSkill(POOConstant.Skill.RockSting, new Coordinate(pos.x, pos.y - 1), POOConstant.Dir.UP);
+						_actions = useSkill(POOConstant.Skill.RockSting, new Coordinate(pos.x, pos.y), POOConstant.Dir.UP);
 						if(_actions != null){
 							found = true;
 							return _actions;
 						}
 					}else if(i==_sight_range && (j==_sight_range+1 || j==_sight_range+2)){
 						POOCoordinate pos = ((Arena)arena).getPosition(this);
-						_actions = useSkill(POOConstant.Skill.RockSting, new Coordinate(pos.x, pos.y + 1), POOConstant.Dir.DOWN);
+						_actions = useSkill(POOConstant.Skill.RockSting, new Coordinate(pos.x, pos.y), POOConstant.Dir.DOWN);
 						if(_actions != null){
 							found = true;
 							return _actions;
 						}
 					}else if(j==_sight_range && (i==_sight_range-1 || i==_sight_range-2)){
 						POOCoordinate pos = ((Arena)arena).getPosition(this);
-						_actions = useSkill(POOConstant.Skill.RockSting, new Coordinate(pos.x - 1, pos.y), POOConstant.Dir.LEFT);
+						_actions = useSkill(POOConstant.Skill.RockSting, new Coordinate(pos.x, pos.y), POOConstant.Dir.LEFT);
 						if(_actions != null){
 							found = true;
 							return _actions;
 						}
 					}else if(j==_sight_range && (i==_sight_range+1 || i==_sight_range+2)){
 						POOCoordinate pos = ((Arena)arena).getPosition(this);
-						_actions = useSkill(POOConstant.Skill.RockSting, new Coordinate(pos.x + 1, pos.y), POOConstant.Dir.RIGHT);
+						_actions = useSkill(POOConstant.Skill.RockSting, new Coordinate(pos.x, pos.y), POOConstant.Dir.RIGHT);
 						if(_actions != null){
 							found = true;
 							return _actions;
@@ -231,21 +236,6 @@ public ArrayList<Action> OneTimeStep(POOArena arena){
 						break;
 					case Z:
 						POOCoordinate pos = arena.getPosition(this);
-						switch(_direction){
-							case UP:
-								pos.y--;
-								break;
-							case DOWN:
-								pos.y++;
-								break;
-							case LEFT:
-								pos.x--;
-								break;
-							case RIGHT:
-								pos.x++;
-								break;
-							default:;
-						}
 						_actions = useSkill(_skills[0], pos, _direction);
 						if(_actions != null){
 							return _actions;
