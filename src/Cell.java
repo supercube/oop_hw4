@@ -46,8 +46,10 @@ public class Cell{
 	}
 	
 	public boolean add(POOConstant.Type type, int id, POOCoordinate pos, Object obj){
-		if(_type != POOConstant.Type.EMPTY && _type != POOConstant.Type.DEAD)
+		
+		if(_type != POOConstant.Type.EMPTY && _type != POOConstant.Type.DEAD){
 			return false;
+		}
 		
 		_type = type;
 		_id = id;

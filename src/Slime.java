@@ -10,7 +10,6 @@ public class Slime extends Pet{
 	
 	protected static Image[] _imgs;
 	protected static final int _no_img;
-	protected static Random _rnd;
 	protected static POOConstant.Skill[] _skills;
 	protected static final int _max_angry_time;
 	protected static final int _normal_agi;
@@ -29,7 +28,6 @@ public class Slime extends Pet{
 		_imgs[7] = Filter.filterOutBackground((new ImageIcon("Images/Red_Slime_4.png")).getImage(), new Color(0, 0, 0));
 		_imgs[8] = Filter.filterOutBackground((new ImageIcon("Images/Slime_dead.png")).getImage(), new Color(0, 0, 0));
 		_imgs[9] = Filter.filterOutBackground((new ImageIcon("Images/Red_Slime_dead.png")).getImage(), new Color(0, 0, 0));
-		_rnd = new Random();
 		_skills = new POOConstant.Skill[]{POOConstant.Skill.TinyAttackSkill, POOConstant.Skill.None, POOConstant.Skill.None, POOConstant.Skill.None};
 		_max_angry_time = 12;
 		_normal_agi = 10;

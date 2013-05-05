@@ -10,7 +10,6 @@ import javax.swing.ImageIcon;
 public class TorLion extends Pet{
 	protected static Image[] _imgs;
 	protected static final int _no_img;
-	protected static Random _rnd;
 	protected static POOConstant.Skill[] _skills;
 	protected static final int _max_angry_time;
 	protected static final int _normal_agi;
@@ -30,7 +29,6 @@ public class TorLion extends Pet{
 		_imgs[7] = Filter.filterOutBackground((new ImageIcon("Images/Angry_TorLion_4.png")).getImage(), new Color(0, 0, 0));
 		_imgs[8] = Filter.filterOutBackground((new ImageIcon("Images/TorLion_dead.png")).getImage(), new Color(0, 0, 0));
 		_imgs[9] = Filter.filterOutBackground((new ImageIcon("Images/Angry_TorLion_dead.png")).getImage(), new Color(0, 0, 0));
-		_rnd = new Random();
 		_skills = new POOConstant.Skill[]{POOConstant.Skill.TinyAttackSkill, POOConstant.Skill.Tornado, POOConstant.Skill.None, POOConstant.Skill.None};
 		_max_angry_time = 35;
 		_normal_agi = 20;
@@ -42,7 +40,7 @@ public class TorLion extends Pet{
 	private POOConstant.Dir _pre_direction;
 	
 	public TorLion(){
-		setHP(15);
+		setHP(16);
 		setMP(10);
 		adjustAGIandTTA(_normal_agi);
 		
@@ -209,7 +207,7 @@ public class TorLion extends Pet{
 		_sight = ((Arena)arena).getSight((POOPet)this);
 		boolean found = false;
 		_actions = null;
-		boolean powerskill = (_rnd.nextInt(16) == 15);
+		boolean powerskill = (_rnd.nextInt(12) == 0);
 		for(int i = 0; i < 2*_sight_range+1; i++){
 			for(int j = 0; j < 2*_sight_range+1; j++){
 				if(_sight[i][j] != null && (_sight[i][j].getType() == POOConstant.Type.PET || _sight[i][j].getType() == POOConstant.Type.PLAYER) && (i!=_sight_range || j!=_sight_range) ){
@@ -231,7 +229,6 @@ public class TorLion extends Pet{
 					}else if(i==_sight_range && j - _sight_range <= 4 && j - _sight_range > 0){
 						POOCoordinate pos = ((Arena)arena).getPosition(this);
 						if(getMP() >= 5 && powerskill){
-							System.out.println("tornado");
 							_actions = useSkill(POOConstant.Skill.Tornado, new Coordinate(pos.x, pos.y), POOConstant.Dir.DOWN);
 						}
 						if(_actions == null && j - _sight_range  == 1){
@@ -242,7 +239,6 @@ public class TorLion extends Pet{
 							return _actions;
 						}
 					}else if(j==_sight_range && _sight_range - i <= 4 && _sight_range - i > 0){
-						System.out.println("left");
 						POOCoordinate pos = ((Arena)arena).getPosition(this);
 						if(getMP() >= 5 && powerskill){
 							_actions = useSkill(POOConstant.Skill.Tornado, new Coordinate(pos.x, pos.y), POOConstant.Dir.LEFT);
@@ -256,7 +252,6 @@ public class TorLion extends Pet{
 							return _actions;
 						}
 					}else if(j==_sight_range && i==_sight_range+1 && i - _sight_range <= 4 && i - _sight_range > 0){
-						System.out.println("right");
 						POOCoordinate pos = ((Arena)arena).getPosition(this);
 						if(getMP() >= 5 && powerskill){
 							_actions = useSkill(POOConstant.Skill.Tornado, new Coordinate(pos.x, pos.y), POOConstant.Dir.RIGHT);
@@ -271,7 +266,7 @@ public class TorLion extends Pet{
 					}
 					
 					/* move toward other pet */
-					if(getMP() >= 5 && getHP() >= 10){
+					if(getMP() >= 5 && getHP() >= 14){
 						if(i - _sight_range < 0 && (_sight[_sight_range-1][_sight_range].getType() == POOConstant.Type.EMPTY || _sight[_sight_range-1][_sight_range].getType() == POOConstant.Type.DEAD)){
 							_direction = POOConstant.Dir.LEFT;
 							found = true;

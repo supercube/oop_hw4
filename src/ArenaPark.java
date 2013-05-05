@@ -20,7 +20,7 @@ public class ArenaPark extends Arena{
 	private POOConstant.Fog[][] _fog_of_war;
 	
 	private boolean _prev_fog = FOG;
-	private Random rnd;
+	private Random _rnd;
 	private int _game_status; /* -1: ?, 0: after init */
 	public static final int interval = 10;
 	
@@ -30,7 +30,7 @@ public class ArenaPark extends Arena{
 	public ArenaPark(){
 		try{
 			_timer = new Timer(interval, this);
-			
+			_rnd = new Random();
 			
 			_map = new Cell[_no_cell_x][_no_cell_y];
 			for(int i = 0; i < _no_cell_x; i++){
@@ -38,6 +38,7 @@ public class ArenaPark extends Arena{
 					_map[i][j] = new Cell();
 				}
 			}
+			
 			_fog_of_war = new POOConstant.Fog[_no_cell_x][_no_cell_y];
 			for(int i = 0; i < _no_cell_x; i++){
 				for(int j = 0; j < _no_cell_y; j++){
@@ -48,9 +49,11 @@ public class ArenaPark extends Arena{
 				}
 			}
 			_window = new ArenaFrame("Park", "Images/Park.png", _no_cell_x, _no_cell_y);
+			
 			_carr = new ArrayList<Cell>(0);
+			
 			_game_status = -1;
-			rnd = new Random();
+			
 		}catch(Exception e){
 			System.out.print("ArenaPark(): ");
 			System.out.println(e);
@@ -147,9 +150,29 @@ public class ArenaPark extends Arena{
 	
 	public void init(){
 		try{
+			/* add Obstacle to _map in advance */
+			int x, y;
+			for(int id = 0; id < 15; id++){
+				if(id < 10){
+					x = _rnd.nextInt(40);
+					y = _rnd.nextInt(20);
+				}else{
+					x = _rnd.nextInt(10)+30;
+					y = _rnd.nextInt(7);
+				}
+				Coordinate pos = new Coordinate(x, y);
+				
+				if(_map[x][y].add(POOConstant.Type.OBSTACLE, -1, pos, null)){
+					_carr.add(new Cell(POOConstant.Type.OBSTACLE, -1, pos, new Tree()));
+					System.out.println(id);
+				}else{
+					id--;
+				}
+			}
+			
+			/* add Pet */
 			_parr = getAllPets();
 			_pet_pos = new Coordinate[_parr.length];
-			int x, y;
 			for(int id = 0; id < _parr.length; id++){
 				if(id == 0){
 					((Pet)_parr[id]).setPlayer();
@@ -158,10 +181,12 @@ public class ArenaPark extends Arena{
 				}
 				
 				while(true){
-					x = rnd.nextInt(_no_cell_x);
-					y = rnd.nextInt(_no_cell_y);
+					x = _rnd.nextInt(_no_cell_x);
+					y = _rnd.nextInt(_no_cell_y);
+					_pet_pos[id] = new Coordinate(x, y);
+					_pet_pos[id].x = x;
+					_pet_pos[id].y = y;
 					if(_map[x][y].add(POOConstant.Type.PET, id, _pet_pos[id], _parr[id])){
-						_pet_pos[id] = new Coordinate(x, y);
 						((Pet)_parr[id]).setId(id);
 						_window.addToArenaIOPanel(((Pet)_parr[id]).getImage(), x, y, id);
 						if(id == 0){
@@ -173,6 +198,11 @@ public class ArenaPark extends Arena{
 					}
 				}
 			}
+			
+			/* add Object */
+			for(int id = 0; id < 15; id++)
+				_window.addToArenaIOPanel(((Obstacle)_carr.get(id).getObject()).getImage(), _carr.get(id).getPos().x, _carr.get(id).getPos().y);
+			
 			_window.addFog(_fog_of_war);
 			_window.setFog((new ImageIcon("Images/black.png")).getImage(), Filter.filterOutBackground((new ImageIcon("Images/fog.png")).getImage(), new Color(255, 255, 255)));
 		}catch(Exception e){
@@ -268,5 +298,7 @@ public class ArenaPark extends Arena{
 			}
 		}
 	}
+	
+	
 }
 

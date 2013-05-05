@@ -2,6 +2,7 @@ package ntu.csie.oop13spring;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Random;
 
 public abstract class Pet extends POOPet{
 	
@@ -17,6 +18,7 @@ public abstract class Pet extends POOPet{
 	protected int _kill_count = 0;
 	private boolean _angry;
 	private boolean _player;
+	protected static Random _rnd = new Random();
 	
 	protected ArrayList<Command> _cmds;
 	

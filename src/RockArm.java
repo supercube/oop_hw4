@@ -11,7 +11,6 @@ public class RockArm extends Pet{
 	
 	protected static Image[] _imgs;
 	protected static int _no_img;
-	protected static Random _rnd;
 	protected static POOConstant.Skill[] _skills;
 	protected static final int _max_angry_time;
 	protected static final int _normal_agi;
@@ -30,7 +29,6 @@ public class RockArm extends Pet{
 		_imgs[7] = Filter.filterOutBackground((new ImageIcon("Images/Angry_RockArm_4.png")).getImage(), new Color(0, 0, 0));
 		_imgs[8] = Filter.filterOutBackground((new ImageIcon("Images/RockArm_dead.png")).getImage(), new Color(0, 0, 0));
 		_imgs[9] = Filter.filterOutBackground((new ImageIcon("Images/Angry_RockArm_dead.png")).getImage(), new Color(0, 0, 0));
-		_rnd = new Random();
 		_skills = new POOConstant.Skill[]{POOConstant.Skill.RockSting, POOConstant.Skill.None, POOConstant.Skill.None, POOConstant.Skill.None};
 		_max_angry_time = 30;
 		_normal_agi = 15;
@@ -43,7 +41,7 @@ public class RockArm extends Pet{
 	
 	public RockArm(){
 		setHP(7);
-		setMP(10);
+		setMP(7);
 		adjustAGIandTTA(_normal_agi);
 		
 		_direction = POOConstant.Dir.getRandom();
