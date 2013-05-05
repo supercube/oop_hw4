@@ -66,16 +66,43 @@ public class TorLion extends Pet{
 		return _skills;
 	}
 	
+	public void getKillReward(){
+		_kill_count++;
+		if(isAngry()){
+			setHP(getHP() + 4);
+			setMP(getMP() + 8);
+		}else{
+			setHP(getHP() + 2);
+			setMP(getMP() + 4);
+		}
+		_angry_count += 10;
+	}
+	
 	protected boolean beAngry(){
-		if(isAngry() || _angry_count != _max_angry_time)
+		if(isAngry() || _angry_count < _max_angry_time)
 			return false;
 		
 		setAngry();
 		_img_id += 4;
-		setHP(getHP()*2 + 2);
+		setHP(getHP()*2 + 1);
 		setMP(getMP()*2 + 10);
 		adjustAGIandTTA(_angry_agi);
 		return true;
+	}
+	
+	protected void calmDownOrNot(){
+		if(isAngry()){
+			_angry_count--;
+			if(_angry_count <= 0){
+				resetAngry();
+				_img_id -= 4;
+				setHP(getHP()/2 + 1);
+				setMP(getMP()/2 + 1);
+				adjustAGIandTTA(_normal_agi);
+			}
+		}else if(_angry_count < _max_angry_time){
+			_angry_count++;
+		}
 	}
 	
 	public ArrayList<Action> useSkill(POOConstant.Skill id, POOCoordinate pos, POOConstant.Dir direction) {
@@ -297,18 +324,8 @@ public class TorLion extends Pet{
 			if(_direction == POOConstant.Dir.LEFT || _direction == POOConstant.Dir.RIGHT)
 				_pre_direction = _direction;
 			
-			if(isAngry()){
-				_angry_count--;
-				if(_angry_count <= 0){
-					resetAngry();
-					_img_id -= 4;
-					setHP(getHP()/2 + 1);
-					setMP(getMP()/2 + 1);
-					adjustAGIandTTA(_normal_agi);
-				}
-			}else if(_angry_count < _max_angry_time){
-				_angry_count++;
-			}
+			calmDownOrNot();
+			
 			if(!isPlayer())
 				return Strategy(arena);
 			else{

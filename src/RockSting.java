@@ -34,7 +34,7 @@ public class RockSting extends Skill{
             pet.setHP(hp - 3);
         }else{
         	pet.setHP(0);
-        	getPet()._kill_count++;
+        	getPet().getKillReward();;
         }
     }
 	

@@ -95,6 +95,8 @@ public abstract class Pet extends POOPet{
 	
 	protected abstract boolean beAngry();
 	
+	protected abstract void calmDownOrNot();
+	
 	protected final void setPlayer(){
 		_player = true;
 		_cmds = new ArrayList<Command>(0);
@@ -121,6 +123,8 @@ public abstract class Pet extends POOPet{
 	public abstract Image getImage();
 	
 	public abstract POOConstant.Skill[] getSkills();
+	
+	public abstract void getKillReward();
 	
 	public final int getSightRange(){
 		return _sight_range;

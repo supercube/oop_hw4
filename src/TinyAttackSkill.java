@@ -33,7 +33,7 @@ public class TinyAttackSkill extends Skill{
             pet.setHP(hp - 1);
         }else{
         	pet.setHP(0);
-        	getPet()._kill_count++;
+        	getPet().getKillReward();
         }
     }
 	

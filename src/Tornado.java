@@ -33,7 +33,7 @@ public class Tornado extends Skill{
             pet.setHP(hp - 2);
         }else{
         	pet.setHP(0);
-        	getPet()._kill_count++;
+        	getPet().getKillReward();;
         }
     }
 	

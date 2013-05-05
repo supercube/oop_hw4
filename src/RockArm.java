@@ -42,7 +42,7 @@ public class RockArm extends Pet{
 	private int[] _cds;
 	
 	public RockArm(){
-		setHP(8);
+		setHP(7);
 		setMP(10);
 		adjustAGIandTTA(_normal_agi);
 		
@@ -68,8 +68,20 @@ public class RockArm extends Pet{
 		return _max_angry_time;
 	}
 	
+	public void getKillReward(){
+		_kill_count++;
+		if(isAngry()){
+			setHP(getHP() + 4);
+			setMP(getMP() + 8);
+		}else{
+			setHP(getHP() + 2);
+			setMP(getMP() + 4);
+		}
+		_angry_count += 10;
+	}
+	
 	protected boolean beAngry(){
-		if(isAngry() || _angry_count != _max_angry_time)
+		if(isAngry() || _angry_count < _max_angry_time)
 			return false;
 		
 		setAngry();
@@ -79,6 +91,21 @@ public class RockArm extends Pet{
 		adjustAGIandTTA(_angry_agi);
 		_img_id += 4;
 		return true;
+	}
+	
+	protected void calmDownOrNot(){
+		if(isAngry()){
+			_angry_count--;
+			if(_angry_count <= 0){
+				resetAngry();
+				_img_id -= 4;
+				setHP(getHP()/2 + 1);
+				setMP(getMP()/2 + 2);
+				adjustAGIandTTA(_normal_agi);
+			}
+		}else if(_angry_count < _max_angry_time){
+			_angry_count++;
+		}
 	}
 	
 	public ArrayList<Action> useSkill(POOConstant.Skill id, POOCoordinate pos, POOConstant.Dir direction) {
@@ -206,19 +233,7 @@ public ArrayList<Action> OneTimeStep(POOArena arena){
 		if(_count_down <= 0){
 			_count_down = _tta + 1;
 			
-			
-			if(isAngry()){
-				_angry_count--;
-				if(_angry_count <= 0){
-					resetAngry();
-					_img_id -= 4;
-					setHP(getHP()/2 + 1);
-					setMP(getMP()/2 + 2);
-					adjustAGIandTTA(_normal_agi);
-				}
-			}else if(_angry_count < _max_angry_time){
-				_angry_count++;
-			}
+			calmDownOrNot();
 			
 			if(!isPlayer()){
 				return Strategy(arena);
