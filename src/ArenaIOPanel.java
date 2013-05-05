@@ -14,9 +14,10 @@ public class ArenaIOPanel extends JPanel{
 	
 	private ImageCell[] _imgcs;
 	private ImageCell[] _backgroundcs;
+	private ImageCell[] _foregroundcs;
 	private POOConstant.Fog[][] _fog;
 	private Image _unseen, _seen;
-	private int _imgcs_len, _bgcs_len, _max_imgcs;
+	private int _imgcs_len, _bgcs_len, _fgcs_len, _max_imgcs;
 	private Pet _player;
 	
 	public ArenaIOPanel(int no_cell_x, int no_cell_y){
@@ -32,6 +33,11 @@ public class ArenaIOPanel extends JPanel{
 		for(int i = 0; i < _max_imgcs; i++ )
 			_backgroundcs[i] = null;
 		_bgcs_len = 0;
+		
+		_foregroundcs = new ImageCell[_max_imgcs];
+		for(int i = 0; i < _max_imgcs; i++ )
+			_foregroundcs[i] = null;
+		_fgcs_len = 0;
 		
 		_x = _no_cell_x * POOConstant.CELL_X_SIZE;
 		_y = _no_cell_y * POOConstant.CELL_Y_SIZE;
@@ -66,6 +72,16 @@ public class ArenaIOPanel extends JPanel{
 			_bgcs_len++;
 		}
 		return _bgcs_len-1;
+	}
+	
+	public int addToForeground(Image img, int x, int y){
+		
+		ImageCell imgc = new ImageCell(img, x, y, 0, 0);
+		if(_fgcs_len + 1 < _max_imgcs){
+			_foregroundcs[_fgcs_len] = imgc;
+			_fgcs_len++;
+		}
+		return _fgcs_len-1;
 	}
 	
 	public void addFog(POOConstant.Fog[][] fog){
@@ -110,6 +126,13 @@ public class ArenaIOPanel extends JPanel{
 		for(int i = 0; i < _imgcs_len; i++){
 			if(_imgcs[i] != null && _fog[_imgcs[i]._x][_imgcs[i]._y] == POOConstant.Fog.BRIGHT){
 				g.drawImage(_imgcs[i]._img, _imgcs[i]._x * POOConstant.CELL_X_SIZE + _imgcs[i]._paddingx, _imgcs[i]._y * POOConstant.CELL_Y_SIZE + _imgcs[i]._paddingy, this);
+			}
+		}
+		
+		/* draw foreground units */
+		for(int i = 0; i < _fgcs_len; i++){
+			if(_foregroundcs[i] != null){
+				g.drawImage(_foregroundcs[i]._img, _foregroundcs[i]._x * POOConstant.CELL_X_SIZE + _foregroundcs[i]._paddingx, _foregroundcs[i]._y * POOConstant.CELL_Y_SIZE + _foregroundcs[i]._paddingy, this);
 			}
 		}
 		

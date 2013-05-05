@@ -150,7 +150,7 @@ public class ArenaPark extends Arena{
 	
 	public void init(){
 		try{
-			/* add Obstacle to _map in advance */
+			/* add Obstacle and foreground image to _map in advance */
 			int x, y;
 			for(int id = 0; id < 15; id++){
 				if(id < 10){
@@ -164,10 +164,15 @@ public class ArenaPark extends Arena{
 				
 				if(_map[x][y].add(POOConstant.Type.OBSTACLE, -1, pos, null)){
 					_carr.add(new Cell(POOConstant.Type.OBSTACLE, -1, pos, new Tree()));
-					System.out.println(id);
 				}else{
 					id--;
 				}
+			}
+			for(int id = 0; id < 50; id++){
+				x = _rnd.nextInt(40);
+				y = _rnd.nextInt(20);
+				int type = _rnd.nextInt(3);
+				_window.addToForeground(Grass._imgs[type], x, y);
 			}
 			
 			/* add Pet */
