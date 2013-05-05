@@ -117,34 +117,40 @@ public class ArenaIOPanel extends JPanel{
 		
 		/* draw background units (dead body)*/
 		for(int i = 0; i < _bgcs_len; i++){
-			if(_backgroundcs[i] != null){
+			if(_fog[_backgroundcs[i]._x*3+1][_backgroundcs[i]._y*3+1] == POOConstant.Fog.BRIGHT){
+				_backgroundcs[i]._seen = true;
+			}
+			if(_backgroundcs[i] != null && _backgroundcs[i]._seen){
 				g.drawImage(_backgroundcs[i]._img, _backgroundcs[i]._x * POOConstant.CELL_X_SIZE + _backgroundcs[i]._paddingx, _backgroundcs[i]._y * POOConstant.CELL_Y_SIZE + _backgroundcs[i]._paddingy, this);
 			}
 		}
 		
 		/* draw units */
 		for(int i = 0; i < _imgcs_len; i++){
-			if(_imgcs[i] != null && _fog[_imgcs[i]._x][_imgcs[i]._y] == POOConstant.Fog.BRIGHT){
+			if(_imgcs[i] != null && _fog[_imgcs[i]._x * 3 + 1][_imgcs[i]._y * 3 + 1] == POOConstant.Fog.BRIGHT){
 				g.drawImage(_imgcs[i]._img, _imgcs[i]._x * POOConstant.CELL_X_SIZE + _imgcs[i]._paddingx, _imgcs[i]._y * POOConstant.CELL_Y_SIZE + _imgcs[i]._paddingy, this);
 			}
 		}
 		
 		/* draw foreground units */
 		for(int i = 0; i < _fgcs_len; i++){
-			if(_foregroundcs[i] != null){
+			if(_fog[_foregroundcs[i]._x*3+1][_foregroundcs[i]._y*3+1] == POOConstant.Fog.BRIGHT){
+				_foregroundcs[i]._seen = true;
+			}
+			if(_foregroundcs[i] != null && _foregroundcs[i]._seen){
 				g.drawImage(_foregroundcs[i]._img, _foregroundcs[i]._x * POOConstant.CELL_X_SIZE + _foregroundcs[i]._paddingx, _foregroundcs[i]._y * POOConstant.CELL_Y_SIZE + _foregroundcs[i]._paddingy, this);
 			}
 		}
 		
 		/* draw fog of war */
-		for(int i = 0; i < _no_cell_x; i++){
-			for(int j = 0; j < _no_cell_y; j++){
+		for(int i = 0; i < _no_cell_x * 3; i++){
+			for(int j = 0; j < _no_cell_y * 3; j++){
 				switch(_fog[i][j]){
 					case UNSEEN:
-						g.drawImage(_unseen, i * POOConstant.CELL_X_SIZE, j * POOConstant.CELL_Y_SIZE, this);
+						g.drawImage(_unseen, i * (POOConstant.CELL_X_SIZE/3), j * (POOConstant.CELL_Y_SIZE/3), this);
 						break;
 					case SEEN:
-						g.drawImage(_seen, i * POOConstant.CELL_X_SIZE, j * POOConstant.CELL_Y_SIZE, this);
+						g.drawImage(_seen, i * (POOConstant.CELL_X_SIZE/3), j * (POOConstant.CELL_Y_SIZE/3), this);
 						break;
 					default:;
 				}
@@ -164,13 +170,14 @@ public class ArenaIOPanel extends JPanel{
 	private class ImageCell{
 		public Image _img;
 		public int _x, _y, _paddingx, _paddingy;
-		
+		public boolean _seen;
 		public ImageCell(Image img, int x, int y, int paddingx, int paddingy){
 			_img = img;
 			_x = x;
 			_y = y;
 			_paddingx = paddingx;
 			_paddingy = paddingy;
+			_seen = false;
 		}
 	}
 	

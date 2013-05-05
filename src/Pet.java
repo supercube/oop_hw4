@@ -9,7 +9,7 @@ public abstract class Pet extends POOPet{
 	
 	protected int _img_id;
 	protected int _sight_range;
-	protected Cell[][] _sight;
+	protected ArrayList<Cell> _sight;
 	protected int _id;
 	protected int _tta; // time to act
 	protected int _count_down;

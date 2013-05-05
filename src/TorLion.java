@@ -3,7 +3,6 @@ package ntu.csie.oop13spring;
 import java.awt.Color;
 import java.awt.Image;
 import java.util.ArrayList;
-import java.util.Random;
 
 import javax.swing.ImageIcon;
 
@@ -46,7 +45,7 @@ public class TorLion extends Pet{
 		
 		_direction = POOConstant.Dir.getRandom();
 		_img_id = _rnd.nextInt(4);
-		_sight_range = 7;
+		_sight_range = 8;
 		_count_down = _tta;
 		_cds = new int[]{0,0};
 		_angry_count = _rnd.nextInt(_max_angry_time - _max_angry_time/2) + _max_angry_time/2;
@@ -205,91 +204,116 @@ public class TorLion extends Pet{
 	public ArrayList<Action> Strategy(POOArena arena){
 		
 		_sight = ((Arena)arena).getSight((POOPet)this);
-		boolean found = false;
 		_actions = null;
+		boolean found = false;
 		boolean powerskill = (_rnd.nextInt(12) == 0);
-		for(int i = 0; i < 2*_sight_range+1; i++){
-			for(int j = 0; j < 2*_sight_range+1; j++){
-				if(_sight[i][j] != null && (_sight[i][j].getType() == POOConstant.Type.PET || _sight[i][j].getType() == POOConstant.Type.PLAYER) && (i!=_sight_range || j!=_sight_range) ){
-					beAngry();
-					
-					/* use skill */
-					if(i==_sight_range && _sight_range - j <= 4 && _sight_range - j > 0){
-						POOCoordinate pos = ((Arena)arena).getPosition(this);
-						if(getMP() >= 5 && powerskill){
-							_actions = useSkill(POOConstant.Skill.Tornado, new Coordinate(pos.x, pos.y), POOConstant.Dir.UP);
-						}
-						if(_actions == null && _sight_range - j == 1){
-							_actions = useSkill(POOConstant.Skill.TinyAttackSkill, new Coordinate(pos.x, pos.y), POOConstant.Dir.UP);
-						}
-						if(_actions != null){
-							found = true;
-							return _actions;
-						}
-					}else if(i==_sight_range && j - _sight_range <= 4 && j - _sight_range > 0){
-						POOCoordinate pos = ((Arena)arena).getPosition(this);
-						if(getMP() >= 5 && powerskill){
-							_actions = useSkill(POOConstant.Skill.Tornado, new Coordinate(pos.x, pos.y), POOConstant.Dir.DOWN);
-						}
-						if(_actions == null && j - _sight_range  == 1){
-							_actions = useSkill(POOConstant.Skill.TinyAttackSkill, new Coordinate(pos.x, pos.y), POOConstant.Dir.DOWN);
-						}
-						if(_actions != null){
-							found = true;
-							return _actions;
-						}
-					}else if(j==_sight_range && _sight_range - i <= 4 && _sight_range - i > 0){
-						POOCoordinate pos = ((Arena)arena).getPosition(this);
-						if(getMP() >= 5 && powerskill){
-							_actions = useSkill(POOConstant.Skill.Tornado, new Coordinate(pos.x, pos.y), POOConstant.Dir.LEFT);
-						}
-						if(_actions == null && _sight_range - i == 1){
-							_actions = useSkill(POOConstant.Skill.TinyAttackSkill, new Coordinate(pos.x, pos.y), POOConstant.Dir.LEFT);
-						
-						}
-						if(_actions != null){
-							found = true;
-							return _actions;
-						}
-					}else if(j==_sight_range && i==_sight_range+1 && i - _sight_range <= 4 && i - _sight_range > 0){
-						POOCoordinate pos = ((Arena)arena).getPosition(this);
-						if(getMP() >= 5 && powerskill){
-							_actions = useSkill(POOConstant.Skill.Tornado, new Coordinate(pos.x, pos.y), POOConstant.Dir.RIGHT);
-						}
-						if(_actions == null && i - _sight_range == 1){
-							_actions = useSkill(POOConstant.Skill.TinyAttackSkill, new Coordinate(pos.x, pos.y), POOConstant.Dir.RIGHT);
-						}
-						if(_actions != null){
-							found = true;
-							return _actions;
-						}
+		int x, y;
+		Cell tmp;
+		POOCoordinate pos = ((Arena)arena).getPosition(this);
+		/* check neighbor */
+		boolean up = true, down = true, left = true, right = true;
+		for(int id = 0; id < _sight.size(); id++){
+			tmp = _sight.get(id);
+			if(tmp == null)
+				continue;
+			x = tmp.getPos().x;
+			y = tmp.getPos().y;
+			if((x == pos.x) && (y == pos.y - 1)){ // up
+				if(tmp.getType() != POOConstant.Type.EMPTY && tmp.getType() != POOConstant.Type.DEAD)
+					up = false;
+			}else if((x == pos.x) && (y == pos.y + 1)){ // down
+				if(tmp.getType() != POOConstant.Type.EMPTY && tmp.getType() != POOConstant.Type.DEAD)
+					down = false;
+			}else if((x == pos.x - 1) && (y == pos.y)){ // left
+				if(tmp.getType() != POOConstant.Type.EMPTY && tmp.getType() != POOConstant.Type.DEAD)
+					left = false;
+			}else if((x == pos.x + 1) && (y == pos.y)){ // right
+				if(tmp.getType() != POOConstant.Type.EMPTY && tmp.getType() != POOConstant.Type.DEAD)
+					right = false;
+			}
+		}
+		
+		/* make decision */
+		for(int id = 0; id < _sight.size(); id++){
+			tmp = _sight.get(id);
+			if(tmp == null)
+				continue;
+			x = tmp.getPos().x;
+			y = tmp.getPos().y;
+			if((tmp.getType() == POOConstant.Type.PET || tmp.getType() == POOConstant.Type.PLAYER) && (x != pos.x || y != pos.y) ){
+				beAngry();
+				
+				/* use skill */
+				if(x == pos.x && pos.y - y <= 4 && pos.y - y > 0){
+					if(getMP() >= 5 && powerskill){
+						_actions = useSkill(POOConstant.Skill.Tornado, new Coordinate(pos.x, pos.y), POOConstant.Dir.UP);
 					}
-					
-					/* move toward other pet */
-					if(getMP() >= 5 && getHP() >= 14){
-						if(i - _sight_range < 0 && (_sight[_sight_range-1][_sight_range].getType() == POOConstant.Type.EMPTY || _sight[_sight_range-1][_sight_range].getType() == POOConstant.Type.DEAD)){
-							_direction = POOConstant.Dir.LEFT;
-							found = true;
-						}else if(i - _sight_range > 0 && (_sight[_sight_range+1][_sight_range].getType() == POOConstant.Type.EMPTY || _sight[_sight_range+1][_sight_range].getType() == POOConstant.Type.DEAD)){
-							_direction = POOConstant.Dir.RIGHT;
-							found = true;
-						}else if(j - _sight_range < 0 && (_sight[_sight_range][_sight_range-1].getType() == POOConstant.Type.EMPTY || _sight[_sight_range][_sight_range-1].getType() == POOConstant.Type.DEAD)){
-							_direction = POOConstant.Dir.UP;
-							found = true;
-						}else if(j - _sight_range > 0 && (_sight[_sight_range][_sight_range+1].getType() == POOConstant.Type.EMPTY || _sight[_sight_range][_sight_range+1].getType() == POOConstant.Type.DEAD)){
-							_direction = POOConstant.Dir.DOWN;
-							found = true;
-						}
+					if(_actions == null && pos.y - y == 1){
+						_actions = useSkill(POOConstant.Skill.TinyAttackSkill, new Coordinate(pos.x, pos.y), POOConstant.Dir.UP);
+					}
+					if(_actions != null){
+						found = true;
+						return _actions;
+					}
+				}else if(x == pos.x && y - pos.y <= 4 && y - pos.y > 0){
+					if(getMP() >= 5 && powerskill){
+						_actions = useSkill(POOConstant.Skill.Tornado, new Coordinate(pos.x, pos.y), POOConstant.Dir.DOWN);
+					}
+					if(_actions == null && y - pos.y  == 1){
+						_actions = useSkill(POOConstant.Skill.TinyAttackSkill, new Coordinate(pos.x, pos.y), POOConstant.Dir.DOWN);
+					}
+					if(_actions != null){
+						found = true;
+						return _actions;
+					}
+				}else if(y == pos.y && pos.x - x <= 4 && pos.x - x > 0){
+					if(getMP() >= 5 && powerskill){
+						_actions = useSkill(POOConstant.Skill.Tornado, new Coordinate(pos.x, pos.y), POOConstant.Dir.LEFT);
+					}
+					if(_actions == null && pos.x - x == 1){
+						_actions = useSkill(POOConstant.Skill.TinyAttackSkill, new Coordinate(pos.x, pos.y), POOConstant.Dir.LEFT);
+					}
+					if(_actions != null){
+						found = true;
+						return _actions;
+					}
+				}else if( y==pos.y && x==pos.x+1 && x - pos.x <= 4 && x - pos.x > 0){
+					if(getMP() >= 5 && powerskill){
+						_actions = useSkill(POOConstant.Skill.Tornado, new Coordinate(pos.x, pos.y), POOConstant.Dir.RIGHT);
+					}
+					if(_actions == null && x - pos.x == 1){
+						_actions = useSkill(POOConstant.Skill.TinyAttackSkill, new Coordinate(pos.x, pos.y), POOConstant.Dir.RIGHT);
+					}
+					if(_actions != null){
+						found = true;
+						return _actions;
+					}
+				}
+				
+				/* move toward other pet */
+				if(getMP() >= 5 && getHP() >= 14){
+					if(x - pos.x < 0 && left){
+						_direction = POOConstant.Dir.LEFT;
+						found = true;
+					}else if(x - pos.x > 0 && right){
+						_direction = POOConstant.Dir.RIGHT;
+						found = true;
+					}else if(y - pos.y < 0 && up){
+						_direction = POOConstant.Dir.UP;
+						found = true;
+					}else if(y - pos.y > 0 && down){
+						_direction = POOConstant.Dir.DOWN;
+						found = true;
 					}
 				}
 			}
+			
 		}
 		if(!found)
 			_direction = POOConstant.Dir.getRandom();//_rnd.nextInt(4);
 		
 		_actions = new ArrayList<Action>(0);
 		_actions.add(new Action(POOConstant.Type.MOVE, move(arena)));
-		
 		return _actions;
 	}
 	

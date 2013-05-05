@@ -25,6 +25,10 @@ public class Cell{
 		_skills = cell._skills;
 	}
 	
+	public Cell(int x, int y){
+		this(POOConstant.Type.EMPTY, -1, new Coordinate(x, y), null);
+	}
+	
 	public Cell(){
 		this(POOConstant.Type.EMPTY, -1, null, null);
 	}
@@ -45,7 +49,7 @@ public class Cell{
 		return _obj;
 	}
 	
-	public boolean add(POOConstant.Type type, int id, POOCoordinate pos, Object obj){
+	public boolean add(POOConstant.Type type, int id, Object obj){
 		
 		if(_type != POOConstant.Type.EMPTY && _type != POOConstant.Type.DEAD){
 			return false;
@@ -53,13 +57,12 @@ public class Cell{
 		
 		_type = type;
 		_id = id;
-		_pos = pos;
 		_obj = obj;
 		return true;
 	}
 	
 	public boolean add(Cell cell){
-		return add(cell._type, cell._id, cell._pos, cell._obj);
+		return add(cell._type, cell._id, cell._obj);
 	}
 	
 	public boolean appendSkill(Skill skill){
@@ -88,5 +91,9 @@ public class Cell{
 	
 	public void setDead(){
 		_type = POOConstant.Type.DEAD;
+	}
+	
+	public void setPos(POOCoordinate pos){
+		_pos = pos;
 	}
 }

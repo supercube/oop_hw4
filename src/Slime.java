@@ -46,7 +46,7 @@ public class Slime extends Pet{
 		
 		_direction = POOConstant.Dir.getRandom();
 		_img_id = _rnd.nextInt(4);
-		_sight_range = 2;
+		_sight_range = 3;
 		_count_down = _tta;
 		_count = 0;
 		_cds = new int[1];
@@ -143,54 +143,79 @@ public class Slime extends Pet{
 		beAngry(); // always try to be angry
 		
 		_sight = ((Arena)arena).getSight((POOPet)this);
+		_actions = null;
 		boolean found = false;
-		for(int i = 0; i < 2*_sight_range+1; i++){
-			for(int j = 0; j < 2*_sight_range+1; j++){
-				if(_sight[i][j] != null && (_sight[i][j].getType() == POOConstant.Type.PET || _sight[i][j].getType() == POOConstant.Type.PLAYER) && !(_sight[i][j].getObject() instanceof Slime) && (i!=_sight_range || j!=_sight_range) ){
-					
-					if(i==_sight_range && j==_sight_range-1){
-						POOCoordinate pos = ((Arena)arena).getPosition(this);
-						_actions = useSkill(POOConstant.Skill.TinyAttackSkill, new Coordinate(pos.x, pos.y), POOConstant.Dir.UP);
-						if(_actions != null){
-							found = true;
-							return _actions;
-						}
-					}else if(i==_sight_range && j==_sight_range+1){
-						POOCoordinate pos = ((Arena)arena).getPosition(this);
-						_actions = useSkill(POOConstant.Skill.TinyAttackSkill, new Coordinate(pos.x, pos.y), POOConstant.Dir.DOWN);
-						if(_actions != null){
-							found = true;
-							return _actions;
-						}
-							
-					}else if(j==_sight_range && i==_sight_range-1){
-						POOCoordinate pos = ((Arena)arena).getPosition(this);
-						_actions = useSkill(POOConstant.Skill.TinyAttackSkill, new Coordinate(pos.x, pos.y), POOConstant.Dir.LEFT);
-						if(_actions != null){
-							found = true;
-							return _actions;
-						}
-					}else if(j==_sight_range && i==_sight_range+1){
-						POOCoordinate pos = ((Arena)arena).getPosition(this);
-						_actions = useSkill(POOConstant.Skill.TinyAttackSkill, new Coordinate(pos.x, pos.y),POOConstant.Dir.RIGHT);
-						if(_actions != null){
-							found = true;
-							return _actions;
-						}
-					}else if(i - _sight_range < 0 && (_sight[_sight_range-1][_sight_range].getType() == POOConstant.Type.EMPTY || _sight[_sight_range-1][_sight_range].getType() == POOConstant.Type.DEAD)){
-						_direction = POOConstant.Dir.LEFT;
+		int x, y;
+		Cell tmp;
+		POOCoordinate pos = ((Arena)arena).getPosition(this);
+		
+		/* check neighbor */
+		boolean up = true, down = true, left = true, right = true;
+		for(int id = 0; id < _sight.size(); id++){
+			tmp = _sight.get(id);
+			if(tmp == null)
+				continue;
+			x = tmp.getPos().x;
+			y = tmp.getPos().y;
+			if((x == pos.x) && (y == pos.y - 1)){ // up
+				if(tmp.getType() != POOConstant.Type.EMPTY && tmp.getType() != POOConstant.Type.DEAD)
+					up = false;
+			}else if((x == pos.x) && (y == pos.y + 1)){ // down
+				if(tmp.getType() != POOConstant.Type.EMPTY && tmp.getType() != POOConstant.Type.DEAD)
+					down = false;
+			}else if((x == pos.x - 1) && (y == pos.y)){ // left
+				if(tmp.getType() != POOConstant.Type.EMPTY && tmp.getType() != POOConstant.Type.DEAD)
+					left = false;
+			}else if((x == pos.x + 1) && (y == pos.y)){ // right
+				if(tmp.getType() != POOConstant.Type.EMPTY && tmp.getType() != POOConstant.Type.DEAD)
+					right = false;
+			}
+		}
+		
+		/* make decision */
+		for(int id = 0; id < _sight.size(); id++){
+			tmp = _sight.get(id);
+			if(tmp == null)
+				continue;
+			x = tmp.getPos().x;
+			y = tmp.getPos().y;
+			if((tmp.getType() == POOConstant.Type.PET || tmp.getType() == POOConstant.Type.PLAYER) && !(tmp.getObject() instanceof Slime) && (x != pos.x || y != pos.y) ){
+				if(x == pos.x && y == pos.y - 1){
+					_actions = useSkill(POOConstant.Skill.TinyAttackSkill, new Coordinate(pos.x, pos.y), POOConstant.Dir.UP);
+					if(_actions != null){
 						found = true;
-					}else if(i - _sight_range > 0 && (_sight[_sight_range+1][_sight_range].getType() == POOConstant.Type.EMPTY || _sight[_sight_range+1][_sight_range].getType() == POOConstant.Type.DEAD)){
-						_direction = POOConstant.Dir.RIGHT;
-						found = true;
-					}else if(j - _sight_range < 0 && (_sight[_sight_range][_sight_range-1].getType() == POOConstant.Type.EMPTY || _sight[_sight_range][_sight_range-1].getType() == POOConstant.Type.DEAD)){
-						_direction = POOConstant.Dir.UP;
-						found = true;
-					}else if(j - _sight_range > 0 && (_sight[_sight_range][_sight_range+1].getType() == POOConstant.Type.EMPTY || _sight[_sight_range][_sight_range+1].getType() == POOConstant.Type.DEAD)){
-						_direction = POOConstant.Dir.DOWN;
-						found = true;
+						return _actions;
 					}
-					
+				}else if(x == pos.x && y == pos.y + 1){
+					_actions = useSkill(POOConstant.Skill.TinyAttackSkill, new Coordinate(pos.x, pos.y), POOConstant.Dir.DOWN);
+					if(_actions != null){
+						found = true;
+						return _actions;
+					}
+				}else if(y == pos.y && x == pos.x - 1){
+					_actions = useSkill(POOConstant.Skill.TinyAttackSkill, new Coordinate(pos.x, pos.y), POOConstant.Dir.LEFT);
+					if(_actions != null){
+						found = true;
+						return _actions;
+					}
+				}else if(y == pos.y  && x == pos.x + 1){
+					_actions = useSkill(POOConstant.Skill.TinyAttackSkill, new Coordinate(pos.x, pos.y),POOConstant.Dir.RIGHT);
+					if(_actions != null){
+						found = true;
+						return _actions;
+					}
+				}else if(x - pos.x < 0 && left){
+					_direction = POOConstant.Dir.LEFT;
+					found = true;
+				}else if(x - pos.x > 0 && right){
+					_direction = POOConstant.Dir.RIGHT;
+					found = true;
+				}else if(y - pos.y < 0 && up){
+					_direction = POOConstant.Dir.UP;
+					found = true;
+				}else if(y - pos.y > 0 && down){
+					_direction = POOConstant.Dir.DOWN;
+					found = true;
 				}
 			}
 		}

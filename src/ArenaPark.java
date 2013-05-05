@@ -35,13 +35,13 @@ public class ArenaPark extends Arena{
 			_map = new Cell[_no_cell_x][_no_cell_y];
 			for(int i = 0; i < _no_cell_x; i++){
 				for(int j = 0; j < _no_cell_y; j++){
-					_map[i][j] = new Cell();
+					_map[i][j] = new Cell(i, j);
 				}
 			}
 			
-			_fog_of_war = new POOConstant.Fog[_no_cell_x][_no_cell_y];
-			for(int i = 0; i < _no_cell_x; i++){
-				for(int j = 0; j < _no_cell_y; j++){
+			_fog_of_war = new POOConstant.Fog[_no_cell_x * 3][_no_cell_y * 3];
+			for(int i = 0; i < _no_cell_x * 3; i++){
+				for(int j = 0; j < _no_cell_y * 3; j++){
 					if(FOG)
 						_fog_of_war[i][j] = POOConstant.Fog.UNSEEN;
 					else
@@ -65,8 +65,8 @@ public class ArenaPark extends Arena{
 		
 		/* reset fog of war*/
 		if(_prev_fog != FOG){
-			for(int i = 0; i < _no_cell_x; i++){
-				for(int j = 0; j < _no_cell_y; j++){
+			for(int i = 0; i < _no_cell_x * 3; i++){
+				for(int j = 0; j < _no_cell_y * 3; j++){
 					if(FOG)
 						_fog_of_war[i][j] = POOConstant.Fog.UNSEEN;
 					else
@@ -162,7 +162,7 @@ public class ArenaPark extends Arena{
 				}
 				Coordinate pos = new Coordinate(x, y);
 				
-				if(_map[x][y].add(POOConstant.Type.OBSTACLE, -1, pos, null)){
+				if(_map[x][y].add(POOConstant.Type.OBSTACLE, -1, null)){
 					_carr.add(new Cell(POOConstant.Type.OBSTACLE, -1, pos, new Tree()));
 				}else{
 					id--;
@@ -179,6 +179,7 @@ public class ArenaPark extends Arena{
 			_parr = getAllPets();
 			_pet_pos = new Coordinate[_parr.length];
 			for(int id = 0; id < _parr.length; id++){
+				_parr[id].setName(Integer.toString(id));
 				if(id == 0){
 					((Pet)_parr[id]).setPlayer();
 					_window.addCommandListener(((Pet)_parr[id]).getCmdListener());
@@ -191,13 +192,13 @@ public class ArenaPark extends Arena{
 					_pet_pos[id] = new Coordinate(x, y);
 					_pet_pos[id].x = x;
 					_pet_pos[id].y = y;
-					if(_map[x][y].add(POOConstant.Type.PET, id, _pet_pos[id], _parr[id])){
+					if(_map[x][y].add(POOConstant.Type.PET, id, _parr[id])){
 						((Pet)_parr[id]).setId(id);
 						_window.addToArenaIOPanel(((Pet)_parr[id]).getImage(), x, y, id);
 						if(id == 0){
 							setFog((Pet)_parr[0], new Coordinate(x, y), POOConstant.Fog.BRIGHT);
 							_map[x][y].setEmpty();
-							_map[x][y].add(POOConstant.Type.PLAYER, id, _pet_pos[0], _parr[0]);
+							_map[x][y].add(POOConstant.Type.PLAYER, id, _parr[0]);
 						}
 						break;
 					}
@@ -212,6 +213,7 @@ public class ArenaPark extends Arena{
 			
 			_window.addFog(_fog_of_war);
 			_window.setFog((new ImageIcon("Images/black.png")).getImage(), Filter.filterOutBackground((new ImageIcon("Images/fog.png")).getImage(), new Color(255, 255, 255)));
+			System.out.println("End init");
 		}catch(Exception e){
 			System.out.print("init(): ");
 			System.out.println(e);
@@ -262,13 +264,9 @@ public class ArenaPark extends Arena{
 		return _map;
 	}
 	
-	public Cell[][] getSight(POOPet pet){
+	public ArrayList<Cell> getSight(POOPet pet){
 		int sight_range = ((Pet)pet).getSightRange();
-		Cell[][] sight = new Cell[2*sight_range+1][2*sight_range+1];
-		for(int i = 0; i < 2*sight_range+1; i++){
-			for(int j = 0; j < 2*sight_range+1; j++)
-				sight[i][j] = null;
-		}
+		ArrayList<Cell> sight = new ArrayList<Cell>(0);
 		POOCoordinate pos = getPosition(pet);
 		int x_lower = 0, y_lower = 0, x_upper = _no_cell_x - 1, y_upper = _no_cell_y - 1;
 		if(pos.x - sight_range > x_lower)
@@ -280,28 +278,34 @@ public class ArenaPark extends Arena{
 		if(pos.y + sight_range < y_upper)
 			y_upper = pos.y + sight_range;
 		
+		
 		for(int i = x_lower; i <= x_upper; i++){
 			for(int j = y_lower; j <= y_upper; j++){
-				sight[i - pos.x + sight_range][j - pos.y + sight_range] = new Cell(_map[i][j]);
+				if(Math.sqrt((i-pos.x)*(i-pos.x)+(j-pos.y)*(j-pos.y)) <= sight_range ){
+					sight.add(new Cell(_map[i][j]));
+				}
 			}
 		}
 		return sight;
 	}
 	
 	private void setFog(Pet pet, POOCoordinate pos, POOConstant.Fog fog){
-		int sight_range = pet.getSightRange();
-		int x_lower = 0, y_lower = 0, x_upper = _no_cell_x - 1, y_upper = _no_cell_y - 1;
-		if(pos.x - sight_range > x_lower)
-			x_lower = pos.x - sight_range;
-		if(pos.y - sight_range > y_lower)
-			y_lower = pos.y - sight_range;
-		if(pos.x + sight_range < x_upper)
-			x_upper = pos.x + sight_range;
-		if(pos.y + sight_range < y_upper)
-			y_upper = pos.y + sight_range;
+		int sight_range = pet.getSightRange() * 3;
+		Coordinate new_pos = new Coordinate(pos.x * 3+1, pos.y * 3 +1);
+		int x_lower = 0, y_lower = 0, x_upper = 3 * _no_cell_x - 1, y_upper = 3 * _no_cell_y - 1;
+		if(new_pos.x - sight_range > x_lower)
+			x_lower = new_pos.x - sight_range;
+		if(new_pos.y - sight_range > y_lower)
+			y_lower = new_pos.y - sight_range;
+		if(new_pos.x + sight_range < x_upper)
+			x_upper = new_pos.x + sight_range;
+		if(new_pos.y + sight_range < y_upper)
+			y_upper = new_pos.y + sight_range;
 		for(int i = x_lower; i <= x_upper; i++){
 			for(int j = y_lower; j <= y_upper; j++){
-				_fog_of_war[i][j] = fog;
+				if(Math.sqrt((i-new_pos.x)*(i-new_pos.x)+(j-new_pos.y)*(j-new_pos.y)) <= sight_range ){
+					_fog_of_war[i][j] = fog;
+				}
 			}
 		}
 	}
