@@ -153,8 +153,12 @@ public class ArenaIOPanel extends JPanel{
 		
 		/* draw player info */
 		String msg = "HP: " + _player.getHP() + "  MP: " + _player.getMP() + "  Anger: " + _player.getAnger() + "/" + _player.getMaxAnger() + "  kills: " + _player._kill_count;
-        g.setColor(Color.red);
-        g.drawString(msg, 0, 10);
+		int screenRes = Toolkit.getDefaultToolkit().getScreenResolution();
+	    int fontSize = (int)Math.round(10.0 * screenRes / 72.0);
+	    Font font = new Font("Arial", Font.BOLD, fontSize);
+	    g.setFont(font);
+		g.setColor(Color.red);
+        g.drawString(msg, 5, 15);
 	}
 	
 	private class ImageCell{

@@ -205,8 +205,10 @@ public class ArenaPark extends Arena{
 			}
 			
 			/* add Object */
-			for(int id = 0; id < 15; id++)
-				_window.addToArenaIOPanel(((Obstacle)_carr.get(id).getObject()).getImage(), _carr.get(id).getPos().x, _carr.get(id).getPos().y);
+			for(int id = 0; id < 15; id++){
+				_window.addToForeground(((Obstacle)_carr.get(id).getObject()).getImage(), _carr.get(id).getPos().x, _carr.get(id).getPos().y);
+			}
+				
 			
 			_window.addFog(_fog_of_war);
 			_window.setFog((new ImageIcon("Images/black.png")).getImage(), Filter.filterOutBackground((new ImageIcon("Images/fog.png")).getImage(), new Color(255, 255, 255)));
