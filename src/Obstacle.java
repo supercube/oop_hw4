@@ -2,25 +2,16 @@ package ntu.csie.oop13spring;
 
 import java.awt.Image;
 
-public abstract class Obstacle{
+public abstract class Obstacle implements VaporizableDImage{
     private int HP;
     private String name;
     
     protected int _img_id;
     
-    public abstract Image getImage();
-    
     static protected final boolean checkHP(int _HP){
         return (_HP >= 0 && _HP < 1024);
     }
 
-    static protected final boolean checkMP(int _MP){
-        return (_MP >= 0 && _MP < 1024);
-    }
-    
-    static protected final boolean checkAGI(int _AGI){
-        return (_AGI >= 0 && _AGI < 1024);
-    }
     
     protected final boolean setHP(int HP){
         if (checkHP(HP)){
@@ -31,7 +22,6 @@ public abstract class Obstacle{
             return false;
         }        
     }
-  
     
     protected final boolean setName(String name){
         if (name != null){

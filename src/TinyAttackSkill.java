@@ -37,14 +37,26 @@ public class TinyAttackSkill extends Skill{
         }
     }
 	
+	public void act(Obstacle ob){
+        int hp = ob.getHP();
+        if (hp > 1){
+            ob.setHP(hp - 1);
+        }else{
+        	ob.setHP(0);
+        }
+    }
+	
 	public boolean oneTimeStep(Arena arena, POOCoordinate pos){
 		_ttl -= 1;
 		
 		Cell[][] map = arena.getMap();
 		
 		if(_ttl == 20){
-			if(map[pos.x][pos.y].getType() == POOConstant.Type.PET || map[pos.x][pos.y].getType() == POOConstant.Type.PLAYER){
+			POOConstant.Type type = map[pos.x][pos.y].getType();
+			if(type == POOConstant.Type.PET || type == POOConstant.Type.PLAYER){
 				act((Pet)map[pos.x][pos.y].getObject());
+			}else if(type == POOConstant.Type.OBSTACLE){
+				act((Obstacle)map[pos.x][pos.y].getObject());
 			}
 		}
 		if(_ttl <= 15){

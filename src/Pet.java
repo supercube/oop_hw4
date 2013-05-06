@@ -4,7 +4,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Random;
 
-public abstract class Pet extends POOPet{
+public abstract class Pet extends POOPet implements DImage{
 	
 	
 	protected int _img_id;
@@ -121,8 +121,6 @@ public abstract class Pet extends POOPet{
 	}
 	
 	public abstract int getMaxAnger();
-	
-	public abstract Image getImage();
 	
 	public abstract POOConstant.Skill[] getSkills();
 	

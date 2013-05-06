@@ -83,13 +83,23 @@ public class ArenaPark extends Arena{
 			if(_carr.get(id).getObject() instanceof Skill){
 				POOCoordinate pos = _carr.get(id).getPos();
 				Skill skill = (Skill)_carr.get(id).getObject();
-				if(((Skill)_carr.get(id).getObject()).oneTimeStep(this, pos)){ // should vanish
+				if(skill.oneTimeStep(this, pos)){ // should vanish
 					_window.removeFromIOPanel(_carr.get(id).getId());
 					_map[pos.x][pos.y].removeSkill(skill);
 					_carr.remove(id);
 					id--;
 				}else{
-					_window.addToArenaIOPanel(((Skill)_carr.get(id).getObject()).getImage(), _carr.get(id).getPos().x, _carr.get(id).getPos().y, _carr.get(id).getId());
+					_window.addToArenaIOPanel(skill.getImage(), pos.x, pos.y, _carr.get(id).getId());
+				}
+			}else if(_carr.get(id).getObject() instanceof Obstacle){
+				POOCoordinate pos = _carr.get(id).getPos();
+				Obstacle ob = (Obstacle)_carr.get(id).getObject();
+				if(ob.oneTimeStep(this, pos)){ // replace image
+					_window.addToForeground(ob.getImage(), pos.x, pos.y, _carr.get(id).getId());
+					if(ob instanceof Tree){
+						_map[pos.x][pos.y].setEmpty();
+						_carr.remove(id);
+					}
 				}
 			}
 		}
@@ -177,9 +187,9 @@ public class ArenaPark extends Arena{
 					y = _rnd.nextInt(7);
 				}
 				Coordinate pos = new Coordinate(x, y);
-				
-				if(_map[x][y].add(POOConstant.Type.OBSTACLE, -1, null)){
-					_carr.add(new Cell(POOConstant.Type.OBSTACLE, -1, pos, new Tree()));
+				Tree tree = new Tree();
+				if(_map[x][y].add(POOConstant.Type.OBSTACLE, id, tree)){
+					_carr.add(new Cell(POOConstant.Type.OBSTACLE, id, pos, tree));
 				}else{
 					id--;
 				}
@@ -223,7 +233,7 @@ public class ArenaPark extends Arena{
 			
 			/* add Object */
 			for(int id = 0; id < 15; id++){
-				_window.addToForeground(((Obstacle)_carr.get(id).getObject()).getImage(), _carr.get(id).getPos().x, _carr.get(id).getPos().y);
+				_window.addToForeground(((Obstacle)_carr.get(id).getObject()).getImage(), _carr.get(id).getPos().x, _carr.get(id).getPos().y, id);
 			}
 				
 			

@@ -38,6 +38,15 @@ public class RockSting extends Skill{
         }
     }
 	
+	public void act(Obstacle ob){
+        int hp = ob.getHP();
+        if (hp > 2){
+            ob.setHP(hp - 2);
+        }else{
+        	ob.setHP(0);
+        }
+    }
+	
 	public boolean oneTimeStep(Arena arena, POOCoordinate pos){
 		_ttl -= 1;
 
@@ -48,8 +57,11 @@ public class RockSting extends Skill{
 		}
 		if(_ttl == 50){
 			_img_id++;
-			if(map[pos.x][pos.y].getType() == POOConstant.Type.PET || map[pos.x][pos.y].getType() == POOConstant.Type.PLAYER){
+			POOConstant.Type type = map[pos.x][pos.y].getType();
+			if(type == POOConstant.Type.PET || type == POOConstant.Type.PLAYER){
 				act((Pet)map[pos.x][pos.y].getObject());
+			}else if(type == POOConstant.Type.OBSTACLE){
+				act((Obstacle)map[pos.x][pos.y].getObject());
 			}
 		}
 		return vanish();

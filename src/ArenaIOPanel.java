@@ -59,7 +59,7 @@ public class ArenaIOPanel extends JPanel{
 			return -1;
 		
 		ImageCell imgc = new ImageCell(img, x, y, paddingx, paddingy);
-		if(id < 0){
+		if(id < 0 && _imgcs_len < _max_imgcs - 1){
 			_imgcs[_imgcs_len] = imgc;
 			id = _imgcs_len;
 		}else if(id < _max_imgcs){
@@ -72,24 +72,40 @@ public class ArenaIOPanel extends JPanel{
 		return id;
 	}
 	
-	public int addToBackground(Image img, int x, int y){
+	public int addToBackground(Image img, int x, int y, int id){
+		if(id >= _max_imgcs)
+			return -1;
 		
 		ImageCell imgc = new ImageCell(img, x, y, 0, 0);
-		if(_bgcs_len + 1 < _max_imgcs){
+		if(id < 0 && _bgcs_len < _max_imgcs - 1){
 			_backgroundcs[_bgcs_len] = imgc;
-			_bgcs_len++;
+			id = _bgcs_len;
+		}else if(id < _max_imgcs){
+			_backgroundcs[id] = imgc;
 		}
-		return _bgcs_len-1;
+		
+		if(id >= _bgcs_len){
+			_bgcs_len = id + 1;
+		}
+		return id;
 	}
 	
-	public int addToForeground(Image img, int x, int y){
+	public int addToForeground(Image img, int x, int y, int id){
+		if(id >= _max_imgcs)
+			return -1;
 		
 		ImageCell imgc = new ImageCell(img, x, y, 0, 0);
-		if(_fgcs_len + 1 < _max_imgcs){
+		if(id < 0 && _fgcs_len < _max_imgcs - 1){
 			_foregroundcs[_fgcs_len] = imgc;
-			_fgcs_len++;
+			id = _fgcs_len;
+		}else if(id < _max_imgcs){
+			_foregroundcs[id] = imgc;
 		}
-		return _fgcs_len-1;
+		
+		if(id >= _fgcs_len){
+			_fgcs_len = id + 1;
+		}
+		return id;
 	}
 	
 	public void addFog(POOConstant.Fog[][] fog){

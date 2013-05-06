@@ -70,18 +70,27 @@ public class ArenaFrame extends JFrame{
 		
 	}
 	
-	public int addToBackground(Image img, int x, int y){
+	
+	public int addToBackground(Image img, int x, int y, int id){
 		if(x < 0 || x >= _no_cell_x || y < 0 || y >= _no_cell_y)
 			return -1;
 		
-		return _panel.addToBackground(img, x, y);
+		return _panel.addToBackground(img, x, y, id);
+	}
+	
+	public int addToBackground(Image img, int x, int y){
+		return addToBackground(img, x, y, -1);
+	}
+	
+	public int addToForeground(Image img, int x, int y, int id){
+		if(x < 0 || x >= _no_cell_x || y < 0 || y >= _no_cell_y)
+			return -1;
+		
+		return _panel.addToForeground(img, x, y, id);
 	}
 	
 	public int addToForeground(Image img, int x, int y){
-		if(x < 0 || x >= _no_cell_x || y < 0 || y >= _no_cell_y)
-			return -1;
-		
-		return _panel.addToForeground(img, x, y);
+		return addToForeground(img, x, y, -1);
 	}
 	
 	public void addFog(POOConstant.Fog[][] fog){

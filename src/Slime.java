@@ -239,6 +239,9 @@ public class Slime extends Pet{
 			return _actions;
 		}
 		
+		if(!isAngry())
+			_sight_range = 3 + getHP()/5;
+		
 		/* cds count down */
 		for(int i = 0; i < _cds.length; i++)
 			if(_cds[i] > 0)

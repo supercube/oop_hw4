@@ -37,15 +37,28 @@ public class Tornado extends Skill{
         }
     }
 	
+	public void act(Obstacle ob){
+        int hp = ob.getHP();
+        if (hp > 2){
+            ob.setHP(hp - 2);
+        }else{
+        	ob.setHP(0);
+        }
+    }
+	
 	public boolean oneTimeStep(Arena arena, POOCoordinate pos){
 		_ttl -= 1;
 		
 		Cell[][] map = arena.getMap();
 		
 		if(_ttl == 85 || _ttl == 65 || _ttl == 45 || _ttl == 25 || _ttl == 5 ){
-			if(map[pos.x][pos.y].getType() == POOConstant.Type.PET || map[pos.x][pos.y].getType() == POOConstant.Type.PLAYER){
+			POOConstant.Type type = map[pos.x][pos.y].getType();
+			if(type == POOConstant.Type.PET || type == POOConstant.Type.PLAYER){
 				act((Pet)map[pos.x][pos.y].getObject());
+			}else if(type == POOConstant.Type.OBSTACLE){
+				act((Obstacle)map[pos.x][pos.y].getObject());
 			}
+			
 			map[pos.x][pos.y].removeSkill(this);
 			POOCoordinate border = arena.getSize();
 			switch(_direction){
