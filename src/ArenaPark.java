@@ -16,6 +16,8 @@ public class ArenaPark extends Arena{
 	private ArenaFrame _window;
 	private int _no_cell_x = 40;
 	private int _no_cell_y = 20;
+	private int _no_fog_x;
+	private int _no_fog_y;
 	private Cell[][] _map;
 	private POOConstant.Fog[][] _fog_of_war;
 	
@@ -38,10 +40,11 @@ public class ArenaPark extends Arena{
 					_map[i][j] = new Cell(i, j);
 				}
 			}
-			
-			_fog_of_war = new POOConstant.Fog[_no_cell_x * 3][_no_cell_y * 3];
-			for(int i = 0; i < _no_cell_x * 3; i++){
-				for(int j = 0; j < _no_cell_y * 3; j++){
+			_no_fog_x = _no_cell_x * (POOConstant.CELL_X_SIZE / POOConstant.FOG_X_SIZE);
+			_no_fog_y = _no_cell_y * (POOConstant.CELL_Y_SIZE / POOConstant.FOG_Y_SIZE);
+			_fog_of_war = new POOConstant.Fog[_no_fog_x][_no_fog_y];
+			for(int i = 0; i < _no_fog_x; i++){
+				for(int j = 0; j < _no_fog_y; j++){
 					if(FOG)
 						_fog_of_war[i][j] = POOConstant.Fog.UNSEEN;
 					else
@@ -65,8 +68,8 @@ public class ArenaPark extends Arena{
 		
 		/* reset fog of war*/
 		if(_prev_fog != FOG){
-			for(int i = 0; i < _no_cell_x * 3; i++){
-				for(int j = 0; j < _no_cell_y * 3; j++){
+			for(int i = 0; i < _no_fog_x; i++){
+				for(int j = 0; j < _no_fog_y; j++){
 					if(FOG)
 						_fog_of_war[i][j] = POOConstant.Fog.UNSEEN;
 					else
@@ -141,8 +144,21 @@ public class ArenaPark extends Arena{
 			
 			/* adjust fog of war */
 			if(FOG && id == 0 && prev_pos != new_pos){
+				
+				/* old slow method */
 				setFog((Pet)_parr[0], prev_pos, POOConstant.Fog.SEEN);
 				setFog((Pet)_parr[0], new_pos, POOConstant.Fog.BRIGHT);
+				
+				/* new bug method 
+				if(new_pos.x > prev_pos.x)
+					moveFog((Pet)_parr[0], new_pos, POOConstant.Dir.RIGHT);
+				else if(new_pos.x < prev_pos.x)
+					moveFog((Pet)_parr[0], new_pos, POOConstant.Dir.LEFT);
+				else if(new_pos.y > prev_pos.y)
+					moveFog((Pet)_parr[0], new_pos, POOConstant.Dir.DOWN);
+				else if(new_pos.y < prev_pos.y)
+					moveFog((Pet)_parr[0], new_pos, POOConstant.Dir.UP);
+				*/
 			}
 		}
 		_window.redraw();
@@ -290,9 +306,12 @@ public class ArenaPark extends Arena{
 	}
 	
 	private void setFog(Pet pet, POOCoordinate pos, POOConstant.Fog fog){
-		int sight_range = pet.getSightRange() * 3;
-		Coordinate new_pos = new Coordinate(pos.x * 3+1, pos.y * 3 +1);
-		int x_lower = 0, y_lower = 0, x_upper = 3 * _no_cell_x - 1, y_upper = 3 * _no_cell_y - 1;
+		int x_times = POOConstant.CELL_X_SIZE / POOConstant.FOG_X_SIZE;
+		int y_times = POOConstant.CELL_Y_SIZE / POOConstant.FOG_Y_SIZE;
+		int x_add = x_times/2, y_add = y_times/2;
+		int sight_range = pet.getSightRange() * ((x_times + y_times)/2);
+		Coordinate new_pos = new Coordinate(pos.x * x_times + x_add, pos.y * y_times + y_add);
+		int x_lower = 0, y_lower = 0, x_upper = _no_fog_x - 1, y_upper = _no_fog_y - 1;
 		if(new_pos.x - sight_range > x_lower)
 			x_lower = new_pos.x - sight_range;
 		if(new_pos.y - sight_range > y_lower)
@@ -310,6 +329,67 @@ public class ArenaPark extends Arena{
 		}
 	}
 	
+	private void moveFog(Pet pet, POOCoordinate pos, POOConstant.Dir direction){
+		int x_times = POOConstant.CELL_X_SIZE / POOConstant.FOG_X_SIZE;
+		int y_times = POOConstant.CELL_Y_SIZE / POOConstant.FOG_Y_SIZE;
+		int x_add = x_times/2, y_add = y_times/2;
+		int sight_range = pet.getSightRange() * ((x_times + y_times)/2);
+		Coordinate new_pos = new Coordinate(pos.x * x_times + x_add, pos.y * y_times + y_add);
+		//Coordinate new_cur_pos = new Coordinate(pre_pos.x * x_times + x_add, pre_pos.y * y_times + y_add);
+		
+		int x_lower = 0, y_lower = 0, x_upper = _no_fog_x - 1, y_upper = _no_fog_y - 1;
+		if(new_pos.x - sight_range > x_lower)
+			x_lower = new_pos.x - sight_range;
+		if(new_pos.y - sight_range > y_lower)
+			y_lower = new_pos.y - sight_range;
+		if(new_pos.x + sight_range < x_upper)
+			x_upper = new_pos.x + sight_range;
+		if(new_pos.y + sight_range < y_upper)
+			y_upper = new_pos.y + sight_range;
+		
+		switch(direction){
+			case RIGHT:
+				x_lower -= x_times;
+				if(x_lower < 0)
+					x_lower = 0;
+				break;
+			case LEFT:
+				x_upper += x_times;
+				if(x_upper >= _no_fog_x)
+					x_upper = _no_fog_x - 1;
+				break;
+			case DOWN:
+				y_lower -= y_times;
+				if(y_lower < 0)
+					y_lower = 0;
+				break;
+			case UP:
+				y_upper += y_times;
+				if(y_upper >= _no_fog_y)
+					y_upper = _no_fog_y - 1;
+				break;
+			default:;
+		}
+		boolean jump;
+		for(int i = x_lower; i <= x_upper; i++){
+			jump = false;
+			for(int j = y_lower; j <= y_upper; j++){
+				
+				if(!jump && _fog_of_war[i][j] == POOConstant.Fog.BRIGHT){
+					System.out.println(new_pos.y + " " + y_upper);
+					j = y_upper - j - y_times;
+					jump = true;
+					continue;
+				}
+				if(Math.sqrt((i-new_pos.x)*(i-new_pos.x)+(j-new_pos.y)*(j-new_pos.y)) <= sight_range ){
+					_fog_of_war[i][j] = POOConstant.Fog.BRIGHT;
+				}else if(_fog_of_war[i][j] != POOConstant.Fog.UNSEEN){
+					_fog_of_war[i][j] = POOConstant.Fog.SEEN;
+				}
+				
+			}
+		}
+	}
 	
 }
 
