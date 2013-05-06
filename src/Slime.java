@@ -227,7 +227,7 @@ public class Slime extends Pet{
 		return _actions;
 	}
 	
-	public ArrayList<Action> OneTimeStep(POOArena arena){
+	public ArrayList<Action> oneTimeStep(POOArena arena){
 		
 		/* check whether is dead */
 		if(getHP() <= 0){

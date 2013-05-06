@@ -116,4 +116,8 @@ public class ArenaFrame extends JFrame{
 	public void redraw(){
 		_panel.repaint();
 	}
+	
+	public void addGameInfo(GameInfo game){
+		_panel.addGameInfo(game);
+	}
 }

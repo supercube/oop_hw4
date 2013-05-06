@@ -30,4 +30,8 @@ public class POOConstant{
 	public static enum Fog{
 		UNSEEN, SEEN, BRIGHT
 	}
+	
+	public static enum Game{
+		UNDEFINED, INIT, INGAME, GAMEOVER, WIN, END
+	}
 }

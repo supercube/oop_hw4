@@ -9,7 +9,7 @@ import java.awt.event.*;
 
 public class ArenaPark extends Arena{
 
-	protected static boolean FOG = true;
+	//protected static boolean FOG = true;
 	
 	
 	private Timer _timer;
@@ -21,18 +21,23 @@ public class ArenaPark extends Arena{
 	private Cell[][] _map;
 	private POOConstant.Fog[][] _fog_of_war;
 	
-	private boolean _prev_fog = FOG;
+	private boolean _prev_fog;
 	private Random _rnd;
-	private int _game_status; /* -1: ?, 0: after init */
+	//private POOConstant.Game _game_status;
+	private int _init_count_down;
+	
 	public static final int interval = 10;
 	
 	private POOPet[] _parr;
 	private Coordinate _pet_pos[];
 	private ArrayList<Cell> _carr;
+	private GameInfo _game;
+	
 	public ArenaPark(){
 		try{
 			_timer = new Timer(interval, this);
 			_rnd = new Random();
+			_init_count_down = 50;
 			
 			_map = new Cell[_no_cell_x][_no_cell_y];
 			for(int i = 0; i < _no_cell_x; i++){
@@ -40,45 +45,69 @@ public class ArenaPark extends Arena{
 					_map[i][j] = new Cell(i, j);
 				}
 			}
+			
+			_window = new ArenaFrame("Park", "Images/Park.png", _no_cell_x, _no_cell_y);
+			_carr = new ArrayList<Cell>(0);
+			
+			_game = new GameInfo(POOConstant.Game.UNDEFINED, true);
+			_window.addGameInfo(_game);
+			
+			_prev_fog = _game._fog;
 			_no_fog_x = _no_cell_x * (POOConstant.CELL_X_SIZE / POOConstant.FOG_X_SIZE);
 			_no_fog_y = _no_cell_y * (POOConstant.CELL_Y_SIZE / POOConstant.FOG_Y_SIZE);
 			_fog_of_war = new POOConstant.Fog[_no_fog_x][_no_fog_y];
 			for(int i = 0; i < _no_fog_x; i++){
 				for(int j = 0; j < _no_fog_y; j++){
-					if(FOG)
+					if(_game._fog)
 						_fog_of_war[i][j] = POOConstant.Fog.UNSEEN;
 					else
 						_fog_of_war[i][j] = POOConstant.Fog.BRIGHT;
 				}
 			}
-			_window = new ArenaFrame("Park", "Images/Park.png", _no_cell_x, _no_cell_y);
-			
-			_carr = new ArrayList<Cell>(0);
-			
-			_game_status = -1;
 			
 		}catch(Exception e){
-			System.out.print("ArenaPark(): ");
+			System.out.print("Constructor ArenaPark(): ");
 			System.out.println(e);
 		}
 		
 	}
 	
 	public void actionPerformed(ActionEvent e){
+		switch(_game._status){
+			
+			
+			case INGAME:
+			case GAMEOVER:
+				inGameAction(e);
+				break;
+			case INIT:
+				_init_count_down--;
+				if(_init_count_down <= 0){
+					_game._status = POOConstant.Game.INGAME;
+				}
+				break;
+			
+			default:;
+		}
+	}
+
+	public void inGameAction(ActionEvent e){
 		
 		/* reset fog of war*/
-		if(_prev_fog != FOG){
+		if(_prev_fog != _game._fog){
 			for(int i = 0; i < _no_fog_x; i++){
 				for(int j = 0; j < _no_fog_y; j++){
-					if(FOG)
+					if(_game._fog)
 						_fog_of_war[i][j] = POOConstant.Fog.UNSEEN;
 					else
 						_fog_of_war[i][j] = POOConstant.Fog.BRIGHT;
 				}
 			}
-			_prev_fog = FOG;
+			_prev_fog = _game._fog;
+			setFog((Pet)_parr[0], (POOCoordinate)_pet_pos[0], POOConstant.Fog.BRIGHT);
 		}
 		
+		/* oneTimeStep for Skills/Obstacles */
 		for(int id = 0; id < _carr.size(); id++){
 			if(_carr.get(id).getObject() instanceof Skill){
 				POOCoordinate pos = _carr.get(id).getPos();
@@ -97,23 +126,25 @@ public class ArenaPark extends Arena{
 				if(ob.oneTimeStep(this, pos)){ // replace image
 					_window.addToForeground(ob.getImage(), pos.x, pos.y, _carr.get(id).getId());
 					if(ob instanceof Tree){
-						_map[pos.x][pos.y].setEmpty();
 						_carr.remove(id);
+						_map[pos.x][pos.y].setEmpty();
 					}
 				}
+				
 			}
 		}
 		
+		/* oneTimeStep for Pets */
 		POOCoordinate prev_pos, new_pos;
 		ArrayList<Action> actions;
 		int tmp;
 		boolean dead;
 		for(int id = _parr.length - 1; id >= 0; id--){
-			if(_parr[id] == null)
+			if(_parr[id] == null || ((Pet)_parr[id]).isDead())
 				continue;
 			
 			prev_pos = getPosition(_parr[id]);
-			actions = ((Pet)_parr[id]).OneTimeStep(this);
+			actions = ((Pet)_parr[id]).oneTimeStep(this);
 			new_pos = prev_pos;
 			dead = false;
 			if(actions == null){
@@ -147,13 +178,16 @@ public class ArenaPark extends Arena{
 			if(dead){
 				_window.removeFromIOPanel(id);
 				_window.addToBackground(((Pet)_parr[id]).getImage(), new_pos.x, new_pos.y);
-				_parr[id] = null;
+				((Pet)_parr[id]).confirmDead();//_parr[id] = null;
+				if(id == 0){
+					_game._status = POOConstant.Game.GAMEOVER;
+				}
 			}else{
 				_window.addToArenaIOPanel(((Pet)_parr[id]).getImage(), new_pos.x, new_pos.y, id);
 			}
 			
 			/* adjust fog of war */
-			if(FOG && id == 0 && prev_pos != new_pos){
+			if(_game._fog && id == 0 && prev_pos != new_pos){
 				
 				/* old slow method */
 				setFog((Pet)_parr[0], prev_pos, POOConstant.Fog.SEEN);
@@ -248,16 +282,10 @@ public class ArenaPark extends Arena{
 	
 	public boolean fight(){
 		while(true){
-			switch(_game_status){
-				case 0:
-					
-					break;
-				case -1:
+			if(_game._status == POOConstant.Game.UNDEFINED){
+					_game._status = POOConstant.Game.INIT;
 					init();
-					_game_status = 0;
 					_timer.start();
-					break;
-				default:;
 			}
 		}
 	}

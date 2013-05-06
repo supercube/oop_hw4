@@ -18,6 +18,8 @@ public abstract class Pet extends POOPet implements DImage{
 	protected int _kill_count = 0;
 	private boolean _angry;
 	private boolean _player;
+	private boolean _dead = false;
+	
 	protected static Random _rnd = new Random();
 	
 	protected ArrayList<Command> _cmds;
@@ -87,6 +89,14 @@ public abstract class Pet extends POOPet implements DImage{
 		return _cmds;
 	}
 	
+	protected final void confirmDead(){
+		_dead = true;
+	}
+	
+	protected final boolean isDead(){
+		return _dead;
+	}
+	
 	protected final void setAngry(){
 		_angry = true;
 	}
@@ -132,7 +142,7 @@ public abstract class Pet extends POOPet implements DImage{
 	
 	public abstract ArrayList<Action> Strategy(POOArena arena);
 	
-	public abstract ArrayList<Action> OneTimeStep(POOArena arena);
+	public abstract ArrayList<Action> oneTimeStep(POOArena arena);
 	
 	public abstract ArrayList<Action> useSkill(POOConstant.Skill id, POOCoordinate pos, POOConstant.Dir direction);
 	

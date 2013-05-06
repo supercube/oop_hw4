@@ -1,18 +1,18 @@
 package ntu.csie.oop13spring;
 
 import java.awt.*;
-import java.util.Random;
 
 import javax.swing.ImageIcon;
 
 public class Tree extends Obstacle{
 	private static Image _imgs[];
 	static{
-		_imgs = new Image[2];
+		_imgs = new Image[3];
 		_imgs[0] = Filter.filterOutBackground((new ImageIcon("Images/Tree.png")).getImage(), new Color(0, 0, 0));
 		_imgs[1] = Filter.filterOutBackground((new ImageIcon("Images/Tree_dead.png")).getImage(), new Color(0, 0, 0));
 	}
 	
+	protected int _count_down;
 	public Tree(){
 		setHP(4);
 		_img_id = 0;

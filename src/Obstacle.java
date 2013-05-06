@@ -7,7 +7,6 @@ public abstract class Obstacle implements VaporizableDImage{
     private String name;
     
     protected int _img_id;
-    
     static protected final boolean checkHP(int _HP){
         return (_HP >= 0 && _HP < 1024);
     }

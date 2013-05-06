@@ -14,6 +14,7 @@ public class ArenaIOPanel extends JPanel{
 	private int _no_fog_x;
 	private int _no_fog_y;
 	private int _x, _y;
+	private int _screenRes = Toolkit.getDefaultToolkit().getScreenResolution();
 	private ArrayList<Command> _cmds;
 	
 	private ImageCell[] _imgcs;
@@ -23,7 +24,8 @@ public class ArenaIOPanel extends JPanel{
 	private Image _unseen, _seen;
 	private int _imgcs_len, _bgcs_len, _fgcs_len, _max_imgcs;
 	private Pet _player;
-	
+	private GameInfo _game;
+	private int _counter;
 	private static Image _star = Filter.filterOutBackground((new ImageIcon("Images/Star.png")).getImage(), new Color(0, 0, 0));
 	
 	public ArenaIOPanel(int no_cell_x, int no_cell_y){
@@ -50,6 +52,7 @@ public class ArenaIOPanel extends JPanel{
 		_x = _no_cell_x * POOConstant.CELL_X_SIZE;
 		_y = _no_cell_y * POOConstant.CELL_Y_SIZE;
 		
+		_counter = 0;
 		addKeyListener(new Adapter());
 		setFocusable(true);
 	}
@@ -81,6 +84,7 @@ public class ArenaIOPanel extends JPanel{
 			_backgroundcs[_bgcs_len] = imgc;
 			id = _bgcs_len;
 		}else if(id < _max_imgcs){
+			imgc._seen = _backgroundcs[id]._seen;
 			_backgroundcs[id] = imgc;
 		}
 		
@@ -99,6 +103,7 @@ public class ArenaIOPanel extends JPanel{
 			_foregroundcs[_fgcs_len] = imgc;
 			id = _fgcs_len;
 		}else if(id < _max_imgcs){
+			imgc._seen = _foregroundcs[id]._seen;
 			_foregroundcs[id] = imgc;
 		}
 		
@@ -138,10 +143,33 @@ public class ArenaIOPanel extends JPanel{
 	}
 	
 	public void paint(Graphics g) {
+		switch(_game._status){
+			
+			    
+			case INGAME:
+			case GAMEOVER:
+				inGamePaint(g);
+				if(_game._status == POOConstant.Game.GAMEOVER){
+					g.setFont(new Font("Arial", Font.BOLD, (int)Math.round(30.0 * _screenRes / 72.0)));
+					g.setColor(Color.red);
+					g.drawString("Game Over", _x / 2 - 90, _y / 2 - 10);
+				}
+				break;
+			case INIT:
+				g.setFont(new Font("Arial", Font.BOLD, (int)Math.round(30.0 * _screenRes / 72.0)));
+				g.setColor(Color.red);
+				g.drawString("Game Start", _x / 2 - 90, _y / 2 - 10);
+				break;
+			default:;
+		}
+	}
+	
+	public void inGamePaint(Graphics g) {
 		
 		int x_times = POOConstant.CELL_X_SIZE / POOConstant.FOG_X_SIZE;
 		int y_times = POOConstant.CELL_Y_SIZE / POOConstant.FOG_Y_SIZE;
 		int x_add = x_times/2, y_add = y_times/2;
+			
 		
 		/* draw background units (dead body)*/
 		for(int i = 0; i < _bgcs_len; i++){
@@ -187,22 +215,27 @@ public class ArenaIOPanel extends JPanel{
 		
 		/* draw player info */
 		//"  MP: " + _player.getMP() + "  Anger: " + _player.getAnger() + "/" + _player.getMaxAnger() + "  kills: " + _player._kill_count;
-		int screenRes = Toolkit.getDefaultToolkit().getScreenResolution();
-		int fontSize = (int)Math.round(10.0 * screenRes / 72.0);
-	    Font font = new Font("Arial", Font.BOLD, fontSize);
-	    g.setFont(font);
+		
+		int fontSize = (int)Math.round(10.0 * _screenRes / 72.0);
+	    g.setFont(new Font("Arial", Font.BOLD, fontSize));
 		g.setColor(Color.red);
         g.drawString("HP: ", 5, 15);
         g.fillRect(40, 7, _player.getHP()*4, 7);
         g.setColor(Color.blue);
         g.drawString("MP: ", 5, 30);
         g.fillRect(40, 22, _player.getMP()*4, 7);
+        
+        g.setColor(Color.yellow);
+        g.drawString("Ang: ", 5, 45);
         if(_player.getAnger() >= _player.getMaxAnger() || _player.isAngry()){
-            g.setColor(new Color(255, 110, 0));
+        	if((_counter++)%2 == 0){
+            	g.setColor(Color.red);
+        	}else{
+            	g.setColor(Color.orange); //new Color(255, 110, 0));
+        	}
         }else{
         	g.setColor(Color.yellow);
         }
-        g.drawString("Ang: ", 5, 45);
         g.fillRect(40, 37, _player.getAnger()*4, 7);
         for(int i = 0; i < _player._kill_count; i++){
         	g.drawImage(_star, 5 + i * 10, 50, this);
@@ -233,8 +266,13 @@ public class ArenaIOPanel extends JPanel{
             /* functional key */
             switch(key){
             	case KeyEvent.VK_F1:
-            		ArenaPark.FOG = !(ArenaPark.FOG);
+            		_game._fog = !_game._fog;
             		break;
+            	case KeyEvent.VK_ESCAPE:
+            		_game._status = POOConstant.Game.END;
+            		System.exit(0);
+            		break;
+            	
             }
             
             /* player key */
@@ -279,4 +317,7 @@ public class ArenaIOPanel extends JPanel{
         }
 	}
 	
+	public void addGameInfo(GameInfo game){
+		_game = game;
+	}
 }
