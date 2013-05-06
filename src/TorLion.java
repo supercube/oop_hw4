@@ -209,6 +209,8 @@ public class TorLion extends Pet{
 		boolean powerskill = (_rnd.nextInt(12) == 0);
 		int x, y;
 		Cell tmp;
+		int min_distance = 1000, distance;
+		
 		POOCoordinate pos = ((Arena)arena).getPosition(this);
 		/* check neighbor */
 		boolean up = true, down = true, left = true, right = true;
@@ -290,19 +292,25 @@ public class TorLion extends Pet{
 					}
 				}
 				
+				
 				/* move toward other pet */
-				if(getMP() >= 5 && getHP() >= 14){
-					if(x - pos.x < 0 && left){
+				distance = Math.abs(x - pos.x) + Math.abs(y - pos.y);
+				if(getMP() >= 5 && getHP() >= 14 || Math.abs(x - pos.x) + Math.abs(y - pos.y) >= 10){
+					if(x - pos.x < 0 && left && distance < min_distance){
 						_direction = POOConstant.Dir.LEFT;
+						min_distance = distance;
 						found = true;
-					}else if(x - pos.x > 0 && right){
+					}else if(x - pos.x > 0 && right && distance < min_distance){
 						_direction = POOConstant.Dir.RIGHT;
+						min_distance = distance;
 						found = true;
-					}else if(y - pos.y < 0 && up){
+					}else if(y - pos.y < 0 && up && distance < min_distance){
 						_direction = POOConstant.Dir.UP;
+						min_distance = distance;
 						found = true;
-					}else if(y - pos.y > 0 && down){
+					}else if(y - pos.y > 0 && down && distance < min_distance){
 						_direction = POOConstant.Dir.DOWN;
+						min_distance = distance;
 						found = true;
 					}
 				}
@@ -328,6 +336,19 @@ public class TorLion extends Pet{
 			_actions = new ArrayList<Action>(0);
 			_actions.add(new Action(POOConstant.Type.DEAD));
 			return _actions;
+		}
+		
+		if(!isAngry()){
+			int hp = getHP();
+			if(hp > 10){
+				_sight_range = 8;
+			}else if(hp > 7){
+				_sight_range = 9;
+			}else if(hp > 3){
+				_sight_range = 10;
+			}else{
+				_sight_range = 11;
+			}
 		}
 		
 		/* cds count down */

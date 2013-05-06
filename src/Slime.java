@@ -37,10 +37,11 @@ public class Slime extends Pet{
 	private int _count;
 	private ArrayList<Action> _actions;
 	private int[] _cds;
+	private int _grow_agi;
 	
 	
 	public Slime(){
-		setHP(2);
+		setHP(3);
 		setMP(3);
 		adjustAGIandTTA(_normal_agi);
 		
@@ -51,6 +52,7 @@ public class Slime extends Pet{
 		_count = 0;
 		_cds = new int[1];
 		_cds[0] = 0;
+		_grow_agi = 0;
 		_angry_count = _rnd.nextInt(_max_angry_time);
 	}
 	
@@ -76,6 +78,7 @@ public class Slime extends Pet{
 			setMP(getMP() + 4);
 		}
 		_angry_count += 10;
+		_grow_agi++;
 	}
 	
 	protected boolean beAngry(){
@@ -86,7 +89,7 @@ public class Slime extends Pet{
 		_img_id += 4;
 		setHP(getHP()*2);
 		setMP((getMP()+1)*2);
-		adjustAGIandTTA(_angry_agi);
+		adjustAGIandTTA(_angry_agi + _grow_agi);
 		return true;
 	}
 	
@@ -98,7 +101,7 @@ public class Slime extends Pet{
 				_img_id -= 4;
 				setHP(getHP()/2 + 1);
 				setMP(getMP()/2 + 1);
-				adjustAGIandTTA(_normal_agi);
+				adjustAGIandTTA(_normal_agi + _grow_agi);
 			}
 		}else if(_angry_count < _max_angry_time){
 			_angry_count++;
@@ -148,7 +151,7 @@ public class Slime extends Pet{
 		int x, y;
 		Cell tmp;
 		POOCoordinate pos = ((Arena)arena).getPosition(this);
-		
+		int min_distance = 1000, distance;
 		/* check neighbor */
 		boolean up = true, down = true, left = true, right = true;
 		for(int id = 0; id < _sight.size(); id++){
@@ -204,17 +207,24 @@ public class Slime extends Pet{
 						found = true;
 						return _actions;
 					}
-				}else if(x - pos.x < 0 && left){
+				}
+				
+				distance = Math.abs(x - pos.x) + Math.abs(y - pos.y);
+				if(x - pos.x < 0 && left && distance < min_distance){
 					_direction = POOConstant.Dir.LEFT;
+					min_distance = distance;
 					found = true;
-				}else if(x - pos.x > 0 && right){
+				}else if(x - pos.x > 0 && right && distance < min_distance){
 					_direction = POOConstant.Dir.RIGHT;
+					min_distance = distance;
 					found = true;
-				}else if(y - pos.y < 0 && up){
+				}else if(y - pos.y < 0 && up && distance < min_distance){
 					_direction = POOConstant.Dir.UP;
+					min_distance = distance;
 					found = true;
-				}else if(y - pos.y > 0 && down){
+				}else if(y - pos.y > 0 && down && distance < min_distance){
 					_direction = POOConstant.Dir.DOWN;
+					min_distance = distance;
 					found = true;
 				}
 			}

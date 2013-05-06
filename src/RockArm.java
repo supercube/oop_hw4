@@ -69,12 +69,13 @@ public class RockArm extends Pet{
 	public void getKillReward(){
 		_kill_count++;
 		if(isAngry()){
-			setHP(getHP() + 4);
-			setMP(getMP() + 8);
+			setHP(getHP() + 5);
+			setMP(getMP() + 10);
 		}else{
-			setHP(getHP() + 2);
-			setMP(getMP() + 4);
+			setHP(getHP() + 3);
+			setMP(getMP() + 5);
 		}
+		_sight_range++;
 		_angry_count += 10;
 	}
 	
@@ -136,7 +137,7 @@ public class RockArm extends Pet{
 						default:;
 					}
 					_actions.add(new Action(POOConstant.Type.SKILL, new RockSting(this), new Coordinate(pos.x, pos.y)));
-					_actions.add(new Action(POOConstant.Type.SKILL, new RockSting(this), new_pos));
+					_actions.add(new Action(POOConstant.Type.SKILL, new RockSting(this, false), new_pos));
 					return _actions;
 				}
 				break;
@@ -153,6 +154,8 @@ public class RockArm extends Pet{
 		boolean powerskill = (_rnd.nextInt(12) == 0);
 		int x, y;
 		Cell tmp;
+		int min_distance = 1000, distance;
+		
 		POOCoordinate pos = ((Arena)arena).getPosition(this);
 		/* check neighbor */
 		boolean up = true, down = true, left = true, right = true;
@@ -214,18 +217,24 @@ public class RockArm extends Pet{
 					}
 				}
 				
+				/* move toward other pet */
+				distance = Math.abs(x - pos.x) + Math.abs(y - pos.y);
 				if(getHP() >= 3 && getMP() >= 4){
-					if(x - pos.x < 0 && left){
+					if(x - pos.x < 0 && left && distance < min_distance){
 						_direction = POOConstant.Dir.LEFT;
+						min_distance = distance;
 						found = true;
-					}else if(x - pos.x > 0 && right){
+					}else if(x - pos.x > 0 && right && distance < min_distance){
 						_direction = POOConstant.Dir.RIGHT;
+						min_distance = distance;
 						found = true;
-					}else if(y - pos.y < 0 && up){
+					}else if(y - pos.y < 0 && up && distance < min_distance){
 						_direction = POOConstant.Dir.UP;
+						min_distance = distance;
 						found = true;
-					}else if(y - pos.y > 0 && down){
+					}else if(y - pos.y > 0 && down && distance < min_distance){
 						_direction = POOConstant.Dir.DOWN;
+						min_distance = distance;
 						found = true;
 					}
 				}

@@ -104,7 +104,7 @@ public class ArenaPark extends Arena{
 				}
 			}
 			_prev_fog = _game._fog;
-			setFog((Pet)_parr[0], (POOCoordinate)_pet_pos[0], POOConstant.Fog.BRIGHT);
+			setFog(((Pet)_parr[0]).getSightRange(), (POOCoordinate)_pet_pos[0], POOConstant.Fog.BRIGHT);
 		}
 		
 		/* oneTimeStep for Skills/Obstacles */
@@ -137,13 +137,15 @@ public class ArenaPark extends Arena{
 		/* oneTimeStep for Pets */
 		POOCoordinate prev_pos, new_pos;
 		ArrayList<Action> actions;
-		int tmp;
+		int tmp, prev_sight = 0;
 		boolean dead;
 		for(int id = _parr.length - 1; id >= 0; id--){
 			if(_parr[id] == null || ((Pet)_parr[id]).isDead())
 				continue;
 			
 			prev_pos = getPosition(_parr[id]);
+			if(id == 0)
+				prev_sight = ((Pet)_parr[0]).getSightRange();
 			actions = ((Pet)_parr[id]).oneTimeStep(this);
 			new_pos = prev_pos;
 			dead = false;
@@ -187,11 +189,11 @@ public class ArenaPark extends Arena{
 			}
 			
 			/* adjust fog of war */
-			if(_game._fog && id == 0 && prev_pos != new_pos){
+			if(_game._fog && id == 0 && (prev_pos != new_pos || prev_sight != ((Pet)_parr[0]).getSightRange())){
 				
 				/* old slow method */
-				setFog((Pet)_parr[0], prev_pos, POOConstant.Fog.SEEN);
-				setFog((Pet)_parr[0], new_pos, POOConstant.Fog.BRIGHT);
+				setFog(prev_sight, prev_pos, POOConstant.Fog.SEEN);
+				setFog(((Pet)_parr[0]).getSightRange(), new_pos, POOConstant.Fog.BRIGHT);
 				
 				/* new bug method 
 				if(new_pos.x > prev_pos.x)
@@ -256,7 +258,7 @@ public class ArenaPark extends Arena{
 						((Pet)_parr[id]).setId(id);
 						_window.addToArenaIOPanel(((Pet)_parr[id]).getImage(), x, y, id);
 						if(id == 0){
-							setFog((Pet)_parr[0], new Coordinate(x, y), POOConstant.Fog.BRIGHT);
+							setFog(((Pet)_parr[0]).getSightRange(), new Coordinate(x, y), POOConstant.Fog.BRIGHT);
 							_map[x][y].setEmpty();
 							_map[x][y].add(POOConstant.Type.PLAYER, id, _parr[0]);
 						}
@@ -281,13 +283,20 @@ public class ArenaPark extends Arena{
 	}
 	
 	public boolean fight(){
-		while(true){
-			if(_game._status == POOConstant.Game.UNDEFINED){
-					_game._status = POOConstant.Game.INIT;
-					init();
-					_timer.start();
+		
+			while(true){
+				if(_game._status == POOConstant.Game.UNDEFINED){
+						_game._status = POOConstant.Game.INIT;
+						init();
+						_timer.start();
+				}
+				try{
+					Thread.currentThread().suspend();
+					System.out.println("out");
+				}catch(Exception e){
+					System.out.println("wait err" + e);
+				}
 			}
-		}
 	}
 	
 	public void show(){
@@ -343,11 +352,11 @@ public class ArenaPark extends Arena{
 		return sight;
 	}
 	
-	private void setFog(Pet pet, POOCoordinate pos, POOConstant.Fog fog){
+	private void setFog(int sight_range, POOCoordinate pos, POOConstant.Fog fog){
 		int x_times = POOConstant.CELL_X_SIZE / POOConstant.FOG_X_SIZE;
 		int y_times = POOConstant.CELL_Y_SIZE / POOConstant.FOG_Y_SIZE;
 		int x_add = x_times/2, y_add = y_times/2;
-		int sight_range = pet.getSightRange() * ((x_times + y_times)/2);
+		sight_range = sight_range * ((x_times + y_times)/2);
 		Coordinate new_pos = new Coordinate(pos.x * x_times + x_add, pos.y * y_times + y_add);
 		int x_lower = 0, y_lower = 0, x_upper = _no_fog_x - 1, y_upper = _no_fog_y - 1;
 		if(new_pos.x - sight_range > x_lower)
