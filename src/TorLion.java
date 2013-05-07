@@ -14,7 +14,6 @@ public class TorLion extends Pet{
 	protected static final int _normal_agi;
 	protected static final int _angry_agi;
 	
-	
 	static {
 		_no_img = 10;
 		_imgs = new Image[_no_img];
@@ -295,7 +294,7 @@ public class TorLion extends Pet{
 				
 				/* move toward other pet */
 				distance = Math.abs(x - pos.x) + Math.abs(y - pos.y);
-				if(getMP() >= 5 && getHP() >= 14 || Math.abs(x - pos.x) + Math.abs(y - pos.y) >= 10){
+				if(getMP() >= 5 && getHP() >= 14 || Math.abs(x - pos.x) + Math.abs(y - pos.y) > 9){
 					if(x - pos.x < 0 && left && distance < min_distance){
 						_direction = POOConstant.Dir.LEFT;
 						min_distance = distance;

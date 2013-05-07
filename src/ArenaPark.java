@@ -8,8 +8,6 @@ import java.awt.Color;
 import java.awt.event.*;
 
 public class ArenaPark extends Arena{
-
-	//protected static boolean FOG = true;
 	
 	
 	private Timer _timer;
@@ -23,7 +21,6 @@ public class ArenaPark extends Arena{
 	
 	private boolean _prev_fog;
 	private Random _rnd;
-	//private POOConstant.Game _game_status;
 	private int _init_count_down;
 	
 	public static final int interval = 10;
@@ -32,6 +29,7 @@ public class ArenaPark extends Arena{
 	private Coordinate _pet_pos[];
 	private ArrayList<Cell> _carr;
 	private GameInfo _game;
+	
 	
 	public ArenaPark(){
 		try{
@@ -78,6 +76,7 @@ public class ArenaPark extends Arena{
 			
 			case INGAME:
 			case GAMEOVER:
+			case WIN:
 				inGameAction(e);
 				break;
 			case INIT:
@@ -180,9 +179,16 @@ public class ArenaPark extends Arena{
 			if(dead){
 				_window.removeFromIOPanel(id);
 				_window.addToBackground(((Pet)_parr[id]).getImage(), new_pos.x, new_pos.y);
-				((Pet)_parr[id]).confirmDead();//_parr[id] = null;
+				((Pet)_parr[id]).confirmDead();
 				if(id == 0){
 					_game._status = POOConstant.Game.GAMEOVER;
+				}else{
+					if(!(_parr[id] instanceof Slime) || _game._player != POOConstant.Type.SLIME){
+						_game._no_living_target--;
+						if(_game._no_living_target == 0){
+							_game._status = POOConstant.Game.WIN;
+						}
+					}
 				}
 			}else{
 				_window.addToArenaIOPanel(((Pet)_parr[id]).getImage(), new_pos.x, new_pos.y, id);
@@ -238,6 +244,7 @@ public class ArenaPark extends Arena{
 			}
 			
 			/* add Pet */
+			int slime_count = 0;
 			_parr = getAllPets();
 			_pet_pos = new Coordinate[_parr.length];
 			for(int id = 0; id < _parr.length; id++){
@@ -246,6 +253,11 @@ public class ArenaPark extends Arena{
 					((Pet)_parr[id]).setPlayer();
 					_window.addCommandListener(((Pet)_parr[id]).getCmdListener());
 					_window.addPlayer((Pet)_parr[id]);
+					if(_parr[0] instanceof Slime){
+						_game._player = POOConstant.Type.SLIME;
+					}
+				}else if(_parr[id] instanceof Slime){
+					slime_count++;
 				}
 				
 				while(true){
@@ -266,7 +278,10 @@ public class ArenaPark extends Arena{
 					}
 				}
 			}
-			
+			_game._no_living_target = _parr.length - 1;
+			if(_game._player == POOConstant.Type.SLIME){
+				_game._no_living_target -= slime_count;
+			}
 			/* add Object */
 			for(int id = 0; id < 15; id++){
 				_window.addToForeground(((Obstacle)_carr.get(id).getObject()).getImage(), _carr.get(id).getPos().x, _carr.get(id).getPos().y, id);

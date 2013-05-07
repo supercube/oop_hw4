@@ -86,7 +86,7 @@ public class RockArm extends Pet{
 		setAngry();
 		
 		setHP(getHP()*2);
-		setMP(getMP()*2 + 4);
+		setMP(getMP()*2 + 6);
 		adjustAGIandTTA(_angry_agi);
 		_img_id += 4;
 		return true;

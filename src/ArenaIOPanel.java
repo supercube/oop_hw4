@@ -148,11 +148,16 @@ public class ArenaIOPanel extends JPanel{
 			    
 			case INGAME:
 			case GAMEOVER:
+			case WIN:
 				inGamePaint(g);
 				if(_game._status == POOConstant.Game.GAMEOVER){
 					g.setFont(new Font("Arial", Font.BOLD, (int)Math.round(30.0 * _screenRes / 72.0)));
 					g.setColor(Color.red);
 					g.drawString("Game Over", _x / 2 - 90, _y / 2 - 10);
+				}else if(_game._status == POOConstant.Game.WIN){
+					g.setFont(new Font("Arial", Font.BOLD, (int)Math.round(30.0 * _screenRes / 72.0)));
+					g.setColor(Color.red);
+					g.drawString("W I N", _x / 2 - 40, _y / 2 - 10);
 				}
 				break;
 			case INIT:
@@ -214,8 +219,6 @@ public class ArenaIOPanel extends JPanel{
 		}
 		
 		/* draw player info */
-		//"  MP: " + _player.getMP() + "  Anger: " + _player.getAnger() + "/" + _player.getMaxAnger() + "  kills: " + _player._kill_count;
-		
 		int fontSize = (int)Math.round(10.0 * _screenRes / 72.0);
 	    g.setFont(new Font("Arial", Font.BOLD, fontSize));
 		g.setColor(Color.red);
@@ -241,6 +244,8 @@ public class ArenaIOPanel extends JPanel{
         	g.drawImage(_star, 5 + i * 10, 50, this);
         }
         
+        g.setColor(Color.RED);
+        g.drawString("alive: " + _game._no_living_target, _x - 55, _y - 5);
 	}
 	
 	private class ImageCell{

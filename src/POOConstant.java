@@ -8,7 +8,7 @@ public class POOConstant{
 	public static final int SlowTTA = 40;
 	
 	public static enum Type{
-		EMPTY, PLAYER, PET, OBSTACLE, MOVE, SKILL, DEAD
+		EMPTY, PLAYER, PET, OBSTACLE, MOVE, SKILL, DEAD, SLIME, ROCKARM, TORLION
 	}
 	
 	public static enum Cmd{
