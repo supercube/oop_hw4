@@ -143,8 +143,14 @@ public class ArenaPark extends Arena{
 				continue;
 			
 			prev_pos = getPosition(_parr[id]);
-			if(id == 0)
+			if(id == 0){
 				prev_sight = ((Pet)_parr[0]).getSightRange();
+				if(_game._player_control){
+					((Pet)_parr[0]).setPlayer();
+					System.out.println("in");
+				}else
+					((Pet)_parr[0]).resetPlayer();
+			}
 			actions = ((Pet)_parr[id]).oneTimeStep(this);
 			new_pos = prev_pos;
 			dead = false;

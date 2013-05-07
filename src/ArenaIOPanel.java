@@ -273,11 +273,14 @@ public class ArenaIOPanel extends JPanel{
             	case KeyEvent.VK_F1:
             		_game._fog = !_game._fog;
             		break;
+				case KeyEvent.VK_F2:
+            		_game._player_control = !_game._player_control;
+            		break;
             	case KeyEvent.VK_ESCAPE:
             		_game._status = POOConstant.Game.END;
             		System.exit(0);
             		break;
-            	
+            	default:;
             }
             
             /* player key */

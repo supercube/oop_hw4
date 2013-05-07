@@ -22,7 +22,7 @@ public abstract class Pet extends POOPet implements DImage{
 	
 	protected static Random _rnd = new Random();
 	
-	protected ArrayList<Command> _cmds;
+	protected ArrayList<Command> _cmds = new ArrayList<Command>(0);
 	
 	protected boolean adjustAGIandTTA(int agi){
 		if(agi <= 0 || agi >= 40)
@@ -111,7 +111,6 @@ public abstract class Pet extends POOPet implements DImage{
 	
 	protected final void setPlayer(){
 		_player = true;
-		_cmds = new ArrayList<Command>(0);
 	}
 	
 	protected final void resetPlayer(){
