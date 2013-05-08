@@ -41,13 +41,24 @@ public class TorLion extends Pet{
 		setHP(16);
 		setMP(10);
 		adjustAGIandTTA(_normal_agi);
-		
-		_direction = POOConstant.Dir.getRandom();
 		_img_id = _rnd.nextInt(4);
+		switch(_img_id){
+			case 0:
+			case 1:
+				_direction = POOConstant.Dir.LEFT;
+				break;
+			case 2:
+			case 3:
+				_direction = POOConstant.Dir.RIGHT;
+				break;
+			default:;
+		}
+		_pre_direction = _direction;
 		_sight_range = 8;
 		_count_down = _tta;
-		_cds = new int[]{0,0};
+		_cds = new int[]{0,0,0,0};
 		_angry_count = _rnd.nextInt(_max_angry_time - _max_angry_time/2) + _max_angry_time/2;
+	
 	}
 	
 	public final Image getImage(){

@@ -49,8 +49,7 @@ public class RockArm extends Pet{
 		_sight_range = 6;
 		_count_down = _tta;
 		_count = 0;
-		_cds = new int[1];
-		_cds[0] = 0;
+		_cds = new int[]{0, 0, 0, 0};
 		_angry_count = _rnd.nextInt(_max_angry_time);
 	}
 	
