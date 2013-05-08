@@ -14,7 +14,7 @@ public class ArenaIOPanel extends JPanel{
 	private int _no_fog_x;
 	private int _no_fog_y;
 	private int _x, _y;
-	private int _screenRes = Toolkit.getDefaultToolkit().getScreenResolution();
+	private double _unit_size;
 	private ArrayList<Command> _cmds;
 	
 	private ImageCell[] _imgcs;
@@ -51,6 +51,8 @@ public class ArenaIOPanel extends JPanel{
 		
 		_x = _no_cell_x * POOConstant.CELL_X_SIZE;
 		_y = _no_cell_y * POOConstant.CELL_Y_SIZE;
+		
+		_unit_size = ((double)Toolkit.getDefaultToolkit().getScreenResolution())/ 72;
 		
 		_counter = 0;
 		addKeyListener(new Adapter());
@@ -151,19 +153,19 @@ public class ArenaIOPanel extends JPanel{
 			case WIN:
 				inGamePaint(g);
 				if(_game._status == POOConstant.Game.GAMEOVER){
-					g.setFont(new Font("Arial", Font.BOLD, (int)Math.round(30.0 * _screenRes / 72.0)));
+					g.setFont(new Font("Arial", Font.BOLD, (int)Math.round(30.0 * _unit_size)));
 					g.setColor(Color.red);
-					g.drawString("Game Over", _x / 2 - 90, _y / 2 - 10);
+					g.drawString("Game Over", _x / 2 - (int)Math.round(90.0 * _unit_size), _y / 2 - (int)Math.round(10.0 * _unit_size));
 				}else if(_game._status == POOConstant.Game.WIN){
-					g.setFont(new Font("Arial", Font.BOLD, (int)Math.round(30.0 * _screenRes / 72.0)));
+					g.setFont(new Font("Arial", Font.BOLD, (int)Math.round(30.0 * _unit_size)));
 					g.setColor(Color.red);
-					g.drawString("W I N", _x / 2 - 40, _y / 2 - 10);
+					g.drawString("W I N", _x / 2 - (int)Math.round(90.0 * _unit_size), _y / 2 - (int)Math.round(10.0 * _unit_size));
 				}
 				break;
 			case INIT:
-				g.setFont(new Font("Arial", Font.BOLD, (int)Math.round(30.0 * _screenRes / 72.0)));
+				g.setFont(new Font("Arial", Font.BOLD, (int)Math.round(30.0 * _unit_size)));
 				g.setColor(Color.red);
-				g.drawString("Game Start", _x / 2 - 90, _y / 2 - 10);
+				g.drawString("Game Start", _x / 2 - (int)Math.round(90.0 * _unit_size), _y / 2 - (int)Math.round(10.0 * _unit_size));
 				break;
 			default:;
 		}
@@ -219,17 +221,17 @@ public class ArenaIOPanel extends JPanel{
 		}
 		
 		/* draw player info */
-		int fontSize = (int)Math.round(10.0 * _screenRes / 72.0);
+		int fontSize = (int)Math.round(10.0 * _unit_size);
 	    g.setFont(new Font("Arial", Font.BOLD, fontSize));
 		g.setColor(Color.red);
-        g.drawString("HP: ", 5, 15);
-        g.fillRect(40, 7, _player.getHP()*4, 7);
+        g.drawString("HP: ", (int)Math.round(5.0 * _unit_size), (int)Math.round(12.0 * _unit_size));
+        g.fillRect((int)Math.round(30.0 * _unit_size), (int)Math.round(7.0 * _unit_size), (int)Math.round(_player.getHP() * 4 * _unit_size), (int)Math.round(5.0 * _unit_size));
         g.setColor(Color.blue);
-        g.drawString("MP: ", 5, 30);
-        g.fillRect(40, 22, _player.getMP()*4, 7);
+        g.drawString("MP: ", (int)Math.round(4.0 * _unit_size), (int)Math.round(23.0 * _unit_size));
+        g.fillRect((int)Math.round(30.0 * _unit_size), (int)Math.round(18.0 * _unit_size), (int)Math.round(_player.getMP() * 4 * _unit_size), (int)Math.round(5.0 * _unit_size));
         
         g.setColor(Color.yellow);
-        g.drawString("Ang: ", 5, 45);
+        g.drawString("Ang: ", (int)Math.round(2.0 * _unit_size), (int)Math.round(35.0 * _unit_size));
         if(_player.getAnger() >= _player.getMaxAnger() || _player.isAngry()){
         	if((_counter++)%2 == 0){
             	g.setColor(Color.red);
@@ -239,13 +241,13 @@ public class ArenaIOPanel extends JPanel{
         }else{
         	g.setColor(Color.yellow);
         }
-        g.fillRect(40, 37, _player.getAnger()*4, 7);
+        g.fillRect((int)Math.round(30.0 * _unit_size), (int)Math.round(29.0 * _unit_size), (int)Math.round(_player.getAnger() * 4 * _unit_size), (int)Math.round(5.0 * _unit_size));
         for(int i = 0; i < _player._kill_count; i++){
-        	g.drawImage(_star, 5 + i * 10, 50, this);
+        	g.drawImage(_star,(int)Math.round((5 + i * 10) * _unit_size) , (int)Math.round(40 * _unit_size), this);
         }
         
         g.setColor(Color.RED);
-        g.drawString("alive: " + _game._no_living_target, _x - 55, _y - 5);
+        g.drawString("alive: " + _game._no_living_target, _x - (int)Math.round(45 * _unit_size), _y - (int)Math.round(5 * _unit_size));
 	}
 	
 	private class ImageCell{
@@ -273,7 +275,7 @@ public class ArenaIOPanel extends JPanel{
             	case KeyEvent.VK_F1:
             		_game._fog = !_game._fog;
             		break;
-				case KeyEvent.VK_F2:
+            	case KeyEvent.VK_F2:
             		_game._player_control = !_game._player_control;
             		break;
             	case KeyEvent.VK_ESCAPE:

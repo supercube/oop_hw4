@@ -220,16 +220,16 @@ public class TorLion extends Pet{
 			x = tmp.getPos().x;
 			y = tmp.getPos().y;
 			if((x == pos.x) && (y == pos.y - 1)){ // up
-				if(tmp.getType() != POOConstant.Type.EMPTY && tmp.getType() != POOConstant.Type.DEAD)
+				if(tmp.getType() != POOConstant.Type.EMPTY && tmp.getType() != POOConstant.Type.DEAD || !tmp.getSkill().isEmpty())
 					up = false;
 			}else if((x == pos.x) && (y == pos.y + 1)){ // down
-				if(tmp.getType() != POOConstant.Type.EMPTY && tmp.getType() != POOConstant.Type.DEAD)
+				if(tmp.getType() != POOConstant.Type.EMPTY && tmp.getType() != POOConstant.Type.DEAD || !tmp.getSkill().isEmpty())
 					down = false;
 			}else if((x == pos.x - 1) && (y == pos.y)){ // left
-				if(tmp.getType() != POOConstant.Type.EMPTY && tmp.getType() != POOConstant.Type.DEAD)
+				if(tmp.getType() != POOConstant.Type.EMPTY && tmp.getType() != POOConstant.Type.DEAD || !tmp.getSkill().isEmpty())
 					left = false;
 			}else if((x == pos.x + 1) && (y == pos.y)){ // right
-				if(tmp.getType() != POOConstant.Type.EMPTY && tmp.getType() != POOConstant.Type.DEAD)
+				if(tmp.getType() != POOConstant.Type.EMPTY && tmp.getType() != POOConstant.Type.DEAD || !tmp.getSkill().isEmpty())
 					right = false;
 			}
 		}
@@ -316,8 +316,32 @@ public class TorLion extends Pet{
 			}
 			
 		}
-		if(!found)
-			_direction = POOConstant.Dir.getRandom();//_rnd.nextInt(4);
+		if(!found){
+			if(left || right || up || down){
+				while(!found){
+					_direction = POOConstant.Dir.getRandom();
+					switch(_direction){
+						case UP:
+							if(up) 
+								found = true;
+							break;
+						case DOWN:
+							if(down) 
+								found = true;
+							break;
+						case LEFT:
+							if(left) 
+								found = true;
+							break;
+						case RIGHT:
+							if(right) 
+								found = true;
+							break;
+					}
+				}
+			}else
+				_direction = POOConstant.Dir.getRandom();
+		}
 		
 		_actions = new ArrayList<Action>(0);
 		_actions.add(new Action(POOConstant.Type.MOVE, move(arena)));

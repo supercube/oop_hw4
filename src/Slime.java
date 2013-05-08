@@ -29,9 +29,9 @@ public class Slime extends Pet{
 		_imgs[8] = Filter.filterOutBackground((new ImageIcon("Images/Slime_dead.png")).getImage(), new Color(0, 0, 0));
 		_imgs[9] = Filter.filterOutBackground((new ImageIcon("Images/Red_Slime_dead.png")).getImage(), new Color(0, 0, 0));
 		_skills = new POOConstant.Skill[]{POOConstant.Skill.TinyAttackSkill, POOConstant.Skill.None, POOConstant.Skill.None, POOConstant.Skill.None};
-		_max_angry_time = 12;
-		_normal_agi = 10;
-		_angry_agi = 15;
+		_max_angry_time = 11;
+		_normal_agi = 12;
+		_angry_agi = 17;
 	}
 	
 	private int _count;

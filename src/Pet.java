@@ -70,8 +70,7 @@ public abstract class Pet extends POOPet implements DImage{
 				}
 				break;
 			case SPACE:
-				if(beAngry())
-					System.out.println("Angry! HP " + getHP() + ", MP " + getMP());
+				beAngry();
 				break;
 			default:;
 		}
@@ -109,12 +108,9 @@ public abstract class Pet extends POOPet implements DImage{
 	
 	protected abstract void calmDownOrNot();
 	
-	protected final void setPlayer(){
-		_player = true;
-	}
-	
-	protected final void resetPlayer(){
-		_player = false;
+	protected final void setPlayer(boolean player){
+		_player = player;
+		
 	}
 	
 	public final boolean isPlayer(){

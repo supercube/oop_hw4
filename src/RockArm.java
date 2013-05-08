@@ -69,10 +69,10 @@ public class RockArm extends Pet{
 	public void getKillReward(){
 		_kill_count++;
 		if(isAngry()){
-			setHP(getHP() + 5);
+			setHP(getHP() + 4);
 			setMP(getMP() + 10);
 		}else{
-			setHP(getHP() + 3);
+			setHP(getHP() + 2);
 			setMP(getMP() + 5);
 		}
 		_sight_range++;
@@ -240,8 +240,33 @@ public class RockArm extends Pet{
 				}
 			}
 		}
-		if(!found)
-			_direction = POOConstant.Dir.getRandom();
+		
+		if(!found){
+			if(left || right || up || down){
+				while(!found){
+					_direction = POOConstant.Dir.getRandom();
+					switch(_direction){
+						case UP:
+							if(up) 
+								found = true;
+							break;
+						case DOWN:
+							if(down) 
+								found = true;
+							break;
+						case LEFT:
+							if(left) 
+								found = true;
+							break;
+						case RIGHT:
+							if(right) 
+								found = true;
+							break;
+					}
+				}
+			}else
+				_direction = POOConstant.Dir.getRandom();
+		}
 		
 		_actions = new ArrayList<Action>(0);
 		_actions.add(new Action(POOConstant.Type.MOVE, move(arena)));

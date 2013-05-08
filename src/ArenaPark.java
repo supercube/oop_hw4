@@ -145,11 +145,7 @@ public class ArenaPark extends Arena{
 			prev_pos = getPosition(_parr[id]);
 			if(id == 0){
 				prev_sight = ((Pet)_parr[0]).getSightRange();
-				if(_game._player_control){
-					((Pet)_parr[0]).setPlayer();
-					System.out.println("in");
-				}else
-					((Pet)_parr[0]).resetPlayer();
+				((Pet)_parr[0]).setPlayer(_game._player_control);
 			}
 			actions = ((Pet)_parr[id]).oneTimeStep(this);
 			new_pos = prev_pos;
@@ -256,7 +252,7 @@ public class ArenaPark extends Arena{
 			for(int id = 0; id < _parr.length; id++){
 				_parr[id].setName(Integer.toString(id));
 				if(id == 0){
-					((Pet)_parr[id]).setPlayer();
+					((Pet)_parr[id]).setPlayer(_game._player_control);
 					_window.addCommandListener(((Pet)_parr[id]).getCmdListener());
 					_window.addPlayer((Pet)_parr[id]);
 					if(_parr[0] instanceof Slime){
@@ -365,7 +361,7 @@ public class ArenaPark extends Arena{
 		
 		for(int i = x_lower; i <= x_upper; i++){
 			for(int j = y_lower; j <= y_upper; j++){
-				if(Math.sqrt((i-pos.x)*(i-pos.x)+(j-pos.y)*(j-pos.y)) <= sight_range ){
+				if((i-pos.x)*(i-pos.x)+(j-pos.y)*(j-pos.y) <= sight_range * sight_range){
 					sight.add(new Cell(_map[i][j]));
 				}
 			}
@@ -390,7 +386,7 @@ public class ArenaPark extends Arena{
 			y_upper = new_pos.y + sight_range;
 		for(int i = x_lower; i <= x_upper; i++){
 			for(int j = y_lower; j <= y_upper; j++){
-				if(Math.sqrt((i-new_pos.x)*(i-new_pos.x)+(j-new_pos.y)*(j-new_pos.y)) <= sight_range ){
+				if((i-new_pos.x)*(i-new_pos.x)+(j-new_pos.y)*(j-new_pos.y) <= sight_range * sight_range){
 					_fog_of_war[i][j] = fog;
 				}
 			}
@@ -449,7 +445,7 @@ public class ArenaPark extends Arena{
 					jump = true;
 					continue;
 				}
-				if(Math.sqrt((i-new_pos.x)*(i-new_pos.x)+(j-new_pos.y)*(j-new_pos.y)) <= sight_range ){
+				if((i-new_pos.x)*(i-new_pos.x)+(j-new_pos.y)*(j-new_pos.y) <= sight_range * sight_range){
 					_fog_of_war[i][j] = POOConstant.Fog.BRIGHT;
 				}else if(_fog_of_war[i][j] != POOConstant.Fog.UNSEEN){
 					_fog_of_war[i][j] = POOConstant.Fog.SEEN;
