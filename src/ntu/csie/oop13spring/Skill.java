@@ -21,4 +21,11 @@ public abstract class Skill extends POOSkill implements VaporizableDImage{
 		return _pet;
 	}
 	
+	public static int getCD(){
+		return 10000;
+	}
+	
+	public static int getMPConsume(){
+		return 10000;
+	}
 }
